@@ -18,8 +18,12 @@ public class PlayerController : MonoBehaviour
         {
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            Physics.Raycast(mouseRay, out hit);
-            GetComponent<NavMeshAgent>().SetDestination(hit.point);
+            if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("floor"))
+            {
+                GetComponent<NavMeshAgent>().SetDestination(hit.collider.gameObject.transform.position);
+                Debug.Log(hit.collider.gameObject.transform.position);
+                Debug.Log(hit.collider.gameObject.tag);
+            }
         }
     }
 }
