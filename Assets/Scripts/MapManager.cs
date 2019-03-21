@@ -38,17 +38,31 @@ public class MapManager : MonoBehaviour
         else
             Debug.Log("Tile already exists");
     }
+    /// <summary>
+    /// Create wall between two cubes.
+    /// </summary>
+    /// <param name="cube1">Cube 1</param>
+    /// <param name="cube2">Cube 2</param>
+    public void CreateWall(GameObject cube1, GameObject cube2)
+    {
+        Vector3 wallPos = (cube1.transform.position + cube2.transform.position) / 2;
+        GameObject abc = Instantiate(wall, wallPos, Quaternion.identity, transform);
+        abc.transform.LookAt(cube1.transform);
+    }
+
+
 
     // Start is called before the first frame update
     void Start()
     {
         mapGrid = new GameObject[100, 100];
-        for(int i = 0; i < x; i++)
-            for(int j = 0; j < y; j++)
+        for (int i = 0; i < x; i++)
+            for (int j = 0; j < y; j++)
                 mapGrid[i, j] = Instantiate(floor, new Vector3(i, 0, j), Quaternion.identity, transform);
-        Instantiate(wall, new Vector3(2, 1, 2), Quaternion.identity, transform);
-        Instantiate(wall, new Vector3(3, 1, 2), Quaternion.identity, transform);
-        Instantiate(wall, new Vector3(3, 1, 3), Quaternion.identity, transform);
+
+        CreateWall(mapGrid[2, 2], mapGrid[2, 3]);
+        CreateWall(mapGrid[3, 2], mapGrid[2, 2]);
+        CreateWall(mapGrid[3, 3], mapGrid[2, 3]);
         surface.BuildNavMesh();
         player.transform.position = mapGrid[0, 0].transform.position + new Vector3(0, 1.5f, 0);
     }

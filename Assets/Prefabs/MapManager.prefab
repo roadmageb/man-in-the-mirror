@@ -45,8 +45,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   x: 10
   y: 10
-  floor: {fileID: 9018546965645820688, guid: 8215c5f2304d749478a0a615906f8e48, type: 3}
-  wall: {fileID: 7243760336853780619, guid: 0ceb8b540d9e1bc4c81fcab0513de048, type: 3}
+  floor: {fileID: 4430576614521234720, guid: 71931eea896a59a4683986cfd369b8ee, type: 3}
+  wall: {fileID: 337530617404887312, guid: a4dcd71ec9f819f4e88c7b5ac24f4b0d, type: 3}
   player: {fileID: 0}
   surface: {fileID: 0}
   xInput: {fileID: 0}
