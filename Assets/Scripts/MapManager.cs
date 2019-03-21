@@ -13,9 +13,11 @@ public class MapManager : MonoBehaviour
     public GameObject[,] mapGrid;
     public NavMeshSurface surface;
 
-
-
     public InputField xInput, yInput;
+    public void Rebaker()
+    {
+        surface.BuildNavMesh();
+    }
     public void RemoveTile()
     {
         if (mapGrid[int.Parse(xInput.text), int.Parse(yInput.text)] != null)
@@ -37,8 +39,6 @@ public class MapManager : MonoBehaviour
             Debug.Log("Tile already exists");
     }
 
-
-
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +47,8 @@ public class MapManager : MonoBehaviour
             for(int j = 0; j < y; j++)
                 mapGrid[i, j] = Instantiate(floor, new Vector3(i, 0, j), Quaternion.identity, transform);
         Instantiate(wall, new Vector3(2, 1, 2), Quaternion.identity, transform);
+        Instantiate(wall, new Vector3(3, 1, 2), Quaternion.identity, transform);
+        Instantiate(wall, new Vector3(3, 1, 3), Quaternion.identity, transform);
         surface.BuildNavMesh();
         player.transform.position = mapGrid[0, 0].transform.position + new Vector3(0, 1.5f, 0);
     }
