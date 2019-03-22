@@ -18,9 +18,9 @@ public class BulletFactory
 	{
 		if (isInit)
 			return;
-		truthBulletPrefab = Resources.Load<GameObject>("Prefabs/TruthBullet");
-		fakeBulletPrefab = Resources.Load<GameObject>("Prefabs/FakeBullet");
-		mirrorBulletPrefab = Resources.Load<GameObject>("Prefabs/MirrorBullet");
+		truthBulletPrefab = Resources.Load<GameObject>("Prefabs/Bullets/TruthBullet");
+		fakeBulletPrefab = Resources.Load<GameObject>("Prefabs/Bullets/FakeBullet");
+		mirrorBulletPrefab = Resources.Load<GameObject>("Prefabs/Bullets/MirrorBullet");
 	}
 
 	/// <summary>
