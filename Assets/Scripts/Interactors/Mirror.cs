@@ -3,24 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Mirror : MonoBehaviour, IInteractor
+public class Mirror : MonoBehaviour, IInteractor, IBreakable
 {
     private Camera camera;
     private RenderTexture rt;
 
+    public void Break()
+    {
+        Destroy(gameObject);
+    }
+
     public void Interact(Bullet bullet)
     {
-        if (bullet is TruthBullet)
-        {
-            //Break Mirror
-        }
-        else if (bullet is FakeBullet)
+        if (bullet is FakeBullet)
         {
             //Break Mirror & Make reflected objects
-        }
-        else if (bullet is MirrorBullet)
-        {
-            //Nothing happens
         }
     }
 

@@ -6,6 +6,14 @@ public class TruthBullet : Bullet
 {
     protected override void OnTriggerEnter(Collider other)
     {
-        //TODO : if breakable, break
+        if (other.GetComponent<IBreakable>() != null)
+        {
+            other.GetComponent<IBreakable>().Break();
+        }
+        else if (other.GetComponent<IInteractor>() != null)
+        {
+            other.GetComponent<IInteractor>().Interact(this);
+        }
+        Destroy(gameObject);
     }
 }

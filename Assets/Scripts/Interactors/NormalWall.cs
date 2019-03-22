@@ -8,15 +8,12 @@ public class NormalWall : MonoBehaviour, IInteractor
     {
         if (bullet is TruthBullet)
         {
-            //Break Wall
-        }
-        else if (bullet is FakeBullet)
-        {
-            //Nothing happens
+            Destroy(gameObject);
         }
         else if (bullet is MirrorBullet)
         {
-            //Nothing happens
+            gameObject.AddComponent<Mirror>();
+            Destroy(this);
         }
     }
 }
