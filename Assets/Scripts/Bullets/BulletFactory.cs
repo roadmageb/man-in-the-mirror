@@ -9,26 +9,37 @@ public enum BulletCode
     Mirror
 }
 
-public static class BulletFactory
+public class BulletFactory
 {
-    /// <summary>
-    /// Returns new bullet gameobject with bullet script on it
-    /// </summary>
-    /// <param name="bulletCode">Type of bullet that wants to make</param>
-    /// <returns></returns>
-    public static GameObject MakeBullet(BulletCode bulletCode)
+	public bool isInit = false;
+	public static GameObject truthBulletPrefab = null, fakeBulletPrefab = null, mirrorBulletPrefab = null;
+
+	public BulletFactory()
+	{
+		if (isInit)
+			return;
+		truthBulletPrefab = Resources.Load<GameObject>("Prefabs/TruthBullet");
+		fakeBulletPrefab = Resources.Load<GameObject>("Prefabs/FakeBullet");
+		mirrorBulletPrefab = Resources.Load<GameObject>("Prefabs/MirrorBullet");
+	}
+
+	/// <summary>
+	/// Returns new bullet gameobject with bullet script on it
+	/// </summary>
+	/// <param name="bulletCode">Type of bullet that wants to make</param>
+	/// <returns></returns>
+	public static Bullet MakeBullet(BulletCode bulletCode)
     {
         switch (bulletCode)
         {
             case BulletCode.True:
-                break;
+				return GameObject.Instantiate(truthBulletPrefab).GetComponent<Bullet>();
             case BulletCode.False:
-                break;
-            case BulletCode.Mirror:
-                break;
-            default:
-                break;
+				return GameObject.Instantiate(fakeBulletPrefab).GetComponent<Bullet>();
+			case BulletCode.Mirror:
+				return GameObject.Instantiate(mirrorBulletPrefab).GetComponent<Bullet>();
+			default:
+				return null;
         }
-        return null;
     }
 }
