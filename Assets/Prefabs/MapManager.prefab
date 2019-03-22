@@ -48,6 +48,7 @@ MonoBehaviour:
   floor: {fileID: 4430576614521234720, guid: 71931eea896a59a4683986cfd369b8ee, type: 3}
   wall: {fileID: 337530617404887312, guid: a4dcd71ec9f819f4e88c7b5ac24f4b0d, type: 3}
   player: {fileID: 0}
+  map: {fileID: 0}
   surface: {fileID: 0}
   xInput: {fileID: 0}
   yInput: {fileID: 0}

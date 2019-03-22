@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+
+    void CameraMove()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+        transform.position += new Vector3(verticalInput + horizontalInput, 0, verticalInput - horizontalInput);
+    }
+    void CameraRotate()
+    {
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -13,8 +25,7 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-        transform.position += new Vector3(verticalInput + horizontalInput, 0, verticalInput - horizontalInput);
+        CameraMove();
+        CameraRotate();
     }
 }

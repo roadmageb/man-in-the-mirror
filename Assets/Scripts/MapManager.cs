@@ -10,33 +10,22 @@ public class MapManager : MonoBehaviour
     public GameObject floor;
     public GameObject wall;
     public GameObject player;
-    public GameObject[,] mapGrid;
-    public NavMeshSurface surface;
+    public Map currentMap;
+    public static NavMeshSurface surface;
+    public Map[] stage;
+
 
     public InputField xInput, yInput;
+
+
+    public void CreateMap(Map _newMap)
+    {
+        Map newMap = Instantiate(_newMap);
+        newMap.transform.position = new Vector3(0, 0, 0);
+    }
     public void Rebaker()
     {
         surface.BuildNavMesh();
-    }
-    public void RemoveTile()
-    {
-        if (mapGrid[int.Parse(xInput.text), int.Parse(yInput.text)] != null)
-        {
-            Destroy(mapGrid[int.Parse(xInput.text), int.Parse(yInput.text)].gameObject);
-            surface.BuildNavMesh();
-        }
-        else
-            Debug.Log("Tile doesn't exists");
-    }
-    public void AddTile()
-    {
-        if (mapGrid[int.Parse(xInput.text), int.Parse(yInput.text)] == null)
-        {
-            mapGrid[int.Parse(xInput.text), int.Parse(yInput.text)] = Instantiate(floor, new Vector3(int.Parse(xInput.text), 0, int.Parse(yInput.text)), Quaternion.identity, transform);
-            surface.BuildNavMesh();
-        }
-        else
-            Debug.Log("Tile already exists");
     }
     /// <summary>
     /// Create wall between two cubes.
@@ -51,20 +40,25 @@ public class MapManager : MonoBehaviour
     }
 
 
+    private void Awake()
+    {
+        
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        mapGrid = new GameObject[100, 100];
-        for (int i = 0; i < x; i++)
-            for (int j = 0; j < y; j++)
+        mapMaxSize = 5 * Mathf.Max(x, y);
+        mapCenterPos = mapMaxSize / 2;
+        mapGrid = new GameObject[mapMaxSize, mapMaxSize];
+        for (int i = mapCenterPos; i < mapCenterPos + x; i++)
+            for (int j = mapCenterPos; j < mapCenterPos + y; j++)
                 mapGrid[i, j] = Instantiate(floor, new Vector3(i, 0, j), Quaternion.identity, transform);
-
-        CreateWall(mapGrid[2, 2], mapGrid[2, 3]);
-        CreateWall(mapGrid[3, 2], mapGrid[2, 2]);
-        CreateWall(mapGrid[3, 3], mapGrid[2, 3]);
+        player.transform.position = GetCubeAtPos(0, 0).transform.position + new Vector3(0, 1.5f, 0);
+        CreateWall(GetCubeAtPos(2, 2), GetCubeAtPos(2, 3));
+        CreateWall(GetCubeAtPos(3, 2), GetCubeAtPos(2, 2));
+        CreateWall(GetCubeAtPos(3, 3), GetCubeAtPos(2, 3));
         surface.BuildNavMesh();
-        player.transform.position = mapGrid[0, 0].transform.position + new Vector3(0, 1.5f, 0);
     }
 
     // Update is called once per frame
