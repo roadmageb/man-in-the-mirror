@@ -202,10 +202,9 @@ public class Map : MonoBehaviour
     {
         floorGrid = new Dictionary<Vector2Int, Floor>();
         wallGrid = new Dictionary<Vector2, Wall>();
-        //LoadObjects();
+        LoadObjects();
         maxMapSize = 5 * Mathf.Max(testInputSizeX, testInputSizeY);
-        CreateFloor(new Vector2Int(0, 0), new Vector2Int(9, 9));
-        MapManager.inst.surface.BuildNavMesh();
+        //CreateFloor(new Vector2Int(0, 0), new Vector2Int(9, 9));
     }
 
     // Start is called before the first frame update

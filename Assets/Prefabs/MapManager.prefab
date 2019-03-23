@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6014610519130626206}
-  - component: {fileID: 6014610519130626207}
+  - component: {fileID: 1971589825}
   m_Layer: 0
   m_Name: MapManager
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6014610519130626207
+--- !u!114 &1971589825
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,13 +40,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6014610519130626400}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c46ee6a780f2c3428a79748eadabea8, type: 3}
+  m_Script: {fileID: 11500000, guid: 5ad2f39c48d82964f86cd2d6e1e94641, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   floor: {fileID: 19711883686801522, guid: 71931eea896a59a4683986cfd369b8ee, type: 3}
   wall: {fileID: 3736402816908646744, guid: a4dcd71ec9f819f4e88c7b5ac24f4b0d, type: 3}
-  player: {fileID: 0}
   currentMap: {fileID: 0}
-  surface: {fileID: 0}
   stage:
   - {fileID: 630498074781569474, guid: 759f352c81f1b5a40b2d8d241cdf273b, type: 3}
+  tile: {fileID: 7449840556337937162, guid: 90d0ab9f40a0ddc4c871130319d86cd5, type: 3}

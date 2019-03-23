@@ -32,7 +32,7 @@ public class TestTools : MonoBehaviour
 
     public void SaveMap()
     {
-        MapManager.inst.SaveMap(MapManager.inst.currentMap);
+        MapEditor.inst.SaveMap(MapManager.inst.currentMap);
     }
     public void LoadMap()
     {
