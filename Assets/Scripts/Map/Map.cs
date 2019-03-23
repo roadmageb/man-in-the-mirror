@@ -11,6 +11,7 @@ public class Map : MonoBehaviour
     private Dictionary<Vector2, Wall> wallGrid;
     public GameObject floors;
     public GameObject walls;
+    public Floor startFloor;
 
     /// <summary>
     /// Get floor at position.
@@ -45,7 +46,7 @@ public class Map : MonoBehaviour
     /// <returns></returns>
     public Wall GetWallAtPos(Floor floor1, Floor floor2)
     {
-        Vector2 wallPos = (Vector2)(floor1.MapPos + floor2.MapPos) / 2;
+        Vector2 wallPos = (Vector2)(floor1.mapPos + floor2.mapPos) / 2;
         return wallGrid.ContainsKey(wallPos) ? wallGrid[wallPos] : null;
     }
     /// <summary>
@@ -64,7 +65,7 @@ public class Map : MonoBehaviour
         if (!floorGrid.ContainsKey(floorPos))
         {
             floorGrid.Add(floorPos, Instantiate(MapManager.inst.floor, new Vector3(floorPos.x, 0, floorPos.y), Quaternion.identity, floors.transform).GetComponent<Floor>());
-            floorGrid[floorPos].SetMapPos(floorPos);
+            floorGrid[floorPos].SetmapPos(floorPos);
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
@@ -130,16 +131,16 @@ public class Map : MonoBehaviour
     /// <param name="floor2"></param>
     public void CreateWall(Floor floor1, Floor floor2)
     {
-        Vector2 wallPos = (Vector2)(floor1.MapPos + floor2.MapPos) / 2;
+        Vector2 wallPos = (Vector2)(floor1.mapPos + floor2.mapPos) / 2;
         if (!wallGrid.ContainsKey(wallPos))
         {
             wallGrid.Add(wallPos, Instantiate(MapManager.inst.wall, new Vector3(wallPos.x, 0, wallPos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
-            wallGrid[wallPos].SetMapPos(wallPos);
+            wallGrid[wallPos].SetmapPos(wallPos);
             wallGrid[wallPos].transform.LookAt(floor1.transform);
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
-            Debug.Log("Wall already exists between : " + floor1.MapPos + ", " + floor2.MapPos);
+            Debug.Log("Wall already exists between : " + floor1.mapPos + ", " + floor2.mapPos);
     }
     /// <summary>
     /// Create walls from two floors, toward dir's direction. 
@@ -150,8 +151,8 @@ public class Map : MonoBehaviour
     /// <param name="length">Amount of walls you want to create.</param>
     public void CreateWall(Floor floor1, Floor floor2, Vector2 dir, int length)
     {
-        Vector2Int floor1Pos = floor1.MapPos;
-        Vector2Int floor2Pos = floor2.MapPos;
+        Vector2Int floor1Pos = floor1.mapPos;
+        Vector2Int floor2Pos = floor2.mapPos;
         for (int i = 0; i < length; i++)
         {
             if(GetFloorAtPos(floor1Pos) == null || GetFloorAtPos(floor2Pos) == null)
@@ -171,7 +172,7 @@ public class Map : MonoBehaviour
     /// <param name="floor2"></param>
     public void RemoveWall(Floor floor1, Floor floor2)
     {
-        Vector2 wallPos = (Vector2)(floor1.MapPos + floor2.MapPos) / 2;
+        Vector2 wallPos = (Vector2)(floor1.mapPos + floor2.mapPos) / 2;
         if (wallGrid.ContainsKey(wallPos))
         {
             Destroy(wallGrid[wallPos].gameObject);
@@ -179,16 +180,31 @@ public class Map : MonoBehaviour
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
-            Debug.Log("Wall doesn't exists between : " + floor1.MapPos + ", " + floor2.MapPos);
+            Debug.Log("Wall doesn't exists between : " + floor1.mapPos + ", " + floor2.mapPos);
+    }
+
+    private void LoadObjects()
+    {
+        Debug.Log(floors.transform.childCount);
+        for(int i = 0; i < floors.transform.childCount; i++)
+        {
+            Floor floor = floors.transform.GetChild(i).GetComponent<Floor>();
+            floorGrid.Add(floor.mapPos, floor);
+        }
+        for (int i = 0; i < walls.transform.childCount; i++)
+        {
+            Wall wall = walls.transform.GetChild(i).GetComponent<Wall>();
+            wallGrid.Add(wall.mapPos, wall);
+        }
     }
 
     private void Awake()
     {
         floorGrid = new Dictionary<Vector2Int, Floor>();
         wallGrid = new Dictionary<Vector2, Wall>();
+        //LoadObjects();
         maxMapSize = 5 * Mathf.Max(testInputSizeX, testInputSizeY);
         CreateFloor(new Vector2Int(0, 0), new Vector2Int(9, 9));
-        CreateWall(GetFloorAtPos(0, 2), GetFloorAtPos(0, 3), Vector2.right, 5);
         MapManager.inst.surface.BuildNavMesh();
     }
 

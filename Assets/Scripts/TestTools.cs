@@ -30,6 +30,15 @@ public class TestTools : MonoBehaviour
             MapManager.inst.currentMap.GetFloorAtPos(int.Parse(wall2XInput.text), int.Parse(wall2YInput.text)));
     }
 
+    public void SaveMap()
+    {
+        MapManager.inst.SaveMap(MapManager.inst.currentMap);
+    }
+    public void LoadMap()
+    {
+        MapManager.inst.LoadMap(MapManager.inst.stage[1]);
+    }
+
     // Start is called before the first frame update
     void Start()
     {

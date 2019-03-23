@@ -7,11 +7,11 @@ public class Floor : MonoBehaviour
     /// <summary>
     /// Position of this floor at the map.
     /// </summary>
-    public Vector2Int MapPos { get; private set; }
+    public Vector2Int mapPos;
 
-    public void SetMapPos(Vector2Int pos)
+    public void SetmapPos(Vector2Int pos)
     {
-        MapPos = pos;
+        mapPos = pos;
     }
 
     // Start is called before the first frame update
