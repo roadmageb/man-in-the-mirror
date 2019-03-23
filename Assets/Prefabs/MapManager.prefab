@@ -43,12 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c46ee6a780f2c3428a79748eadabea8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  x: 10
-  y: 10
-  floor: {fileID: 4430576614521234720, guid: 71931eea896a59a4683986cfd369b8ee, type: 3}
-  wall: {fileID: 337530617404887312, guid: a4dcd71ec9f819f4e88c7b5ac24f4b0d, type: 3}
+  floor: {fileID: 19711883686801522, guid: 71931eea896a59a4683986cfd369b8ee, type: 3}
+  wall: {fileID: 3736402816908646744, guid: a4dcd71ec9f819f4e88c7b5ac24f4b0d, type: 3}
   player: {fileID: 0}
-  map: {fileID: 0}
+  currentMap: {fileID: 0}
   surface: {fileID: 0}
-  xInput: {fileID: 0}
-  yInput: {fileID: 0}
+  stage:
+  - {fileID: 630498074781569474, guid: 759f352c81f1b5a40b2d8d241cdf273b, type: 3}

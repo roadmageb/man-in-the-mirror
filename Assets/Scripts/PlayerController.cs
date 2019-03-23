@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("floor"))
             {
                 GetComponent<NavMeshAgent>().SetDestination(hit.collider.gameObject.transform.position);
-                Debug.Log(hit.collider.gameObject.transform.position);
+                Debug.Log(hit.collider.gameObject.GetComponent<Floor>().MapPos);
                 Debug.Log(hit.collider.gameObject.tag);
             }
         }

@@ -1,16 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class Map : MonoBehaviour
 {
-    //Remove when singleton added.
-    public MapManager mapManager;
-    //Remove when singleton added.
-
+    public int testInputSizeX, testInputSizeY;
     public int maxMapSize;
-    public int mapCenterPos;
-    public GameObject[,] floorGrid;
+    private Dictionary<Vector2Int, Floor> floorGrid;
+    private Dictionary<Vector2, Wall> wallGrid;
+    public GameObject floors;
+    public GameObject walls;
 
     /// <summary>
     /// Get floor at position.
@@ -18,21 +18,35 @@ public class Map : MonoBehaviour
     /// <param name="x">X position of floor.</param>
     /// <param name="y">Y position of floor.</param>
     /// <returns></returns>
-    public GameObject GetFloorAtPos(int x, int y)
+    public Floor GetFloorAtPos(int x, int y)
     {
-        if (floorGrid[mapCenterPos + x, mapCenterPos + y] != null)
-            return floorGrid[mapCenterPos + x, mapCenterPos + y];
-        else
+        if ((x >= 0 ? x > maxMapSize / 2 - 1 : x < maxMapSize / 2) || (y >= 0 ? y > maxMapSize / 2 - 1 : y < maxMapSize / 2))
+        {
+            Debug.Log("Input size exceeds map's max size.");
             return null;
+        }
+        Vector2Int floorPos = new Vector2Int(x, y);
+        return floorGrid.ContainsKey(floorPos) ? floorGrid[floorPos] : null;
     }
     /// <summary>
     /// Get floor at position.
     /// </summary>
     /// <param name="pos">Position of floor.</param>
     /// <returns></returns>
-    public GameObject GetFloorAtPos(Vector2Int pos)
+    public Floor GetFloorAtPos(Vector2Int pos)
     {
         return GetFloorAtPos(pos.x, pos.y);
+    }
+    /// <summary>
+    /// Get floor at position.
+    /// </summary>
+    /// <param name="x">X position of floor.</param>
+    /// <param name="y">Y position of floor.</param>
+    /// <returns></returns>
+    public Wall GetWallAtPos(Floor floor1, Floor floor2)
+    {
+        Vector2 wallPos = (Vector2)(floor1.MapPos + floor2.MapPos) / 2;
+        return wallGrid.ContainsKey(wallPos) ? wallGrid[wallPos] : null;
     }
     /// <summary>
     /// Create floor at position.
@@ -41,14 +55,20 @@ public class Map : MonoBehaviour
     /// <param name="y">Y position of floor.</param>
     public void CreateFloor(int x, int y)
     {
-        if(floorGrid[mapCenterPos + x, mapCenterPos + y] == null)
+        if ((x >= 0 ? (x > maxMapSize / 2 - 1) : (x < -maxMapSize / 2)) || (y >= 0 ? (y > maxMapSize / 2 - 1) : (y < -maxMapSize / 2)))
         {
-            floorGrid[mapCenterPos + x, mapCenterPos + y] = Instantiate(mapManager.floor, new Vector3(mapCenterPos + x, 0, mapCenterPos + y), Quaternion.identity, transform);
+            Debug.Log("Input size exceeds map's max size.");
+            return;
+        }
+        Vector2Int floorPos = new Vector2Int(x, y);
+        if (!floorGrid.ContainsKey(floorPos))
+        {
+            floorGrid.Add(floorPos, Instantiate(MapManager.inst.floor, new Vector3(floorPos.x, 0, floorPos.y), Quaternion.identity, floors.transform).GetComponent<Floor>());
+            floorGrid[floorPos].SetMapPos(floorPos);
+            StartCoroutine(MapManager.inst.Rebaker());
         }
         else
-        {
-            Debug.Log("Floor already exists in : (" + x + ", " + y + ")");
-        }
+            Debug.Log("Floor already exists at : (" + x + ", " + y + ")");
     }
     /// <summary>
     /// Create floor at position.
@@ -59,20 +79,41 @@ public class Map : MonoBehaviour
         CreateFloor(pos.x, pos.y);
     }
     /// <summary>
+    /// Create floor in rectangular area between pos1 and pos2. 
+    /// </summary>
+    /// <param name="pos1"></param>
+    /// <param name="pos2"></param>
+    public void CreateFloor(Vector2Int pos1, Vector2Int pos2)
+    {
+        int xMax = Mathf.Max(pos1.x, pos2.x);
+        int yMax = Mathf.Max(pos1.y, pos2.y);
+        int xMin = Mathf.Min(pos1.x, pos2.x);
+        int yMin = Mathf.Min(pos1.y, pos2.y);
+        for (int i = xMin; i <= xMax; i++)
+            for (int j = yMin; j <= yMax; j++)
+                CreateFloor(i, j);
+    }
+    /// <summary>
     /// Remove floor at position.
     /// </summary>
     /// <param name="x">X position of floor.</param>
     /// <param name="y">Y position of floor.</param>
     public void RemoveFloor(int x, int y)
     {
-        if (floorGrid[mapCenterPos + x, mapCenterPos + y] != null)
+        if ((x >= 0 ? x > maxMapSize / 2 - 1 : x < maxMapSize / 2) || (y >= 0 ? y > maxMapSize / 2 - 1 : y < maxMapSize / 2))
         {
-            Destroy(floorGrid[mapCenterPos + x, mapCenterPos + y].gameObject);
+            Debug.Log("Input size exceeds map's max size.");
+            return;
+        }
+        Vector2Int floorPos = new Vector2Int(x, y);
+        if (floorGrid.ContainsKey(floorPos))
+        {
+            Destroy(floorGrid[floorPos].gameObject);
+            floorGrid.Remove(floorPos);
+            StartCoroutine(MapManager.inst.Rebaker());
         }
         else
-        {
-            Debug.Log("Floor doesn't exists in : (" + x + ", " + y + ")");
-        }
+            Debug.Log("Floor doesn't exists at : (" + x + ", " + y + ")");
     }
     /// <summary>
     /// Remove floor at position.
@@ -82,42 +123,79 @@ public class Map : MonoBehaviour
     {
         RemoveFloor(pos.x, pos.y);
     }
-
-    public void CreateWall(GameObject floor1, GameObject floor2)
+    /// <summary>
+    /// Create wall between two floors.
+    /// </summary>
+    /// <param name="floor1"></param>
+    /// <param name="floor2"></param>
+    public void CreateWall(Floor floor1, Floor floor2)
     {
-        Vector3 wallPos = (cube1.transform.position + cube2.transform.position) / 2;
-        Instantiate(wall, wallPos, Quaternion.identity, transform).transform.LookAt(cube1.transform);
-    }
-
-
-
-
-
-
-
-    public void Rebaker()
-    {
-        surface.BuildNavMesh();
+        Vector2 wallPos = (Vector2)(floor1.MapPos + floor2.MapPos) / 2;
+        if (!wallGrid.ContainsKey(wallPos))
+        {
+            wallGrid.Add(wallPos, Instantiate(MapManager.inst.wall, new Vector3(wallPos.x, 0, wallPos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
+            wallGrid[wallPos].SetMapPos(wallPos);
+            wallGrid[wallPos].transform.LookAt(floor1.transform);
+            StartCoroutine(MapManager.inst.Rebaker());
+        }
+        else
+            Debug.Log("Wall already exists between : " + floor1.MapPos + ", " + floor2.MapPos);
     }
     /// <summary>
-    /// Create wall between two cubes.
+    /// Create walls from two floors, toward dir's direction. 
     /// </summary>
-    /// <param name="cube1">Cube 1</param>
-    /// <param name="cube2">Cube 2</param>
-    public void CreateWall(GameObject cube1, GameObject cube2)
+    /// <param name="floor1"></param>
+    /// <param name="floor2"></param>
+    /// <param name="dir">Direction you want to create walls.</param>
+    /// <param name="length">Amount of walls you want to create.</param>
+    public void CreateWall(Floor floor1, Floor floor2, Vector2 dir, int length)
     {
-        Vector3 wallPos = (cube1.transform.position + cube2.transform.position) / 2;
-        GameObject abc = Instantiate(wall, wallPos, Quaternion.identity, transform);
-        abc.transform.LookAt(cube1.transform);
+        Vector2Int floor1Pos = floor1.MapPos;
+        Vector2Int floor2Pos = floor2.MapPos;
+        for (int i = 0; i < length; i++)
+        {
+            if(GetFloorAtPos(floor1Pos) == null || GetFloorAtPos(floor2Pos) == null)
+            {
+                Debug.Log("Floor doesn't exists.\nMaybe length you input exceeded current floors' length.");
+                return;
+            }
+            CreateWall(GetFloorAtPos(floor1Pos), GetFloorAtPos(floor2Pos));
+            floor1Pos += new Vector2Int((int)dir.x, (int)dir.y);
+            floor2Pos += new Vector2Int((int)dir.x, (int)dir.y);
+        }
+    }
+    /// <summary>
+    /// Remove wall between two floors.
+    /// </summary>
+    /// <param name="floor1"></param>
+    /// <param name="floor2"></param>
+    public void RemoveWall(Floor floor1, Floor floor2)
+    {
+        Vector2 wallPos = (Vector2)(floor1.MapPos + floor2.MapPos) / 2;
+        if (wallGrid.ContainsKey(wallPos))
+        {
+            Destroy(wallGrid[wallPos].gameObject);
+            wallGrid.Remove(wallPos);
+            StartCoroutine(MapManager.inst.Rebaker());
+        }
+        else
+            Debug.Log("Wall doesn't exists between : " + floor1.MapPos + ", " + floor2.MapPos);
     }
 
-
-
+    private void Awake()
+    {
+        floorGrid = new Dictionary<Vector2Int, Floor>();
+        wallGrid = new Dictionary<Vector2, Wall>();
+        maxMapSize = 5 * Mathf.Max(testInputSizeX, testInputSizeY);
+        CreateFloor(new Vector2Int(0, 0), new Vector2Int(9, 9));
+        CreateWall(GetFloorAtPos(0, 2), GetFloorAtPos(0, 3), Vector2.right, 5);
+        MapManager.inst.surface.BuildNavMesh();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
