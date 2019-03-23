@@ -83,9 +83,10 @@ public class Map : MonoBehaviour
         RemoveFloor(pos.x, pos.y);
     }
 
-    public void CreateWall(GameObject cube1, GameObject cube2)
+    public void CreateWall(GameObject floor1, GameObject floor2)
     {
-
+        Vector3 wallPos = (cube1.transform.position + cube2.transform.position) / 2;
+        Instantiate(wall, wallPos, Quaternion.identity, transform).transform.LookAt(cube1.transform);
     }
 
 
