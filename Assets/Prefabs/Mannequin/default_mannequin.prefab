@@ -1322,7 +1322,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 33432975985760517}
-  - component: {fileID: 33432975995352749}
+  - component: {fileID: 8051139420697939838}
   m_Layer: 0
   m_Name: default_mannequin
   m_TagString: Untagged
@@ -1347,25 +1347,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
---- !u!95 &33432975995352749
-Animator:
-  serializedVersion: 3
+--- !u!114 &8051139420697939838
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 33432975985984805}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 875e50677f7b5bf4d9767bed93659d15, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f15a625122ee354090202ddf9cb0299, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  white: {fileID: 2100000, guid: af605edc8af008346a3f42f355847da6, type: 2}
+  black: {fileID: 2100000, guid: 36f9d35b500106b42b6a47c516bf7b38, type: 2}
+  isWhite: 0
 --- !u!1 &33432975985984807
 GameObject:
   m_ObjectHideFlags: 0
