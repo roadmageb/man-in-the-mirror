@@ -21,7 +21,7 @@ public class Map : MonoBehaviour
     /// <returns></returns>
     public Floor GetFloorAtPos(int x, int y)
     {
-        if ((x >= 0 ? x > maxMapSize / 2 - 1 : x < maxMapSize / 2) || (y >= 0 ? y > maxMapSize / 2 - 1 : y < maxMapSize / 2))
+        if ((x >= 0 ? (x > maxMapSize / 2) : (x < -maxMapSize / 2)) || (y >= 0 ? (y > maxMapSize / 2) : (y < -maxMapSize / 2)))
         {
             Debug.Log("Input size exceeds map's max size.");
             return null;
@@ -56,7 +56,7 @@ public class Map : MonoBehaviour
     /// <param name="y">Y position of floor.</param>
     public void CreateFloor(int x, int y)
     {
-        if ((x >= 0 ? (x > maxMapSize / 2 - 1) : (x < -maxMapSize / 2)) || (y >= 0 ? (y > maxMapSize / 2 - 1) : (y < -maxMapSize / 2)))
+        if ((x >= 0 ? (x > maxMapSize / 2) : (x < -maxMapSize / 2)) || (y >= 0 ? (y > maxMapSize / 2) : (y < -maxMapSize / 2)))
         {
             Debug.Log("Input size exceeds map's max size.");
             return;
@@ -101,7 +101,7 @@ public class Map : MonoBehaviour
     /// <param name="y">Y position of floor.</param>
     public void RemoveFloor(int x, int y)
     {
-        if ((x >= 0 ? x > maxMapSize / 2 - 1 : x < maxMapSize / 2) || (y >= 0 ? y > maxMapSize / 2 - 1 : y < maxMapSize / 2))
+        if ((x >= 0 ? (x > maxMapSize / 2) : (x < -maxMapSize / 2)) || (y >= 0 ? (y > maxMapSize / 2) : (y < -maxMapSize / 2)))
         {
             Debug.Log("Input size exceeds map's max size.");
             return;
@@ -131,9 +131,24 @@ public class Map : MonoBehaviour
     /// <param name="floor2"></param>
     public void CreateWall(Floor floor1, Floor floor2)
     {
+        if(floor1 == null || floor2 == null)
+        {
+            Debug.Log("There is no floor near the wall.");
+            return;
+        }
+        else if(floor1.mapPos == floor2.mapPos)
+        {
+            Debug.Log("Two floors are same.");
+            return;
+        }
         Vector2 wallPos = (Vector2)(floor1.mapPos + floor2.mapPos) / 2;
         if (!wallGrid.ContainsKey(wallPos))
         {
+            if(Mathf.Abs(floor1.mapPos.x - floor2.mapPos.x) > 1 || Mathf.Abs(floor1.mapPos.y - floor2.mapPos.y) > 1)
+            {
+                Debug.Log("Two floors are not adjacent floors.");
+                return;
+            }
             wallGrid.Add(wallPos, Instantiate(MapManager.inst.wall, new Vector3(wallPos.x, 0, wallPos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
             wallGrid[wallPos].SetmapPos(wallPos);
             wallGrid[wallPos].transform.LookAt(floor1.transform);
@@ -185,7 +200,6 @@ public class Map : MonoBehaviour
 
     private void LoadObjects()
     {
-        Debug.Log(floors.transform.childCount);
         for(int i = 0; i < floors.transform.childCount; i++)
         {
             Floor floor = floors.transform.GetChild(i).GetComponent<Floor>();

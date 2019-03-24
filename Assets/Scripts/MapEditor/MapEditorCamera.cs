@@ -13,7 +13,7 @@ public class MapEditorCamera : MonoBehaviour
     void CameraZoom()
     {
         float mouseWheel = -Input.GetAxis("Mouse ScrollWheel");
-        transform.position += new Vector3(0, mouseWheel * 5, 0);
+        Camera.main.orthographicSize += mouseWheel * 2;
     }
 
     // Start is called before the first frame update

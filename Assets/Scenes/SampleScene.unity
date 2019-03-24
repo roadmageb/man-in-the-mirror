@@ -435,11 +435,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestTools
       objectReference: {fileID: 0}
-    - target: {fileID: 1444571407667829093, guid: 0b18400fb62a12d4e9cb5fbb8ecbb53f,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1444571408780882984, guid: 0b18400fb62a12d4e9cb5fbb8ecbb53f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -509,38 +504,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapManager
       objectReference: {fileID: 0}
-    - target: {fileID: 6014610519130626207, guid: 11285456de5f1854d947bea83275646f,
-        type: 3}
-      propertyPath: stage.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6014610519130626207, guid: 11285456de5f1854d947bea83275646f,
-        type: 3}
-      propertyPath: player
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6014610519130626207, guid: 11285456de5f1854d947bea83275646f,
-        type: 3}
-      propertyPath: surface
-      value: 
-      objectReference: {fileID: 2102809461}
-    - target: {fileID: 6014610519130626207, guid: 11285456de5f1854d947bea83275646f,
-        type: 3}
-      propertyPath: stage.Array.data[1]
-      value: 
-      objectReference: {fileID: 791563843738455658, guid: d023f0193ec85eb4abdc3e04bb4d7778,
-        type: 3}
-    - target: {fileID: 6014610519130626207, guid: 11285456de5f1854d947bea83275646f,
-        type: 3}
-      propertyPath: stage.Array.data[0]
-      value: 
-      objectReference: {fileID: 5554172594464001467, guid: 20fb0f72e3df40c488f15711aa30ac6e,
-        type: 3}
-    - target: {fileID: 6014610519130626207, guid: 11285456de5f1854d947bea83275646f,
-        type: 3}
-      propertyPath: currentMap
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 6014610519130626206, guid: 11285456de5f1854d947bea83275646f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -596,6 +559,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3268100033343711389, guid: 11285456de5f1854d947bea83275646f,
+        type: 3}
+      propertyPath: surface
+      value: 
+      objectReference: {fileID: 2102809461}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11285456de5f1854d947bea83275646f, type: 3}
 --- !u!1001 &7277015660625800392

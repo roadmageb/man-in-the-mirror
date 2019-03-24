@@ -6,6 +6,7 @@ using UnityEngine.AI;
 
 public class MapManager : SingletonBehaviour<MapManager>
 {
+    public bool isMapEditingOn;
     public Floor floor;
     public Wall wall;
     public GameObject player;
@@ -36,7 +37,8 @@ public class MapManager : SingletonBehaviour<MapManager>
     // Start is called before the first frame update
     void Start()
     {
-        //LoadMap(stage[0]);
+        if(!isMapEditingOn)
+            LoadMap(stage[0]);
     }
 
     // Update is called once per frame
