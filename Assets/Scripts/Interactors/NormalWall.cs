@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalWall : MonoBehaviour, IInteractor
+public class NormalWall : MonoBehaviour, IBulletInteractor
 {
     public void Interact(Bullet bullet)
     {

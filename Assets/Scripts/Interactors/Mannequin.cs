@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mannequin : MonoBehaviour, IInteractor
+public class Mannequin : MonoBehaviour, IBulletInteractor
 {
     public Color Color {
         get

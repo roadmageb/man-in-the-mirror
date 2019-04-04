@@ -10,9 +10,9 @@ public class TruthBullet : Bullet
         {
             other.GetComponent<IBreakable>().Break();
         }
-        else if (other.GetComponent<IInteractor>() != null)
+        else if (other.GetComponent<IBulletInteractor>() != null)
         {
-            other.GetComponent<IInteractor>().Interact(this);
+            other.GetComponent<IBulletInteractor>().Interact(this);
         }
         Destroy(gameObject);
     }
