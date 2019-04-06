@@ -9,6 +9,7 @@ public class MapManager : SingletonBehaviour<MapManager>
     public bool isMapEditingOn;
     public Floor floor;
     public Wall wall;
+    public List<GameObject> players;
     public GameObject player;
     public Map currentMap;
     public NavMeshSurface surface;
@@ -21,7 +22,8 @@ public class MapManager : SingletonBehaviour<MapManager>
         currentMap = Instantiate(_newMap);
         currentMap.transform.position = new Vector3(0, 0, 0);
         surface.BuildNavMesh();
-        player.transform.position = currentMap.startFloor.transform.position + new Vector3(0, 1.5f, 0);
+        for (int i = 0; i < currentMap.startFloors.Count; i++)
+            players.Add(Instantiate(player, currentMap.startFloors[i].transform.position + new Vector3(0, 1.5f, 0), Quaternion.identity));
     }
     public IEnumerator Rebaker()
     {
@@ -31,7 +33,7 @@ public class MapManager : SingletonBehaviour<MapManager>
 
     private void Awake()
     {
-        player = GameObject.Find("Player");
+        players = new List<GameObject>();
     }
 
     // Start is called before the first frame update

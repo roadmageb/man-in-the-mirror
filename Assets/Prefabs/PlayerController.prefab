@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6014610519130626400
+--- !u!1 &3084434388615582932
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6014610519130626206}
-  - component: {fileID: 3268100033343711389}
+  - component: {fileID: 7144820693024262881}
+  - component: {fileID: 7305835109978716895}
   m_Layer: 0
-  m_Name: MapManager
+  m_Name: PlayerController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6014610519130626206
+--- !u!4 &7144820693024262881
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6014610519130626400}
+  m_GameObject: {fileID: 3084434388615582932}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,24 +31,15 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3268100033343711389
+--- !u!114 &7305835109978716895
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6014610519130626400}
+  m_GameObject: {fileID: 3084434388615582932}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c46ee6a780f2c3428a79748eadabea8, type: 3}
+  m_Script: {fileID: 11500000, guid: 0bef204316f94854e9cbe8217d86842d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMapEditingOn: 0
-  floor: {fileID: 19711883686801522, guid: 71931eea896a59a4683986cfd369b8ee, type: 3}
-  wall: {fileID: 3736402816908646744, guid: a4dcd71ec9f819f4e88c7b5ac24f4b0d, type: 3}
-  players: []
-  player: {fileID: 8862060874303168220, guid: 6ba287375b5ad4b458a7b7b99c6d6a08, type: 3}
-  currentMap: {fileID: 0}
-  surface: {fileID: 0}
-  stage:
-  - {fileID: 6311566525947587311, guid: 49597164dd7e7454ca5a790c491a214e, type: 3}

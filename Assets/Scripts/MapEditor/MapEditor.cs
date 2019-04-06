@@ -11,26 +11,30 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public Map currentMap;
     public Map[] stage;
     public MapEditorTile tile;
-    public enum TileMode { None, Floor, Wall };
+    public enum TileMode { None, Floor, Wall, StartFloor };
     TileMode currentMode;
     public Text modeSign;
     public GameObject clickSign;
     public GameObject startSign;
+    public Dictionary<Floor, GameObject> startSigns;
     public GameObject mapSizeSetter;
     public GameObject mapEditorTiles;
+
+    public Material editWallMat;
+    public Material realWallMat;
 
     Vector2Int[] wallInputFloors;
     bool isWallClicked;
     bool isEditorStarted;
     bool isCreateMode;
-    bool isStartPositionSetter;
 
-    public void LoadMap(Map _newMap)
+    public void StartMap(Map _newMap)
     {
         if (currentMap != null)
             Destroy(currentMap.gameObject);
         currentMap = Instantiate(_newMap);
         currentMap.transform.position = new Vector3(0, 0, 0);
+        currentMap.InitiateMap();
     }
     /// <summary>
     /// Saves map to Assets folder.
@@ -42,12 +46,20 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         string localPath = "Assets/SavedMap_" + time.ToShortDateString() + "-" + time.Hour + "-" + time.Minute + "-" + time.Second + ".prefab";
         if (AssetDatabase.LoadAssetAtPath(localPath, typeof(GameObject)))
             Debug.Log("Object with same name already exists.");
-        else if(currentMap.startFloor == null)
+        else if(currentMap.startFloors.Count == 0)
             Debug.Log("There is no start floor.");
         else
         {
+            foreach(Transform child in currentMap.walls.transform)
+            {
+                child.gameObject.GetComponent<MeshRenderer>().material = realWallMat;
+            }
             PrefabUtility.SaveAsPrefabAsset(_newMap.gameObject, localPath);
             Debug.Log("Map saved at " + localPath);
+            foreach (Transform child in currentMap.walls.transform)
+            {
+                child.gameObject.GetComponent<MeshRenderer>().material = editWallMat;
+            }
         }
     }
     public void SaveCurrentMap()
@@ -89,36 +101,25 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     void SetModeSign()
     {
         string sign = "Mode : " + currentMode.ToString();
-        if (isStartPositionSetter)
-            modeSign.text = "Set start position";
-        else if (isCreateMode)
+        if (isCreateMode)
             modeSign.text = sign + " Create";
         else
             modeSign.text = sign + " Destroy";
-    }
-    public void SetStartPosition()
-    {
-        if(!isStartPositionSetter)
-            isStartPositionSetter = true;
-        else
-            isStartPositionSetter = false;
-        SetModeSign();
     }
 
     private void Awake()
     {
         MapManager.inst.isMapEditingOn = true;
         clickSign.SetActive(false);
-        startSign.SetActive(false);
         isEditorStarted = false;
         isCreateMode = true;
-        isStartPositionSetter = false;
+        startSigns = new Dictionary<Floor, GameObject>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        LoadMap(stage[0]);
+        StartMap(stage[0]);
         wallInputFloors = new Vector2Int[2];
         isWallClicked = false;
         SwitchMode(0);
@@ -135,15 +136,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             {
                 Debug.Log(hit.transform.position);
                 Vector2Int clickedPos = new Vector2Int((int)hit.transform.position.x, (int)hit.transform.position.z);
-                if (isStartPositionSetter)
-                {
-                    currentMap.startFloor = currentMap.GetFloorAtPos(clickedPos);
-                    startSign.SetActive(true);
-                    startSign.transform.position = currentMap.startFloor.transform.position + new Vector3(0, 1, 0);
-                    isStartPositionSetter = false;
-                    SetModeSign();
-                }
-                else if(currentMode == TileMode.Floor)
+                if(currentMode == TileMode.Floor)
                 {
                     if (isCreateMode)
                         currentMap.CreateFloor(clickedPos);
@@ -163,11 +156,45 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                     {
                         wallInputFloors[1] = clickedPos;
                         if (isCreateMode)
+                        {
                             currentMap.CreateWall(currentMap.GetFloorAtPos(wallInputFloors[0]), currentMap.GetFloorAtPos(wallInputFloors[1]));
+                            if(currentMap.GetWallAtPos(currentMap.GetFloorAtPos(wallInputFloors[0]), currentMap.GetFloorAtPos(wallInputFloors[1])) != null)
+                                currentMap.GetWallAtPos(currentMap.GetFloorAtPos(wallInputFloors[0]), currentMap.GetFloorAtPos(wallInputFloors[1]))
+                                    .gameObject.GetComponent<MeshRenderer>().material = editWallMat;
+                        }
                         else
                             currentMap.RemoveWall(currentMap.GetFloorAtPos(wallInputFloors[0]), currentMap.GetFloorAtPos(wallInputFloors[1]));
                         clickSign.SetActive(false);
                         isWallClicked = false;
+                    }
+                }
+                else if(currentMode == TileMode.StartFloor)
+                {
+                    if (isCreateMode)
+                    {
+                        if(currentMap.startFloors.Contains(currentMap.GetFloorAtPos(clickedPos)))
+                        {
+                            Debug.Log("Start floor already exists at : (" + clickedPos.x + ", " + clickedPos.y + ")");
+                        }
+                        else
+                        {
+                            currentMap.startFloors.Add(currentMap.GetFloorAtPos(clickedPos));
+                            startSigns.Add(currentMap.GetFloorAtPos(clickedPos), Instantiate(startSign));
+                            startSigns[currentMap.GetFloorAtPos(clickedPos)].transform.position = new Vector3(clickedPos.x, 2, clickedPos.y);
+                        }
+                    }
+                    else
+                    {
+                        if (!currentMap.startFloors.Contains(currentMap.GetFloorAtPos(clickedPos)))
+                        {
+                            Debug.Log("Start floor doesn't exist at : (" + clickedPos.x + ", " + clickedPos.y + ")");
+                        }
+                        else
+                        {
+                            currentMap.startFloors.Remove(currentMap.GetFloorAtPos(clickedPos));
+                            Destroy(startSigns[currentMap.GetFloorAtPos(clickedPos)].gameObject);
+                            startSigns.Remove(currentMap.GetFloorAtPos(clickedPos));
+                        }
                     }
                 }
             }

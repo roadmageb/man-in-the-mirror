@@ -11,7 +11,7 @@ public class Map : MonoBehaviour
     private Dictionary<Vector2, Wall> wallGrid;
     public GameObject floors;
     public GameObject walls;
-    public Floor startFloor;
+    public List<Floor> startFloors;
 
     /// <summary>
     /// Get floor at position.
@@ -144,7 +144,8 @@ public class Map : MonoBehaviour
         Vector2 wallPos = (Vector2)(floor1.mapPos + floor2.mapPos) / 2;
         if (!wallGrid.ContainsKey(wallPos))
         {
-            if(Mathf.Abs(floor1.mapPos.x - floor2.mapPos.x) > 1 || Mathf.Abs(floor1.mapPos.y - floor2.mapPos.y) > 1)
+            if(Mathf.Abs(floor1.mapPos.x - floor2.mapPos.x) > 1 || Mathf.Abs(floor1.mapPos.y - floor2.mapPos.y) > 1 ||
+                (Mathf.Abs(floor1.mapPos.x - floor2.mapPos.x) == 1 && Mathf.Abs(floor1.mapPos.y - floor2.mapPos.y) == 1))
             {
                 Debug.Log("Two floors are not adjacent floors.");
                 return;
@@ -212,13 +213,20 @@ public class Map : MonoBehaviour
         }
     }
 
-    private void Awake()
+    public void InitiateMap()
     {
         floorGrid = new Dictionary<Vector2Int, Floor>();
         wallGrid = new Dictionary<Vector2, Wall>();
-        LoadObjects();
-        maxMapSize = 5 * Mathf.Max(testInputSizeX, testInputSizeY);
-        //CreateFloor(new Vector2Int(0, 0), new Vector2Int(9, 9));
+        startFloors = new List<Floor>();
+        //LoadObjects();
+    }
+
+    private void Awake()
+    {
+        /*floorGrid = new Dictionary<Vector2Int, Floor>();
+        wallGrid = new Dictionary<Vector2, Wall>();
+        startFloors = new List<Floor>();
+        LoadObjects();*/
     }
 
     // Start is called before the first frame update
