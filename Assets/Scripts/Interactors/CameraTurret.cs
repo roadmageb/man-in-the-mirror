@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class CameraTurret : MonoBehaviour, IBreakable, IPlayerInteractor
 {
-    private Vector2Int position;
+	[SerializeField]
+	private Floor floor = null;
+	public Vector2Int Position { get { return floor != null ? floor.mapPos : throw new UnassignedReferenceException("Floor of Interactor is not assigned"); } }
 
-    public void Init(Vector2Int pos)
+	public void Init(Floor floor)
     {
-        position = pos;
-    }
+		this.floor = floor;
+		PlayerController.inst.OnPlayerMove += Interact;
+	}
 
     public void Break()
     {
@@ -18,6 +21,10 @@ public class CameraTurret : MonoBehaviour, IBreakable, IPlayerInteractor
 
     public void Interact(Vector2Int pos)
     {
-
+		if (Position.IsInSquareArea(pos, 1))
+		{
+			Debug.Log("Stage Restart!");
+			//TODO : Restart Level
+		}
     }
 }

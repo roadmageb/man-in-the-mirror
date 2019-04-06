@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : SingletonBehaviour<PlayerController>
 {
     private Vector2Int prePos;
     public Vector2Int MapPos
@@ -17,6 +18,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+	public event Action<Vector2Int> OnPlayerMove;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,8 +31,10 @@ public class PlayerController : MonoBehaviour
     {
         if (prePos != MapPos)
         {
-            
-        }
+			Debug.Log(MapPos);
+			OnPlayerMove?.Invoke(MapPos);
+			prePos = MapPos;
+		}
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -41,16 +46,6 @@ public class PlayerController : MonoBehaviour
                 //Debug.Log(hit.collider.gameObject.GetComponent<Floor>().mapPos);
                 //Debug.Log(hit.collider.gameObject.tag);
             }
-        }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log(collision.gameObject.name);
-        Floor floor = collision.transform.GetComponent<Floor>();
-        if (floor != null)
-        {
-            Debug.Log(floor.mapPos);
         }
     }
 }
