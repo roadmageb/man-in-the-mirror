@@ -428,6 +428,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f15a625122ee354090202ddf9cb0299, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mannequinMesh:
+  - {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  - {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!65 &540232520
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -670,6 +673,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00412ad71b8f0e14c9a23118682ee6f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  floor: {fileID: 0}
 --- !u!135 &1034141965
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -852,7 +856,7 @@ PrefabInstance:
     - target: {fileID: 5901026180355857054, guid: bfe2c93abf5421b4a9b142f60d689533,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.3183
+      value: -0.52
       objectReference: {fileID: 0}
     - target: {fileID: 5901026180355857054, guid: bfe2c93abf5421b4a9b142f60d689533,
         type: 3}
@@ -862,7 +866,7 @@ PrefabInstance:
     - target: {fileID: 5901026180355857054, guid: bfe2c93abf5421b4a9b142f60d689533,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.49
+      value: -1.188
       objectReference: {fileID: 0}
     - target: {fileID: 5901026180355857054, guid: bfe2c93abf5421b4a9b142f60d689533,
         type: 3}
