@@ -6,6 +6,10 @@ public class MirrorBullet : Bullet
 {
     protected override void OnTriggerEnter(Collider other)
     {
-        //If wall, make a new mirror on the wall
-    }
+		if (other.GetComponent<IBulletInteractor>() != null)
+		{
+			other.GetComponent<IBulletInteractor>().Interact(this);
+		}
+		Destroy(gameObject);
+	}
 }
