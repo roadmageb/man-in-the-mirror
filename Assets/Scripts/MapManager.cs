@@ -23,7 +23,7 @@ public class MapManager : SingletonBehaviour<MapManager>
         currentMap.transform.position = new Vector3(0, 0, 0);
         surface.BuildNavMesh();
         for (int i = 0; i < currentMap.startFloors.Count; i++)
-            players.Add(Instantiate(player, currentMap.startFloors[i].transform.position + new Vector3(0, 1.5f, 0), Quaternion.identity));
+            players.Add(Instantiate(player, currentMap.startFloors[i].transform.position + new Vector3(0, 1.15f, 0), Quaternion.identity));
     }
     public IEnumerator Rebaker()
     {

@@ -1,26 +1,50 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Player : MonoBehaviour
 {
-    public void SetCurrentPlayer()
+    Coroutine playerArivalCheck;
+
+    public IEnumerator SetCurrentPlayer()
     {
-        transform.localScale = new Vector3(1, 2, 1);
+        GetComponent<NavMeshObstacle>().enabled = false;
+        yield return null;
+        GetComponent<NavMeshAgent>().enabled = true;
     }
     public void ResetCurrentPlayer()
     {
-        transform.localScale = new Vector3(1, 1, 1);
+        GetComponent<NavMeshAgent>().enabled = false;
+        GetComponent<NavMeshObstacle>().enabled = true;
         PlayerController.inst.currentPlayer = null;
     }
-    public void MovePlayer()
+    public void MovePlayer(Vector3 destination)
     {
-
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        NavMeshPath path = new NavMeshPath();
+        if(playerArivalCheck != null)
+            StopCoroutine(playerArivalCheck);
+        playerArivalCheck = StartCoroutine(CheckIfPlayerArrived(destination));
+        agent.CalculatePath(destination, path);
+        if(path.status == NavMeshPathStatus.PathComplete)
+            GetComponent<NavMeshAgent>().SetDestination(destination);
+        else
+            Debug.Log("Destination is not reachable.");
+    }
+    IEnumerator CheckIfPlayerArrived(Vector3 destination)
+    {
+        while(transform.position.x != destination.x || transform.position.z != destination.z)
+        {
+            yield return null;
+            PlayerController.inst.isPlayerMoving = true;
+        }
+        PlayerController.inst.isPlayerMoving = false;
     }
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame

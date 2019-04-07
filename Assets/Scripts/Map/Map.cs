@@ -199,6 +199,22 @@ public class Map : MonoBehaviour
             Debug.Log("Wall doesn't exists between : " + floor1.mapPos + ", " + floor2.mapPos);
     }
 
+    private void LoadObjects()
+    {
+        floorGrid = new Dictionary<Vector2Int, Floor>();
+        wallGrid = new Dictionary<Vector2, Wall>();
+        for (int i = 0; i < floors.transform.childCount; i++)
+        {
+            Floor floor = floors.transform.GetChild(i).GetComponent<Floor>();
+            floorGrid.Add(floor.mapPos, floor);
+        }
+        for (int i = 0; i < walls.transform.childCount; i++)
+        {
+            Wall wall = walls.transform.GetChild(i).GetComponent<Wall>();
+            wallGrid.Add(wall.mapPos, wall);
+        }
+    }
+
     public void InitiateMap()
     {
         floorGrid = new Dictionary<Vector2Int, Floor>();
@@ -208,7 +224,7 @@ public class Map : MonoBehaviour
 
     private void Awake()
     {
-
+        LoadObjects();
     }
 
     // Start is called before the first frame update
