@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Mirror : MonoBehaviour, IInteractor, IBreakable
+public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
 {
     private Camera camera;
     private RenderTexture rt;

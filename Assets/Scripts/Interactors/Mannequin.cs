@@ -2,55 +2,50 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mannequin : MonoBehaviour, IInteractor
+public class Mannequin : MonoBehaviour, IBulletInteractor
 {
-    // 일단은 이렇게 해두긴 하는데 나중에 마네킹 매니저같은게 생기면 거기에 두고 쓰는게 편할듯
-    public Material white;
-    public Material black;
-
-    public bool isWhite;
-
-    private SkinnedMeshRenderer[] _mats;
-
-    private void Start()
-    {
-        _mats = GetComponentsInChildren<SkinnedMeshRenderer>();
+	[SerializeField]
+	private Mesh[] mannequinMesh = new Mesh[2];
+	private Color _color;
+    public Color Color {
+        get
+        {
+			return _color;
+        }
+        private set
+        {
+			if (value == Color.black)
+			{
+				GetComponent<MeshFilter>().mesh = mannequinMesh[0];
+				//Change mesh to black mannequin
+			}
+			else if (value == Color.white)
+			{
+				GetComponent<MeshFilter>().mesh = mannequinMesh[1];
+				//Change mesh to white mannequin
+			}
+			else
+			{
+				Debug.LogWarning("Invalid color input");
+			}
+			_color = value;
+		}
     }
-
-    //public Color Color {
-    //    get
-    //    {
-    //        return GetComponent<MeshRenderer>().material.color;
-    //    }
-    //    private set
-    //    {
-    //        GetComponent<MeshRenderer>().material.color = value;
-    //    }
-    //}
 
     public void Interact(Bullet bullet)
     {
         if (bullet is TruthBullet)
         {
-            //GetComponent<MeshRenderer>().material.color = Color.white;
-            isWhite = true;
-            foreach (var mat in _mats)
-                mat.material = white;
+           Color = Color.white;
         }
         if (bullet is FakeBullet)
         {
-            //GetComponent<MeshRenderer>().material.color = Color.black;
-            isWhite = false;
-            foreach (var mat in _mats)
-                mat.material = black;
+			Color = Color.black;
         }
     }
 
     public void Init(bool isWhite)
     {
-        //Color = isWhite ? Color.white : Color.black;
-        this.isWhite = isWhite;
-        foreach (var mat in _mats)
-            mat.material = isWhite ? white : black;
+        Color = isWhite ? Color.white : Color.black;
     }
 }

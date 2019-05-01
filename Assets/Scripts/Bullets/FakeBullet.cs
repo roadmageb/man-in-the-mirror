@@ -6,6 +6,10 @@ public class FakeBullet : Bullet
 {
     protected override void OnTriggerEnter(Collider other)
     {
-        //TODO : if mirror, break mirror and make objects
-    }
+        if (other.GetComponent<IBulletInteractor>() != null)
+        {
+            other.GetComponent<IBulletInteractor>().Interact(this);
+        }
+		Destroy(gameObject);
+	}
 }
