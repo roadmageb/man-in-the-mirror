@@ -129,20 +129,25 @@ public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
     /// <summary>
     /// calculate where _chPos is from _stPos
     /// </summary>
-    /// <param name="stPos">position of shooter</param>
-    /// <param name="chPos">position of object</param>
-    /// <param name="isRefl">if we calculate after reflecting, true</param>
+    /// <param name="_stPos">position of shooter</param>
+    /// <param name="_chPos">position of object</param>
+    /// <param name="_isRefl">if we calculate after reflecting, true</param>
     /// <returns>float value of _chPos is posed</returns>
     float PointToParRay(Vector2 _stPos, Vector2 _chPos, bool _isRefl)
     {
         if (dir) // horizontal
         {
-            float dist = _chPos.y - _stPos.y + ( _isRefl ? (pos.y - _chPos.y) * 2 : 0);
+            float dist = _chPos.y - _stPos.y + (_isRefl ? (pos.y - _chPos.y) * 2 : 0);
             float spreadLen = len * dist / (pos.y - _stPos.y);
             float rayStPos = _stPos.x + (pos.x - _stPos.x) * dist / (pos.y - _stPos.y);
             return (_chPos.x - rayStPos) / spreadLen;
         }
-        // TODO: when dir is vertical
-        return 0;
+        else // vertical
+        {
+            float dist = _chPos.x - _stPos.x + (_isRefl ? (pos.x - _chPos.x) * 2 : 0);
+            float spreadLen = len * dist / (pos.x - _stPos.x);
+            float rayStPos = _stPos.y + (pos.y - _stPos.y) * dist / (pos.x - _stPos.x);
+            return (_chPos.y - rayStPos) / spreadLen;
+        }
     }
 }
