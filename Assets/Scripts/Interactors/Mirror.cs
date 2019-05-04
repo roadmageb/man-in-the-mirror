@@ -23,7 +23,7 @@ public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
         if (bullet is FakeBullet)
         {
             // Make reflected objects
-            CopyObject(gameObject.transform);
+            CopyObjects(gameObject.transform);
         }
         else if (bullet is TruthBullet)
         {
@@ -46,7 +46,7 @@ public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
     /// copy objects which reflected by this mirror
     /// </summary>
     /// <param name="_shooter">transform of shooter</param>
-    private void CopyObject(Transform _shooter)
+    private void CopyObjects(Transform _shooter)
     {
         Vector2Int stPos; // position of shooter's cell
         Vector2 rstPos;  // real position of shooter
@@ -70,8 +70,38 @@ public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
         {
             if (pair.r < _sub.l || pair.l > _sub.r) continue;
             float[] arr = { pair.l, pair.r, _sub.l, _sub.r };
-            // TODO: sort arr
-            // TODO: _parRay에서 _sub을 뺀다.
+
+            for (int i = 0; i < 4; i++) // sort arr
+            {
+                float smallest = arr[i];
+                int smallIdx = i;
+                for (int j = i + 1; j < 4; j++)
+                {
+                    if (smallest > arr[j])
+                    {
+                        smallest = arr[j];
+                        smallIdx = j;
+                    }
+                }
+                float temp = arr[i];
+                arr[i] = smallest;
+                arr[smallIdx] = temp;
+            }
+
+            // subtract
+            if      (arr[0] == _sub.l && arr[2] == _sub.r)
+            {
+                pair.l = _sub.r;
+            }
+            else if (arr[1] == _sub.l && arr[3] == _sub.r)
+            {
+                pair.r = _sub.l;
+            }
+            else if (arr[1] == _sub.l && arr[2] == _sub.r)
+            {
+                _parRay.Add(new Pair<float, float>(pair.r, _sub.r));
+                pair.r = _sub.l;
+            }
         }
     }
 
