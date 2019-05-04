@@ -9,8 +9,8 @@ public class Map : MonoBehaviour
     public int maxMapSize;
     public Dictionary<Vector2Int, Floor> floorGrid;
     public Dictionary<Vector2, Wall> wallGrid;
-    // public Dictionary<Vector2, Mirror> mirrorGrid;
-    // public Dictionary<Vector2Int, InteractableObject> objectGrid;
+    public Dictionary<Vector2, Mirror> mirrorGrid;
+    public Dictionary<Vector2Int, IObject> objectGrid;
     public GameObject floors;
     public GameObject walls;
     public List<Floor> startFloors;
