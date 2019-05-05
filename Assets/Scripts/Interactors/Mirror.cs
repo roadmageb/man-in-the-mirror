@@ -5,13 +5,26 @@ using UnityEngine.AI;
 
 public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
 {
-    private Camera camera;
-    private RenderTexture rt;
-
+    public Vector2 mapPos;
     // data about this mirror
-    private Vector2Int pos; // position of mirror(left down)
-    private int len; // length of mirror
-    private bool dir; // false: ver, true: hor
+    public Vector2Int ldPos // left down pos
+    {
+        get { return new Vector2Int((int)mapPos.x, (int)mapPos.y); }
+    }
+    public Vector2Int rdPos // right down pos
+    {
+        get { return ldPos + (dir ? new Vector2Int(1, 0) : new Vector2Int(0, 1)); }
+    }
+    public bool dir // false: ver, true: hor
+    {
+        get { return (int)(transform.rotation.eulerAngles.y / 90) % 2 != 1; }
+    }
+    private int len = 1; // length of mirror
+
+    public void SetmapPos(Vector2 pos)
+    {
+        mapPos = pos;
+    }
 
     public void Break()
     {
@@ -23,7 +36,7 @@ public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
         if (bullet is FakeBullet)
         {
             // Make reflected objects
-            CopyObjects(gameObject.transform);
+            CopyObjects(null);
         }
         else if (bullet is TruthBullet)
         {
@@ -31,31 +44,35 @@ public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
         }
     }
 
-    private void Start()
-    {
-        camera = GetComponent<Camera>();
-        //TODO : Create RenderTexture and put it into Camera's targeTexture
-    }
-
-    private void Update()
-    {
-        //TODO :Calculate Camera's Position and Rotation
-    }
-
     /// <summary>
     /// copy objects which reflected by this mirror
     /// </summary>
     /// <param name="_shooter">transform of shooter</param>
-    private void CopyObjects(Transform _shooter)
+    private void CopyObjects(Player _shooter)
     {
-        Vector2Int stPos; // position of shooter's cell
-        Vector2 rstPos;  // real position of shooter
+        Vector2Int stPos = _shooter.pos; // position of shooter's cell
         List<Pair<float, float>> parRay = new List<Pair<float, float>>
         {
             new Pair<float, float>(0, 1)
         };
 
-        // TODO: stPos부터 pos까지 검사해 벽이나 거울이 있을경우 SubtractRay
+        // check before reflect (check walls and mirrors)
+        foreach (var wall in MapManager.inst.currentMap.wallGrid)
+        {
+            Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
+            if (pair.l > pair.r) pair = pair.Swap();
+            SubtractRay(parRay, pair);
+        }
+        foreach (var mirr in MapManager.inst.currentMap.mirrorGrid)
+        {
+            if (mirr.Value != this)
+            {
+                Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, mirr.Value.ldPos, false), PointToParRay(stPos, mirr.Value.rdPos, false));
+                if (pair.l > pair.r) pair = pair.Swap();
+                SubtractRay(parRay, pair);
+            }
+        }
+
         // TODO: pos부터 맵의 끝까지 검사해 맵의 각 요소가 IfInRay면 거울 반대편에 복사, 벽이나 거울이면 SubtractRay
     }
 
@@ -126,6 +143,15 @@ public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
         return output;
     }
 
+    bool IsInRay(List<Pair<float, float>> _parRay, float _obj)
+    {
+        foreach (Pair<float, float> pair in _parRay)
+        {
+            if (pair.l <= _obj && pair.r >= _obj) return true;
+        }
+        return false;
+    }
+
     /// <summary>
     /// calculate where _chPos is from _stPos
     /// </summary>
@@ -137,16 +163,16 @@ public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
     {
         if (dir) // horizontal
         {
-            float dist = _chPos.y - _stPos.y + (_isRefl ? (pos.y - _chPos.y) * 2 : 0);
-            float spreadLen = len * dist / (pos.y - _stPos.y);
-            float rayStPos = _stPos.x + (pos.x - _stPos.x) * dist / (pos.y - _stPos.y);
+            float dist = _chPos.y - _stPos.y + (_isRefl ? (ldPos.y - _chPos.y) * 2 : 0);
+            float spreadLen = len * dist / (ldPos.y - _stPos.y);
+            float rayStPos = _stPos.x + (ldPos.x - _stPos.x) * dist / (ldPos.y - _stPos.y);
             return (_chPos.x - rayStPos) / spreadLen;
         }
         else // vertical
         {
-            float dist = _chPos.x - _stPos.x + (_isRefl ? (pos.x - _chPos.x) * 2 : 0);
-            float spreadLen = len * dist / (pos.x - _stPos.x);
-            float rayStPos = _stPos.y + (pos.y - _stPos.y) * dist / (pos.x - _stPos.x);
+            float dist = _chPos.x - _stPos.x + (_isRefl ? (ldPos.x - _chPos.x) * 2 : 0);
+            float spreadLen = len * dist / (ldPos.x - _stPos.x);
+            float rayStPos = _stPos.y + (ldPos.y - _stPos.y) * dist / (ldPos.x - _stPos.x);
             return (_chPos.y - rayStPos) / spreadLen;
         }
     }
