@@ -36,7 +36,7 @@ public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
         if (bullet is FakeBullet)
         {
             // Make reflected objects
-            CopyObjects(null);
+            CopyObjects(PlayerController.inst.currentPlayer);
         }
         else if (bullet is TruthBullet)
         {
@@ -90,12 +90,24 @@ public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
             foreach (var floor in MapManager.inst.currentMap.floorGrid)
             {
                 if ((dir ? floor.Key.y : floor.Key.x) == i)
-                    if (IsInRay(parRay, PointToParRay(stPos, floor.Value.mapPos, true))) /*copy floor*/;
+                {
+                    if (IsInRay(parRay, PointToParRay(stPos, floor.Value.mapPos, true)))
+                    { // copy floor
+                        int nextx = dir ? floor.Key.x : 2 * ldPos.x - floor.Key.x;
+                        int nexty = dir ? 2 * ldPos.y - floor.Key.y : floor.Key.y;
+                        MapManager.inst.currentMap.CreateFloor(nextx, nexty);
+                    }
+                }
             }
             foreach (var obj in MapManager.inst.currentMap.objectGrid)
             {
                 if ((dir ? obj.Key.y : obj.Key.x) == i)
-                    if (IsInRay(parRay, PointToParRay(stPos, obj.Value.GetPos(), true))) /*copy object*/;
+                {
+                    if (IsInRay(parRay, PointToParRay(stPos, obj.Value.GetPos(), true)))
+                    {
+                        /*copy object*/
+                    }
+                }
             }
             foreach (var wall in MapManager.inst.currentMap.wallGrid)
             {
@@ -103,6 +115,7 @@ public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
                 {
                     Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, wall.Value.ldPos, true), PointToParRay(stPos, wall.Value.rdPos, true));
                     if (pair.l > pair.r) pair = pair.Swap();
+                    /*copy wall*/
                     SubtractRay(parRay, pair);
                 }
             }
@@ -112,6 +125,7 @@ public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
                 {
                     Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, mirr.Value.ldPos, true), PointToParRay(stPos, mirr.Value.rdPos, true));
                     if (pair.l > pair.r) pair = pair.Swap();
+                    /*copy mirror*/
                     SubtractRay(parRay, pair);
                 }
             }
