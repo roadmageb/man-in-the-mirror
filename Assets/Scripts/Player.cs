@@ -5,6 +5,11 @@ using UnityEngine.AI;
 
 public class Player : MonoBehaviour
 {
+    public Vector2Int pos
+    {
+        get { return new Vector2Int((int)transform.position.x, (int)transform.position.y); }
+    }
+
     Coroutine playerArrivalCheck;
 
     public IEnumerator SetCurrentPlayer()
