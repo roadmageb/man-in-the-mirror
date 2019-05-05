@@ -73,7 +73,49 @@ public class Mirror : MonoBehaviour, IBulletInteractor, IBreakable
             }
         }
 
-        // TODO: pos부터 맵의 끝까지 검사해 맵의 각 요소가 IfInRay면 거울 반대편에 복사, 벽이나 거울이면 SubtractRay
+        // check after reflect, if obj or floor, copy else if wall or mirror, Subtract
+        int side, i;
+        if (dir) // horizontal, parallel with x
+        {
+            side = (ldPos.y - stPos.y > 0) ? -1 : 1;
+            i = ldPos.y;
+        }
+        else // vertical, parallel with y
+        {
+            side = (ldPos.x - stPos.x > 0) ? -1 : 1;
+            i = ldPos.x;
+        }
+        for (; i < MapManager.inst.currentMap.maxMapSize; i += side)
+        {
+            foreach (var floor in MapManager.inst.currentMap.floorGrid)
+            {
+                if ((dir ? floor.Key.y : floor.Key.x) == i)
+                    if (IsInRay(parRay, PointToParRay(stPos, floor.Value.mapPos, true))) /*copy floor*/;
+            }
+            foreach (var obj in MapManager.inst.currentMap.objectGrid)
+            {
+                if ((dir ? obj.Key.y : obj.Key.x) == i)
+                    if (IsInRay(parRay, PointToParRay(stPos, obj.Value.GetPos(), true))) /*copy object*/;
+            }
+            foreach (var wall in MapManager.inst.currentMap.wallGrid)
+            {
+                if ((dir ? wall.Key.y : wall.Key.x) == i)
+                {
+                    Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, wall.Value.ldPos, true), PointToParRay(stPos, wall.Value.rdPos, true));
+                    if (pair.l > pair.r) pair = pair.Swap();
+                    SubtractRay(parRay, pair);
+                }
+            }
+            foreach (var mirr in MapManager.inst.currentMap.mirrorGrid)
+            {
+                if (mirr.Value != this && (dir ? mirr.Key.y : mirr.Key.x) == i)
+                {
+                    Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, mirr.Value.ldPos, true), PointToParRay(stPos, mirr.Value.rdPos, true));
+                    if (pair.l > pair.r) pair = pair.Swap();
+                    SubtractRay(parRay, pair);
+                }
+            }
+        }
     }
 
     /// <summary>
