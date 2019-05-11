@@ -48,7 +48,8 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 					currentPlayer.ResetCurrentPlayer();
 				currentPlayer = hit.transform.gameObject.GetComponent<Player>();
 				StartCoroutine(currentPlayer.SetCurrentPlayer());
-				Debug.Log(hit.collider.gameObject.tag);
+                StartCoroutine(currentPlayer.ZoomInAtPlayer(Time.time));
+                Debug.Log(hit.collider.gameObject.tag);
 			}
 			else if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("floor"))
 			{

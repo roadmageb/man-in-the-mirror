@@ -11,10 +11,6 @@ public class CameraController : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
         transform.position += new Vector3(verticalInput + horizontalInput, 0, verticalInput - horizontalInput);
     }
-    void CameraRotate()
-    {
-
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +22,5 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         CameraMove();
-        CameraRotate();
     }
 }

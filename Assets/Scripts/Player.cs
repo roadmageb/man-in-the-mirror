@@ -35,12 +35,27 @@ public class Player : MonoBehaviour
     }
     IEnumerator CheckIfPlayerArrived(Vector3 destination)
 	{
-		while (Mathf.Abs(transform.position.x - destination.x) > 0.001f || Mathf.Abs(transform.position.z - destination.z) > 0.001f)
+		while (Mathf.Abs(transform.position.x - destination.x) > 0.01f || Mathf.Abs(transform.position.z - destination.z) > 0.01f)
 		{
 			yield return null;
 		}
 		transform.position = new Vector3(destination.x, transform.position.y, destination.z);
         PlayerController.inst.isPlayerMoving = false;
+    }
+    public IEnumerator ZoomInAtPlayer(float startTime)
+    {
+        Ray mouseRay;
+        RaycastHit hit;
+        while(Time.time - startTime <= 2)
+        {
+            yield return null;
+            mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Physics.Raycast(mouseRay, out hit);
+            if (!hit.collider.gameObject.tag.Equals("Player"))
+                break;
+        }
+        if (Time.time - startTime <= 2) ;
+        else Debug.Log("asdf");
     }
     // Start is called before the first frame update
     void Start()

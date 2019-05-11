@@ -7,27 +7,23 @@ public class TestTools : MonoBehaviour
 {
     public InputField floorXInput, floorYInput;
 
-    public InputField wall1XInput, wall1YInput, wall2XInput, wall2YInput;
+    public InputField wallXInput, wallYInput;
 
     public void AddFloor()
     {
-        MapManager.inst.currentMap.CreateFloor(int.Parse(floorXInput.text), int.Parse(floorYInput.text));
+        MapManager.inst.currentMap.CreateFloor(new Vector2Int(int.Parse(floorXInput.text), int.Parse(floorYInput.text)));
     }
     public void RemoveFloor()
     {
-        MapManager.inst.currentMap.RemoveFloor(int.Parse(floorXInput.text), int.Parse(floorYInput.text));
+        MapManager.inst.currentMap.RemoveFloor(new Vector2Int(int.Parse(floorXInput.text), int.Parse(floorYInput.text)));
     }
     public void AddWall()
     {
-        MapManager.inst.currentMap.CreateWall(
-            MapManager.inst.currentMap.GetFloorAtPos(int.Parse(wall1XInput.text), int.Parse(wall1YInput.text)),
-            MapManager.inst.currentMap.GetFloorAtPos(int.Parse(wall2XInput.text), int.Parse(wall2YInput.text)));
+        MapManager.inst.currentMap.CreateWall(new Vector2(float.Parse(wallXInput.text), float.Parse(wallYInput.text)));
     }
     public void RemoveWall()
     {
-        MapManager.inst.currentMap.RemoveWall(
-            MapManager.inst.currentMap.GetFloorAtPos(int.Parse(wall1XInput.text), int.Parse(wall1YInput.text)),
-            MapManager.inst.currentMap.GetFloorAtPos(int.Parse(wall2XInput.text), int.Parse(wall2YInput.text)));
+        MapManager.inst.currentMap.RemoveWall(new Vector2(float.Parse(wallXInput.text), float.Parse(wallYInput.text)));
     }
 
     public void SaveMap()

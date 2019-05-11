@@ -14,7 +14,6 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public enum TileMode { None, Floor, Wall, StartFloor };
     TileMode currentMode;
     public Text modeSign;
-    public GameObject clickSign;
     public GameObject startSign;
     public Dictionary<Floor, GameObject> startSigns;
     public GameObject mapSizeSetter;
@@ -22,9 +21,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
 
     public Material editWallMat;
     public Material realWallMat;
-
-    Vector2Int[] wallInputFloors;
-    bool isWallClicked;
+    
     bool isEditorStarted;
     bool isCreateMode;
 
@@ -110,7 +107,6 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     private void Awake()
     {
         MapManager.inst.isMapEditingOn = true;
-        clickSign.SetActive(false);
         isEditorStarted = false;
         isCreateMode = true;
         startSigns = new Dictionary<Floor, GameObject>();
@@ -120,8 +116,6 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     void Start()
     {
         StartMap(stage[0]);
-        wallInputFloors = new Vector2Int[2];
-        isWallClicked = false;
         SwitchMode(0);
     }
 
@@ -135,7 +129,12 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             if (Physics.Raycast(mouseRay, out hit))
             {
                 Debug.Log(hit.transform.position);
-                Vector2Int clickedPos = new Vector2Int((int)hit.transform.position.x, (int)hit.transform.position.z);
+                Vector2Int clickedPos = Vector2Int.zero;
+                Vector2 wallPos = Vector2.zero;
+                if (hit.transform.tag == "wallSign")
+                    wallPos = new Vector2(hit.transform.position.x, hit.transform.position.z);
+                else
+                    clickedPos = new Vector2Int((int)hit.transform.position.x, (int)hit.transform.position.z);
                 if(currentMode == TileMode.Floor)
                 {
                     if (isCreateMode)
@@ -145,28 +144,15 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                 }
                 else if(currentMode == TileMode.Wall)
                 {
-                    if (!isWallClicked)
+                    if (isCreateMode)
                     {
-                        clickSign.SetActive(true);
-                        wallInputFloors[0] = clickedPos;
-                        clickSign.transform.position = new Vector3(clickedPos.x, 1, clickedPos.y);
-                        isWallClicked = true;
+                        Debug.Log(wallPos);
+                        currentMap.CreateWall(wallPos);
+                        if(currentMap.GetWallAtPos(wallPos) != null)
+                            currentMap.GetWallAtPos(wallPos).gameObject.GetComponent<MeshRenderer>().material = editWallMat;
                     }
                     else
-                    {
-                        wallInputFloors[1] = clickedPos;
-                        if (isCreateMode)
-                        {
-                            currentMap.CreateWall(currentMap.GetFloorAtPos(wallInputFloors[0]), currentMap.GetFloorAtPos(wallInputFloors[1]));
-                            if(currentMap.GetWallAtPos(currentMap.GetFloorAtPos(wallInputFloors[0]), currentMap.GetFloorAtPos(wallInputFloors[1])) != null)
-                                currentMap.GetWallAtPos(currentMap.GetFloorAtPos(wallInputFloors[0]), currentMap.GetFloorAtPos(wallInputFloors[1]))
-                                    .gameObject.GetComponent<MeshRenderer>().material = editWallMat;
-                        }
-                        else
-                            currentMap.RemoveWall(currentMap.GetFloorAtPos(wallInputFloors[0]), currentMap.GetFloorAtPos(wallInputFloors[1]));
-                        clickSign.SetActive(false);
-                        isWallClicked = false;
-                    }
+                        currentMap.RemoveWall(wallPos);
                 }
                 else if(currentMode == TileMode.StartFloor)
                 {
