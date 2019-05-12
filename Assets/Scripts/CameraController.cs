@@ -51,10 +51,10 @@ public class CameraController : MonoBehaviour
         Vector3 posDiff = (player.head.transform.position - transform.position) / 50;
         Vector3 angleDiff = (new Vector3(0, transform.eulerAngles.y, 0) - transform.eulerAngles) / 50;
         previousPos = transform.position;
+        Camera.main.orthographic = false;
         for (int i = 0; i < 50; i++)
         {
             yield return null;
-            Debug.Log(transform.position);
             transform.position += posDiff;
             transform.eulerAngles += angleDiff;
         }
@@ -72,11 +72,11 @@ public class CameraController : MonoBehaviour
         for (int i = 0; i < 50; i++)
         {
             yield return null;
-            Debug.Log(transform.position);
             transform.position += posDiff;
             transform.eulerAngles += angleDiff;
         }
         transform.position = previousPos;
+        Camera.main.orthographic = true;
         PlayerController.inst.isPlayerShooting = false;
     }
 
