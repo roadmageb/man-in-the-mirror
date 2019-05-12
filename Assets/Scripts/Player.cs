@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class Player : MonoBehaviour
 {
     Coroutine playerArrivalCheck;
+    public GameObject head;
 
     public IEnumerator SetCurrentPlayer()
     {
@@ -19,6 +20,10 @@ public class Player : MonoBehaviour
         GetComponent<NavMeshObstacle>().enabled = true;
         PlayerController.inst.currentPlayer = null;
     }
+    /// <summary>
+    /// Move player to the destination.
+    /// </summary>
+    /// <param name="destination">Destination of the player.</param>
     public void MovePlayer(Vector3 destination)
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
@@ -33,6 +38,11 @@ public class Player : MonoBehaviour
         else
             Debug.Log("Destination is not reachable.");
     }
+    /// <summary>
+    /// Check if player is arrived at the destination.
+    /// </summary>
+    /// <param name="destination">Destination of the player.</param>
+    /// <returns></returns>
     IEnumerator CheckIfPlayerArrived(Vector3 destination)
 	{
 		while (Mathf.Abs(transform.position.x - destination.x) > 0.01f || Mathf.Abs(transform.position.z - destination.z) > 0.01f)
@@ -42,20 +52,22 @@ public class Player : MonoBehaviour
 		transform.position = new Vector3(destination.x, transform.position.y, destination.z);
         PlayerController.inst.isPlayerMoving = false;
     }
-    public IEnumerator ZoomInAtPlayer(float startTime)
+    public IEnumerator CountPlayerClick(float startTime)
     {
-        Ray mouseRay;
-        RaycastHit hit;
-        while(Time.time - startTime <= 2)
+        float time = Time.time;
+        float endTime = startTime + 2;
+        while(time <= endTime)
         {
             yield return null;
-            mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Physics.Raycast(mouseRay, out hit);
-            if (!hit.collider.gameObject.tag.Equals("Player"))
+            time = Time.time;
+            if (!Input.GetMouseButton(0))
                 break;
         }
-        if (Time.time - startTime <= 2) ;
-        else Debug.Log("asdf");
+        if (time > endTime)
+        {
+            PlayerController.inst.isPlayerShooting = true;
+            StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomInAtPlayer(this));
+        }
     }
     // Start is called before the first frame update
     void Start()

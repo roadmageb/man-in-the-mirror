@@ -8,6 +8,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 {
     public Player currentPlayer;
     public bool isPlayerMoving;
+    public bool isPlayerShooting;
     private Vector2Int prePos;
     public Vector2Int MapPos
     {
@@ -38,7 +39,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 			prePos = MapPos;
 		}
 
-		if (Input.GetMouseButtonDown(0) && !isPlayerMoving)
+		if (Input.GetMouseButtonDown(0) && !isPlayerMoving && !isPlayerShooting)
 		{
 			Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
@@ -48,7 +49,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 					currentPlayer.ResetCurrentPlayer();
 				currentPlayer = hit.transform.gameObject.GetComponent<Player>();
 				StartCoroutine(currentPlayer.SetCurrentPlayer());
-                StartCoroutine(currentPlayer.ZoomInAtPlayer(Time.time));
+                StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
                 Debug.Log(hit.collider.gameObject.tag);
 			}
 			else if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("floor"))
@@ -63,5 +64,9 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 					currentPlayer.ResetCurrentPlayer();
 			}
 		}
+        else if (Input.GetMouseButtonDown(1) && isPlayerShooting)
+        {
+            StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomOutFromPlayer());
+        }
     }
 }
