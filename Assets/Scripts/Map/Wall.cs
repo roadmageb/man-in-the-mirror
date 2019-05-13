@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum WallType
+{
+    NULL,
+    Normal,
+    Mirror
+}
+
 public class Wall : MonoBehaviour
 {
     /// <summary>
@@ -14,13 +21,14 @@ public class Wall : MonoBehaviour
     }
     public Vector2Int rdPos // right down pos
     {
-        get { return ldPos + (dir ? new Vector2Int(1, 0) : new Vector2Int(0, 1)); }
+        get { return ldPos + (dir ? new Vector2Int(len, 0) : new Vector2Int(0, len)); }
     }
     public bool dir // false: ver, true: hor
     {
         get { return (int)(transform.rotation.eulerAngles.y / 90) % 2 != 1; }
     }
     public int len = 1; // length of wall
+    public WallType type;
 
     public void SetmapPos(Vector2 pos)
     {
