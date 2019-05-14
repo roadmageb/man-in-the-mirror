@@ -11,7 +11,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public Map currentMap;
     public Map[] stage;
     public MapEditorTile tile;
-    public enum TileMode { None, Floor, Wall, StartFloor };
+    public enum TileMode { None, Floor, NormalWall, Mirror, StartFloor };
     TileMode currentMode;
     public Text modeSign;
     public GameObject startSign;
@@ -47,13 +47,13 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             Debug.Log("There is no start floor.");
         else
         {
-            foreach(Transform child in currentMap.normalWalls.transform)
+            foreach(Transform child in currentMap.walls.transform)
             {
                 child.gameObject.GetComponent<MeshRenderer>().material = realWallMat;
             }
             PrefabUtility.SaveAsPrefabAsset(_newMap.gameObject, localPath);
             Debug.Log("Map saved at " + localPath);
-            foreach (Transform child in currentMap.normalWalls.transform)
+            foreach (Transform child in currentMap.walls.transform)
             {
                 child.gameObject.GetComponent<MeshRenderer>().material = editWallMat;
             }
@@ -142,13 +142,25 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                     else
                         currentMap.RemoveFloor(clickedPos);
                 }
-                else if(currentMode == TileMode.Wall)
+                else if(currentMode == TileMode.NormalWall)
                 {
                     if (isCreateMode)
                     {
                         Debug.Log(wallPos);
-                        currentMap.CreateNormalWall(wallPos);
+                        currentMap.CreateWall(wallPos, WallType.Normal);
                         if(currentMap.GetWallAtPos(wallPos) != null)
+                            currentMap.GetWallAtPos(wallPos).gameObject.GetComponent<MeshRenderer>().material = editWallMat;
+                    }
+                    else
+                        currentMap.RemoveWall(wallPos);
+                }
+                else if (currentMode == TileMode.Mirror)
+                {
+                    if (isCreateMode)
+                    {
+                        Debug.Log(wallPos);
+                        currentMap.CreateWall(wallPos, WallType.Mirror);
+                        if (currentMap.GetWallAtPos(wallPos) != null)
                             currentMap.GetWallAtPos(wallPos).gameObject.GetComponent<MeshRenderer>().material = editWallMat;
                     }
                     else

@@ -9,7 +9,7 @@ public class TestTools : MonoBehaviour
 
     public InputField wallXInput, wallYInput;
 
-    public void AddFloor()
+    /*public void AddFloor()
     {
         MapManager.inst.currentMap.CreateFloor(new Vector2Int(int.Parse(floorXInput.text), int.Parse(floorYInput.text)));
     }
@@ -19,7 +19,7 @@ public class TestTools : MonoBehaviour
     }
     public void AddWall()
     {
-        MapManager.inst.currentMap.CreateNormalWall(new Vector2(float.Parse(wallXInput.text), float.Parse(wallYInput.text)));
+        MapManager.inst.currentMap.CreateWall(new Vector2(float.Parse(wallXInput.text), float.Parse(wallYInput.text)));
     }
     public void RemoveWall()
     {
@@ -33,7 +33,7 @@ public class TestTools : MonoBehaviour
     public void LoadMap()
     {
         MapManager.inst.LoadMap(MapManager.inst.stage[1]);
-    }
+    }*/
 
     // Start is called before the first frame update
     void Start()

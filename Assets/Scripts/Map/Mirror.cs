@@ -36,17 +36,11 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         };
 
         // check before reflect (check walls and mirrors)
-        foreach (var wall in MapManager.inst.currentMap.normalWallGrid)
+        foreach (var wall in MapManager.inst.currentMap.wallGrid)
         {
-            Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
-            if (pair.l > pair.r) pair = pair.Swap();
-            SubtractRay(parRay, pair);
-        }
-        foreach (var mirr in MapManager.inst.currentMap.mirrorGrid)
-        {
-            if (mirr.Value != this)
+            if (wall.Value.mapPos != mapPos)
             {
-                Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, mirr.Value.ldPos, false), PointToParRay(stPos, mirr.Value.rdPos, false));
+                Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
                 if (pair.l > pair.r) pair = pair.Swap();
                 SubtractRay(parRay, pair);
             }
@@ -70,8 +64,9 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             {
                 if ((dir ? floor.Key.y : floor.Key.x) == i)
                 {
-                    if (IsInRay(parRay, PointToParRay(stPos, floor.Value.mapPos, true)))
-                    { // copy floor
+                    if (IsInRay(parRay, PointToParRay(stPos, floor.Value.mapPos, true))) 
+                    {
+                        /*copy floor*/
                         int nextx = dir ? floor.Key.x : 2 * ldPos.x - floor.Key.x;
                         int nexty = dir ? 2 * ldPos.y - floor.Key.y : floor.Key.y;
                         MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty));
@@ -88,23 +83,18 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     }
                 }
             }
-            foreach (var wall in MapManager.inst.currentMap.normalWallGrid)
+            foreach (var wall in MapManager.inst.currentMap.wallGrid)
             {
                 if ((dir ? wall.Key.y : wall.Key.x) == i)
                 {
                     Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, wall.Value.ldPos, true), PointToParRay(stPos, wall.Value.rdPos, true));
                     if (pair.l > pair.r) pair = pair.Swap();
+
                     /*copy wall*/
-                    SubtractRay(parRay, pair);
-                }
-            }
-            foreach (var mirr in MapManager.inst.currentMap.mirrorGrid)
-            {
-                if (mirr.Value != this && (dir ? mirr.Key.y : mirr.Key.x) == i)
-                {
-                    Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, mirr.Value.ldPos, true), PointToParRay(stPos, mirr.Value.rdPos, true));
-                    if (pair.l > pair.r) pair = pair.Swap();
-                    /*copy mirror*/
+                    float nextx = dir ? wall.Key.x : 2 * ldPos.x - wall.Key.x;
+                    float nexty = dir ? 2 * ldPos.y - wall.Key.y : wall.Key.y;
+                    MapManager.inst.currentMap.CreateWall(new Vector2(nextx, nexty), wall.Value.type);
+
                     SubtractRay(parRay, pair);
                 }
             }

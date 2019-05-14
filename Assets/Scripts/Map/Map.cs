@@ -8,12 +8,10 @@ public class Map : MonoBehaviour
     public int testInputSizeX, testInputSizeY;
     public int maxMapSize;
     public Dictionary<Vector2Int, Floor> floorGrid;
-    public Dictionary<Vector2, NormalWall> normalWallGrid;
-    public Dictionary<Vector2, Mirror> mirrorGrid;
+    public Dictionary<Vector2, Wall> wallGrid;
     public Dictionary<Vector2Int, IObject> objectGrid;
     public GameObject floors;
-    public GameObject normalWalls;
-    public GameObject mirrors;
+    public GameObject walls;
     public GameObject objects;
     public List<Floor> startFloors;
 
@@ -38,7 +36,7 @@ public class Map : MonoBehaviour
     /// <returns></returns>
     public Wall GetWallAtPos(Vector2 pos)
     {
-        return normalWallGrid.ContainsKey(pos) ? normalWallGrid[pos] : null;
+        return wallGrid.ContainsKey(pos) ? wallGrid[pos] : null;
     }
     /// <summary>
     /// Create floor at position.
@@ -99,7 +97,8 @@ public class Map : MonoBehaviour
     /// Create wall at position.
     /// </summary>
     /// <param name="pos">Position of wall.</param>
-    public void CreateNormalWall(Vector2 pos)
+    /// <param name="wallType">Type of walls.</param>
+    public void CreateWall(Vector2 pos, WallType wallType)
     {
         if (((int)pos.x >= 0 ? ((int)pos.x > maxMapSize / 2) : ((int)pos.x < -maxMapSize / 2)) || ((int)pos.y >= 0 ? ((int)pos.y > maxMapSize / 2) : ((int)pos.y < -maxMapSize / 2)))
         {
@@ -111,14 +110,18 @@ public class Map : MonoBehaviour
             Debug.Log("Inappropriate position of wall.");
             return;
         }
-        if (!normalWallGrid.ContainsKey(pos))
+        if (!wallGrid.ContainsKey(pos))
         {
-            normalWallGrid.Add(pos, Instantiate(MapManager.inst.normalWall, new Vector3(pos.x, 0, pos.y), Quaternion.identity, normalWalls.transform).GetComponent<NormalWall>());
-            normalWallGrid[pos].mapPos = pos;
+            if(wallType == WallType.Normal)
+                wallGrid.Add(pos, Instantiate(MapManager.inst.normalWall, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
+            else if (wallType == WallType.Mirror)
+                wallGrid.Add(pos, Instantiate(MapManager.inst.mirror, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
+            wallGrid[pos].mapPos = pos;
+            wallGrid[pos].type = wallType;
             if (Mathf.Abs(pos.x * 10) % 10 == 5)
-                normalWallGrid[pos].transform.eulerAngles = new Vector3(0, 90, 0);
+                wallGrid[pos].transform.eulerAngles = new Vector3(0, 90, 0);
             else if (Mathf.Abs(pos.y * 10) % 10 == 5)
-                normalWallGrid[pos].transform.eulerAngles = new Vector3(0, 0, 0);
+                wallGrid[pos].transform.eulerAngles = new Vector3(0, 0, 0);
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
@@ -130,12 +133,13 @@ public class Map : MonoBehaviour
     /// <param name="pos">Start position of wall.</param>
     /// <param name="dir">Direction of walls.</param>
     /// <param name="length">Amount of walls.</param>
-    public void CreateNormalWall(Vector2 pos, Vector2 dir, int length)
+    /// <param name="wallType">Type of walls.</param>
+    public void CreateWall(Vector2 pos, Vector2 dir, int length, WallType wallType)
     {
         Vector2 wallPos = pos;
         for (int i = 0; i < length; i++)
         {
-            CreateNormalWall(wallPos);
+            CreateWall(wallPos, wallType);
             wallPos += new Vector2((int)dir.x, (int)dir.y);
         }
     }
@@ -145,10 +149,10 @@ public class Map : MonoBehaviour
     /// <param name="pos">Position of wall.</param>
     public void RemoveWall(Vector2 pos)
     {
-        if (normalWallGrid.ContainsKey(pos))
+        if (wallGrid.ContainsKey(pos))
         {
-            Destroy(normalWallGrid[pos].gameObject);
-            normalWallGrid.Remove(pos);
+            Destroy(wallGrid[pos].gameObject);
+            wallGrid.Remove(pos);
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
@@ -158,25 +162,19 @@ public class Map : MonoBehaviour
     private void LoadObjects()
     {
         floorGrid = new Dictionary<Vector2Int, Floor>();
-        normalWallGrid = new Dictionary<Vector2, NormalWall>();
-        mirrorGrid = new Dictionary<Vector2, Mirror>();
+        wallGrid = new Dictionary<Vector2, Wall>();
         objectGrid = new Dictionary<Vector2Int, IObject>();
         for (int i = 0; i < floors.transform.childCount; i++)
         {
             Floor floor = floors.transform.GetChild(i).GetComponent<Floor>();
             floorGrid.Add(floor.mapPos, floor);
         }
-        for (int i = 0; i < normalWalls.transform.childCount; i++)
+        for (int i = 0; i < walls.transform.childCount; i++)
         {
-            NormalWall normalWall = normalWalls.transform.GetChild(i).GetComponent<NormalWall>();
-            normalWallGrid.Add(normalWall.mapPos, normalWall);
+            Wall wall = walls.transform.GetChild(i).GetComponent<Wall>();
+            wallGrid.Add(wall.mapPos, wall);
         }
-        for (int i = 0; i < mirrors.transform.childCount; i++)
-        {
-            Mirror mirror = mirrors.transform.GetChild(i).GetComponent<Mirror>();
-            mirrorGrid.Add(mirror.mapPos, mirror);
-        }
-        for (int i = 0; i < mirrors.transform.childCount; i++)
+        for (int i = 0; i < objects.transform.childCount; i++)
         {
             IObject iObject = objects.transform.GetChild(i).GetComponent<IObject>();
             objectGrid.Add(iObject.GetPos(), iObject);
@@ -186,7 +184,7 @@ public class Map : MonoBehaviour
     public void InitiateMap()
     {
         floorGrid = new Dictionary<Vector2Int, Floor>();
-        normalWallGrid = new Dictionary<Vector2, NormalWall>();
+        wallGrid = new Dictionary<Vector2, Wall>();
         startFloors = new List<Floor>();
     }
 

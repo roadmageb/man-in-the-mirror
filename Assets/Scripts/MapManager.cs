@@ -9,6 +9,7 @@ public class MapManager : SingletonBehaviour<MapManager>
     public bool isMapEditingOn;
     public Floor floor;
     public NormalWall normalWall;
+    public Mirror mirror;
     public List<GameObject> players;
     public GameObject player;
     public Map currentMap;
