@@ -7,8 +7,10 @@ public class Map : MonoBehaviour
 {
     public int testInputSizeX, testInputSizeY;
     public int maxMapSize;
-    private Dictionary<Vector2Int, Floor> floorGrid;
-    private Dictionary<Vector2, Wall> wallGrid;
+    public Dictionary<Vector2Int, Floor> floorGrid;
+    public Dictionary<Vector2, Wall> wallGrid;
+    public Dictionary<Vector2, Mirror> mirrorGrid;
+    public Dictionary<Vector2Int, IObject> objectGrid;
     public GameObject floors;
     public GameObject walls;
     public List<Floor> startFloors;

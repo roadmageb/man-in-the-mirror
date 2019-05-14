@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraTurret : MonoBehaviour, IBreakable, IPlayerInteractor
+public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteractor
 {
 	[SerializeField]
 	private Floor floor = null;
@@ -26,5 +26,20 @@ public class CameraTurret : MonoBehaviour, IBreakable, IPlayerInteractor
 			Debug.Log("Stage Restart!");
 			//TODO : Restart Level
 		}
+    }
+
+    public GameObject GetObject()
+    {
+        return gameObject;
+    }
+
+    public Vector2 GetPos()
+    {
+        return new Vector2(transform.position.x, transform.position.z);
+    }
+
+    ObjType IObject.GetType()
+    {
+        return ObjType.Camera;
     }
 }
