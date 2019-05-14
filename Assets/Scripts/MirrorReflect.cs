@@ -19,7 +19,7 @@ public class MirrorReflect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mainCam = GameObject.Find("Camera").transform; // find main camera
+        mainCam = Camera.main.transform; // find main camera
 
         if (direction == Direction.X)
         {

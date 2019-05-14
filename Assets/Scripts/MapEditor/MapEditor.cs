@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class MapEditor : SingletonBehaviour<MapEditor>
 {
-    public Floor floor;
-    public Wall wall;
     public Map currentMap;
     public Map[] stage;
     public MapEditorTile tile;
