@@ -5,7 +5,13 @@ using UnityEngine.AI;
 
 public class Player : MonoBehaviour
 {
+    public Vector2Int pos
+    {
+        get { return new Vector2Int((int)transform.position.x, (int)transform.position.y); }
+    }
+
     Coroutine playerArrivalCheck;
+    public GameObject head;
 
     public IEnumerator SetCurrentPlayer()
     {
@@ -19,6 +25,10 @@ public class Player : MonoBehaviour
         GetComponent<NavMeshObstacle>().enabled = true;
         PlayerController.inst.currentPlayer = null;
     }
+    /// <summary>
+    /// Move player to the destination.
+    /// </summary>
+    /// <param name="destination">Destination of the player.</param>
     public void MovePlayer(Vector3 destination)
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
@@ -33,14 +43,36 @@ public class Player : MonoBehaviour
         else
             Debug.Log("Destination is not reachable.");
     }
+    /// <summary>
+    /// Check if player is arrived at the destination.
+    /// </summary>
+    /// <param name="destination">Destination of the player.</param>
+    /// <returns></returns>
     IEnumerator CheckIfPlayerArrived(Vector3 destination)
 	{
-		while (Mathf.Abs(transform.position.x - destination.x) > 0.001f || Mathf.Abs(transform.position.z - destination.z) > 0.001f)
+		while (Mathf.Abs(transform.position.x - destination.x) > 0.01f || Mathf.Abs(transform.position.z - destination.z) > 0.01f)
 		{
 			yield return null;
 		}
 		transform.position = new Vector3(destination.x, transform.position.y, destination.z);
         PlayerController.inst.isPlayerMoving = false;
+    }
+    public IEnumerator CountPlayerClick(float startTime)
+    {
+        float time = Time.time;
+        float endTime = startTime + 2;
+        while(time <= endTime)
+        {
+            yield return null;
+            time = Time.time;
+            if (!Input.GetMouseButton(0))
+                break;
+        }
+        if (time > endTime)
+        {
+            PlayerController.inst.isPlayerShooting = true;
+            StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomInAtPlayer(this));
+        }
     }
     // Start is called before the first frame update
     void Start()

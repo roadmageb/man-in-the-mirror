@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalWall : MonoBehaviour, IBulletInteractor
+public class NormalWall : Wall, IBulletInteractor
 {
     public void Interact(Bullet bullet)
     {
@@ -12,7 +12,11 @@ public class NormalWall : MonoBehaviour, IBulletInteractor
         }
         else if (bullet is MirrorBullet)
         {
-            gameObject.AddComponent<Mirror>();
+            Mirror mirror = gameObject.AddComponent<Mirror>();
+            GetComponent<Renderer>().material = GameManager.inst.mirrorMaterial;
+            mirror.mapPos = mapPos;
+            mirror.len = len;
+            mirror.type = WallType.Mirror;
             Destroy(this);
         }
     }

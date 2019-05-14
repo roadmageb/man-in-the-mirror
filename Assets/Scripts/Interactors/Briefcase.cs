@@ -2,13 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Briefcase : MonoBehaviour, IPlayerInteractor
+public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 {
 	[SerializeField]
 	private Floor floor = null;
 	public Vector2Int Position { get { return floor != null ? floor.mapPos : throw new UnassignedReferenceException("Floor of Interactor is not assigned"); } }
 
-	public void Init(Floor floor)
+    public GameObject GetObject()
+    {
+        return gameObject;
+    }
+
+    public Vector2Int GetPos()
+    {
+        return new Vector2Int((int)transform.position.x, (int)transform.position.z);
+    }
+
+    public void Init(Floor floor)
 	{
 		this.floor = floor;
 		PlayerController.inst.OnPlayerMove += Interact;
@@ -23,4 +33,9 @@ public class Briefcase : MonoBehaviour, IPlayerInteractor
 			Destroy(gameObject);
 		}
 	}
+
+    ObjType IObject.GetType()
+    {
+        return ObjType.Briefcase;
+    }
 }

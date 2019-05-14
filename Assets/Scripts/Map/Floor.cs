@@ -9,11 +9,6 @@ public class Floor : MonoBehaviour
     /// </summary>
     public Vector2Int mapPos;
 
-    public void SetmapPos(Vector2Int pos)
-    {
-        mapPos = pos;
-    }
-
     // Start is called before the first frame update
     void Start()
     {

@@ -8,7 +8,7 @@ public class MirrorReflect : MonoBehaviour
     enum Direction { X, Z } // +X direction and +Z direction. Mirror on both side
 
     [SerializeField]
-    private Direction direction;
+    private Direction direction = Direction.X;
 
     public Transform mirror;
     public Transform mainCam;

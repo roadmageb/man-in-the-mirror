@@ -6,6 +6,7 @@ TagManager:
   tags:
   - wall
   - floor
+  - wallSign
   layers:
   - Default
   - TransparentFX

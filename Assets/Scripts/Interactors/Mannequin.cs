@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mannequin : MonoBehaviour, IBulletInteractor
+public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
 {
 	[SerializeField]
 	private Mesh[] mannequinMesh = new Mesh[2];
@@ -47,5 +47,20 @@ public class Mannequin : MonoBehaviour, IBulletInteractor
     public void Init(bool isWhite)
     {
         Color = isWhite ? Color.white : Color.black;
+    }
+
+    public GameObject GetObject()
+    {
+        return gameObject;
+    }
+
+    public Vector2Int GetPos()
+    {
+        return new Vector2Int((int)transform.position.x, (int)transform.position.z);
+    }
+
+    ObjType IObject.GetType()
+    {
+        return ObjType.Mannequin;
     }
 }
