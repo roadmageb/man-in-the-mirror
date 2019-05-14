@@ -29,12 +29,7 @@ public class Wall : MonoBehaviour
     }
     public int len = 1; // length of wall
     public WallType type;
-
-    public void SetmapPos(Vector2 pos)
-    {
-        mapPos = pos;
-    }
-
+    
     // Start is called before the first frame update
     void Start()
     {

@@ -36,7 +36,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         };
 
         // check before reflect (check walls and mirrors)
-        foreach (var wall in MapManager.inst.currentMap.wallGrid)
+        foreach (var wall in MapManager.inst.currentMap.normalWallGrid)
         {
             Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
             if (pair.l > pair.r) pair = pair.Swap();
@@ -74,7 +74,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     { // copy floor
                         int nextx = dir ? floor.Key.x : 2 * ldPos.x - floor.Key.x;
                         int nexty = dir ? 2 * ldPos.y - floor.Key.y : floor.Key.y;
-                        MapManager.inst.currentMap.CreateFloor(nextx, nexty);
+                        MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty));
                     }
                 }
             }
@@ -88,7 +88,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     }
                 }
             }
-            foreach (var wall in MapManager.inst.currentMap.wallGrid)
+            foreach (var wall in MapManager.inst.currentMap.normalWallGrid)
             {
                 if ((dir ? wall.Key.y : wall.Key.x) == i)
                 {

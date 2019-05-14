@@ -47,13 +47,13 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             Debug.Log("There is no start floor.");
         else
         {
-            foreach(Transform child in currentMap.walls.transform)
+            foreach(Transform child in currentMap.normalWalls.transform)
             {
                 child.gameObject.GetComponent<MeshRenderer>().material = realWallMat;
             }
             PrefabUtility.SaveAsPrefabAsset(_newMap.gameObject, localPath);
             Debug.Log("Map saved at " + localPath);
-            foreach (Transform child in currentMap.walls.transform)
+            foreach (Transform child in currentMap.normalWalls.transform)
             {
                 child.gameObject.GetComponent<MeshRenderer>().material = editWallMat;
             }
@@ -147,7 +147,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                     if (isCreateMode)
                     {
                         Debug.Log(wallPos);
-                        currentMap.CreateWall(wallPos);
+                        currentMap.CreateNormalWall(wallPos);
                         if(currentMap.GetWallAtPos(wallPos) != null)
                             currentMap.GetWallAtPos(wallPos).gameObject.GetComponent<MeshRenderer>().material = editWallMat;
                     }

@@ -19,7 +19,7 @@ public class TestTools : MonoBehaviour
     }
     public void AddWall()
     {
-        MapManager.inst.currentMap.CreateWall(new Vector2(float.Parse(wallXInput.text), float.Parse(wallYInput.text)));
+        MapManager.inst.currentMap.CreateNormalWall(new Vector2(float.Parse(wallXInput.text), float.Parse(wallYInput.text)));
     }
     public void RemoveWall()
     {

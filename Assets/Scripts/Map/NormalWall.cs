@@ -14,7 +14,7 @@ public class NormalWall : Wall, IBulletInteractor
         {
             Mirror mirror = gameObject.AddComponent<Mirror>();
             GetComponent<Renderer>().material = GameManager.inst.mirrorMaterial;
-            mirror.SetmapPos(mapPos);
+            mirror.mapPos = mapPos;
             mirror.len = len;
             mirror.type = WallType.Mirror;
             Destroy(this);

@@ -13,6 +13,6 @@ public enum ObjType
 public interface IObject
 {
     GameObject GetObject();
-    Vector2 GetPos();
+    Vector2Int GetPos();
     ObjType GetType();
 }

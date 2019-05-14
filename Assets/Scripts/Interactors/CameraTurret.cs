@@ -33,9 +33,9 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
         return gameObject;
     }
 
-    public Vector2 GetPos()
+    public Vector2Int GetPos()
     {
-        return new Vector2(transform.position.x, transform.position.z);
+        return new Vector2Int((int)transform.position.x, (int)transform.position.z);
     }
 
     ObjType IObject.GetType()
