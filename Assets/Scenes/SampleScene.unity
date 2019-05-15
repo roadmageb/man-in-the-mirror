@@ -100,7 +100,7 @@ NavMeshSettings:
     agentRadius: 0.03
     agentHeight: 2
     agentSlope: 45
-    agentClimb: 0.4
+    agentClimb: 0
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     minRegionArea: 2
@@ -574,6 +574,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6014610519130626400, guid: 11285456de5f1854d947bea83275646f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6014610519130626206, guid: 11285456de5f1854d947bea83275646f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -634,6 +639,18 @@ PrefabInstance:
       propertyPath: surface
       value: 
       objectReference: {fileID: 2102809461}
+    - target: {fileID: 3268100033343711389, guid: 11285456de5f1854d947bea83275646f,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 494213313239918027, guid: 449b2ca4d925da541bb45c84b63aab98,
+        type: 3}
+    - target: {fileID: 3268100033343711389, guid: 11285456de5f1854d947bea83275646f,
+        type: 3}
+      propertyPath: stage.Array.data[0]
+      value: 
+      objectReference: {fileID: 2496973653136699540, guid: dbb2e09c19fe5ad49b11a6b95e5ac9e8,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11285456de5f1854d947bea83275646f, type: 3}
 --- !u!1001 &7277015660625800392
@@ -648,6 +665,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: NavMesh
       objectReference: {fileID: 0}
+    - target: {fileID: 7277015661519863740, guid: 20dee07e28273f049a9093ae4453912f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7277015661519863741, guid: 20dee07e28273f049a9093ae4453912f,
+        type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 23800000, guid: e7eb2fe133fb4eb45bffdded306b23f4,
+        type: 2}
     - target: {fileID: 7277015661519863742, guid: 20dee07e28273f049a9093ae4453912f,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -101,7 +101,7 @@ public class CameraController : MonoBehaviour
     {
         if (!PlayerController.inst.isPlayerShooting)
         {
-            CameraMove();
+            //CameraMove();
             CameraDrag();
         }
     }
