@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityStandardAssets.Characters.ThirdPerson;
 
 public class Player : MonoBehaviour
 {
@@ -15,7 +14,6 @@ public class Player : MonoBehaviour
     public GameObject head;
     Animator anim;
     NavMeshAgent agent;
-    ThirdPersonAnim character;
 
     public IEnumerator SetCurrentPlayer()
     {
@@ -91,7 +89,6 @@ public class Player : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
-        character = GetComponent<ThirdPersonAnim>();
         agent.updateRotation = false;
     }
 

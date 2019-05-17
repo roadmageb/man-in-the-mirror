@@ -112,31 +112,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &439939668 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6001025753464815805, guid: df6f1d8b9377ec346af4255abe290fbb,
-    type: 3}
-  m_PrefabInstance: {fileID: 1409778501}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &439939669
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 439939668}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5f3c3075b42b7d0429d7c7d2c6242777, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &1017462497
 PrefabInstance:
   m_ObjectHideFlags: 0
