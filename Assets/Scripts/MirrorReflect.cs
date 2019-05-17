@@ -11,16 +11,21 @@ public class MirrorReflect : MonoBehaviour
     private Direction direction = Direction.X;
 
     public Transform mirror;
+    public Transform probe;
     public Transform mainCam;
 
     private float offset;
     private Vector3 probePos;
 
+    private void Start()
+    {
+        mirror = gameObject.transform;
+        mainCam = Camera.main.transform; // find main camera
+    }
+
     // Update is called once per frame
     void Update()
     {
-        mainCam = Camera.main.transform; // find main camera
-
         if (direction == Direction.X)
         {
             offset = mirror.position.x - mainCam.position.x;
@@ -38,6 +43,17 @@ public class MirrorReflect : MonoBehaviour
             probePos.z = mirror.position.z + offset;
         }
 
-        transform.position = probePos;
+        probe.position = probePos;
+
+        if (GetComponent<Renderer>().isVisible)
+        {
+            Debug.Log("visible");
+            gameObject.layer = 9;
+        }
+        else
+        {
+            Debug.Log("invisible");
+            gameObject.layer = 0;
+        }
     }
 }
