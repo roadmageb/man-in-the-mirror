@@ -7,6 +7,7 @@ public class CameraController : MonoBehaviour
     Vector3 dragOrigin;
     public float dragSpeed;
     Vector3 previousPos;
+    Vector3 previousAngle;
     float shootingFov = 60f;
     float mapFov = 40f;
 
@@ -54,9 +55,10 @@ public class CameraController : MonoBehaviour
     {
         float startTime = Time.time;
         Vector3 posDiff = (player.head.transform.position - transform.position) / 40;
-        Vector3 angleDiff = (new Vector3(0, transform.eulerAngles.y, 0) - transform.eulerAngles) / 40;
+        Vector3 angleDiff = (player.head.transform.eulerAngles - transform.eulerAngles) / 40;
         float fovDiff = (shootingFov - mapFov) / 40f;
         previousPos = transform.position;
+        previousAngle = transform.eulerAngles;
         for (int i = 0; i < 40; i++)
         {
             yield return null;
@@ -74,7 +76,7 @@ public class CameraController : MonoBehaviour
     {
         float startTime = Time.time;
         Vector3 posDiff = (previousPos - transform.position) / 40;
-        Vector3 angleDiff = (new Vector3(30, transform.eulerAngles.y, transform.eulerAngles.z) - transform.eulerAngles) / 40;
+        Vector3 angleDiff = (previousAngle - transform.eulerAngles) / 40;
         float fovDiff = (mapFov - shootingFov) / 40f;
         for (int i = 0; i < 40; i++)
         {
