@@ -10,6 +10,9 @@ public class CameraController : MonoBehaviour
     Vector3 previousAngle;
     float shootingFov = 60f;
     float mapFov = 40f;
+    float rotationX = 0;
+    float rotationY = 0;
+    float sensitivity = 30;
 
     Vector3 centerPos = new Vector3(0, 0, 0);
     /// <summary>
@@ -54,18 +57,25 @@ public class CameraController : MonoBehaviour
     {
         float startTime = Time.time;
         Vector3 posDiff = (player.head.transform.position - transform.position) / 40;
-        Vector3 angleDiff = (player.head.transform.eulerAngles - transform.eulerAngles) / 40;
         float fovDiff = (shootingFov - mapFov) / 40f;
+        float angleDiff = -30f / 40f;
+        PlayerController.inst.isZooming = true;
         previousPos = transform.position;
-        previousAngle = transform.eulerAngles;
+        previousAngle = new Vector3(transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x,
+            transform.eulerAngles.y > 180 ? transform.eulerAngles.y - 360 : transform.eulerAngles.y,
+            transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z);
         for (int i = 0; i < 40; i++)
         {
             yield return null;
             transform.position += posDiff;
-            transform.eulerAngles += angleDiff;
+            transform.eulerAngles += new Vector3(angleDiff, 0, 0);
             Camera.main.fieldOfView += fovDiff;
         }
+        player.transform.eulerAngles = new Vector3(player.transform.eulerAngles.x, transform.eulerAngles.y, player.transform.eulerAngles.z);
         transform.position = player.head.transform.position;
+        rotationX = transform.eulerAngles.y;
+        rotationY = transform.eulerAngles.x;
+        PlayerController.inst.isZooming = false;
     }
     /// <summary>
     /// Zoom out from player.
@@ -75,8 +85,19 @@ public class CameraController : MonoBehaviour
     {
         float startTime = Time.time;
         Vector3 posDiff = (previousPos - transform.position) / 40;
-        Vector3 angleDiff = (previousAngle - transform.eulerAngles) / 40;
         float fovDiff = (mapFov - shootingFov) / 40f;
+        PlayerController.inst.isZooming = true;
+        Vector3 tempAngle = new Vector3(transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x,
+            transform.eulerAngles.y > 180 ? transform.eulerAngles.y - 360 : transform.eulerAngles.y,
+            transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z);
+
+        Vector3 angleDiff = (previousAngle - tempAngle) / 40;
+        angleDiff = new Vector3(angleDiff.x > 180 ? 360 - angleDiff.x : angleDiff.x,
+            angleDiff.y > 180 ? 360 - angleDiff.y : angleDiff.y,
+            angleDiff.z > 180 ? 360 - angleDiff.z : angleDiff.z);
+        Debug.Log(previousAngle + "previousAngle");
+        Debug.Log(tempAngle + "tempAngle");
+        Debug.Log(angleDiff + "angleDiff");
         for (int i = 0; i < 40; i++)
         {
             yield return null;
@@ -86,6 +107,7 @@ public class CameraController : MonoBehaviour
         }
         transform.position = previousPos;
         PlayerController.inst.isPlayerShooting = false;
+        PlayerController.inst.isZooming = false;
     }
 
     // Start is called before the first frame update
@@ -95,15 +117,25 @@ public class CameraController : MonoBehaviour
         transform.eulerAngles = new Vector3(30, transform.eulerAngles.y, transform.eulerAngles.z);
     }
 
-
-
     // Update is called once per frame
     void Update()
     {
-        if (!PlayerController.inst.isPlayerShooting)
+        if (!PlayerController.inst.isZooming)
         {
-            //CameraMove();
-            CameraDrag();
+            if (!PlayerController.inst.isPlayerShooting)
+            {
+                //CameraMove();
+                CameraDrag();
+            }
+            else
+            {
+                float mouseMoveValueX = Input.GetAxis("Mouse X");
+                float mouseMoveValueY = Input.GetAxis("Mouse Y");
+                rotationX += mouseMoveValueX * sensitivity * Time.deltaTime;
+                rotationY += mouseMoveValueY * sensitivity * Time.deltaTime;
+                rotationY = Mathf.Clamp(rotationY, -50, 20);
+                transform.eulerAngles = new Vector3(-rotationY, rotationX, 0);
+            }
         }
     }
 

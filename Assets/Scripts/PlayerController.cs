@@ -9,6 +9,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     public Player currentPlayer;
     public bool isPlayerMoving;
     public bool isPlayerShooting;
+    public bool isZooming;
     private Vector2Int prePos;
     public Vector2Int MapPos
     {
@@ -39,34 +40,37 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 			prePos = MapPos;
 		}
 
-		if (Input.GetMouseButtonDown(0) && !isPlayerMoving && !isPlayerShooting)
-		{
-			Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hit;
-			if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("Player"))
-			{
-				if (currentPlayer != null)
-					currentPlayer.ResetCurrentPlayer();
-				currentPlayer = hit.transform.gameObject.GetComponent<Player>();
-				StartCoroutine(currentPlayer.SetCurrentPlayer());
-                StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
-                Debug.Log(hit.collider.gameObject.tag);
-			}
-			else if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("floor"))
-			{
-				if (currentPlayer != null)
-					currentPlayer.MovePlayer(hit.collider.gameObject.transform.position);
-				Debug.Log(hit.collider.gameObject.tag);
-			}
-			else if (hit.collider == null)
-			{
-				if (currentPlayer != null)
-					currentPlayer.ResetCurrentPlayer();
-			}
-		}
-        else if (Input.GetMouseButtonDown(1) && isPlayerShooting)
+        if (!isZooming)
         {
-            StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomOutFromPlayer());
+            if (Input.GetMouseButtonDown(0) && !isPlayerMoving && !isPlayerShooting)
+            {
+                Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("Player"))
+                {
+                    if (currentPlayer != null)
+                        currentPlayer.ResetCurrentPlayer();
+                    currentPlayer = hit.transform.gameObject.GetComponent<Player>();
+                    StartCoroutine(currentPlayer.SetCurrentPlayer());
+                    StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
+                    Debug.Log(hit.collider.gameObject.tag);
+                }
+                else if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("floor"))
+                {
+                    if (currentPlayer != null)
+                        currentPlayer.MovePlayer(hit.collider.gameObject.transform.position);
+                    Debug.Log(hit.collider.gameObject.tag);
+                }
+                else if (hit.collider == null)
+                {
+                    if (currentPlayer != null)
+                        currentPlayer.ResetCurrentPlayer();
+                }
+            }
+            else if (Input.GetMouseButtonDown(1) && isPlayerShooting)
+            {
+                StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomOutFromPlayer());
+            }
         }
     }
 }
