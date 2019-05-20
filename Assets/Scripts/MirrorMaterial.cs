@@ -10,7 +10,7 @@ public class MirrorMaterial : MonoBehaviour
     public Renderer mirrorReflect;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         number = count++;
         mat = new Material(Shader.Find("Custom/Mirror"));
