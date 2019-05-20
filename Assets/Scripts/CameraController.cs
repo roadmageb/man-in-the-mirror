@@ -12,7 +12,6 @@ public class CameraController : MonoBehaviour
     float mapFov = 40f;
 
     Vector3 centerPos = new Vector3(0, 0, 0);
-    bool isZooming = false;
     /// <summary>
     /// Move camera.
     /// </summary>
