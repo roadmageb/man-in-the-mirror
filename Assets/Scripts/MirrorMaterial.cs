@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ModelTestCode : MonoBehaviour
+public class MirrorMaterial : MonoBehaviour
 {
     [SerializeField] private Material mat;
     [SerializeField] public static int count = 0;
@@ -15,11 +15,5 @@ public class ModelTestCode : MonoBehaviour
         number = count++;
         mat = new Material(Shader.Find("Custom/Mirror"));
         mirrorReflect.materials[0] = mat;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
