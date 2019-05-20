@@ -14,9 +14,19 @@ public class AnimTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKey(KeyCode.A))
             anim.SetBool("isWalking", true);
-        else if (Input.GetMouseButtonDown(1))
+        else if (Input.GetKey(KeyCode.S))
             anim.SetBool("isWalking", false);
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            anim.SetTrigger("shoot");
+        }
+        else if (Input.GetKey(KeyCode.F))
+            anim.ResetTrigger("shoot");
+        else if (Input.GetKey(KeyCode.G))
+            anim.SetBool("isShooting", true);
+        else if (Input.GetKey(KeyCode.H))
+            anim.SetBool("isShooting", false);
     }
 }
