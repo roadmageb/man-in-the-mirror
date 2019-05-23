@@ -76,12 +76,6 @@ public class PlayerController : SingletonBehaviour<PlayerController>
             {
                 StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomOutFromPlayer());
             }
-            if (isPlayerShooting)
-            {
-                Quaternion destinationRotation = Quaternion.Euler(new Vector3(transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, currentPlayer.transform.eulerAngles.z));
-                currentPlayer.transform.rotation = Quaternion.Lerp(currentPlayer.transform.rotation, destinationRotation, Time.deltaTime * 10);
-                currentPlayer.shootingArm.transform.LookAt(Camera.main.transform.position + new Vector3(1, 0, 0));
-            }
         }
     }
 
@@ -89,5 +83,14 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     {
         if (currentPlayer != null && currentPlayer.GetComponent<NavMeshAgent>().velocity.magnitude > 0)
             transform.rotation = Quaternion.LookRotation(currentPlayer.GetComponent<NavMeshAgent>().velocity.normalized);
+        if (isPlayerShooting)
+        {
+            Quaternion destinationRotation = Quaternion.Euler(new Vector3(transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, currentPlayer.transform.eulerAngles.z));
+            currentPlayer.transform.rotation = Quaternion.Lerp(currentPlayer.transform.rotation, destinationRotation, Time.deltaTime * 10);
+            Debug.Log(currentPlayer.shootingArm.transform.position);
+            Debug.Log(currentPlayer.shootingArm.transform.eulerAngles);
+            Debug.Log(Camera.main.transform.position);
+            Debug.Log(Camera.main.transform.eulerAngles);
+        }
     }
 }
