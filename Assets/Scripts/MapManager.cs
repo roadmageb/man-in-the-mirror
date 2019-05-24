@@ -10,6 +10,7 @@ public class MapManager : SingletonBehaviour<MapManager>
     public Floor floor;
     public NormalWall normalWall;
     public Mirror mirror;
+    public GameObject[] objects;
     public List<GameObject> players;
     public GameObject player;
     public Map currentMap;

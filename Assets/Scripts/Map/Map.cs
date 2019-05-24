@@ -22,11 +22,6 @@ public class Map : MonoBehaviour
     /// <returns></returns>
     public Floor GetFloorAtPos(Vector2Int pos)
     {
-        if ((pos.x >= 0 ? (pos.x > maxMapSize / 2) : (pos.x < -maxMapSize / 2)) || (pos.y >= 0 ? (pos.y > maxMapSize / 2) : (pos.y < -maxMapSize / 2)))
-        {
-            Debug.Log("Input size exceeds map's max size.");
-            return null;
-        }
         return floorGrid.ContainsKey(pos) ? floorGrid[pos] : null;
     }
     /// <summary>
@@ -37,6 +32,15 @@ public class Map : MonoBehaviour
     public Wall GetWallAtPos(Vector2 pos)
     {
         return wallGrid.ContainsKey(pos) ? wallGrid[pos] : null;
+    }
+    /// <summary>
+    /// Get object at position.
+    /// </summary>
+    /// <param name="pos">Position of object.</param>
+    /// <returns></returns>
+    public IObject GetObjectAtPos(Vector2Int pos)
+    {
+        return objectGrid.ContainsKey(pos) ? objectGrid[pos] : null;
     }
     /// <summary>
     /// Create floor at position.
@@ -97,7 +101,7 @@ public class Map : MonoBehaviour
     /// Create wall at position.
     /// </summary>
     /// <param name="pos">Position of wall.</param>
-    /// <param name="wallType">Type of walls.</param>
+    /// <param name="wallType">Type of wall.</param>
     public void CreateWall(Vector2 pos, WallType wallType)
     {
         if (((int)pos.x >= 0 ? ((int)pos.x > maxMapSize / 2) : ((int)pos.x < -maxMapSize / 2)) || ((int)pos.y >= 0 ? ((int)pos.y > maxMapSize / 2) : ((int)pos.y < -maxMapSize / 2)))
@@ -158,6 +162,54 @@ public class Map : MonoBehaviour
         else
             Debug.Log("Wall doesn't exists between : " + pos);
     }
+    /// <summary>
+    /// Create object at position.
+    /// </summary>
+    /// <param name="pos">Position of object.</param>
+    /// <param name="objType">Type of object.</param>
+    public void CreateObject(Vector2Int pos, ObjType objType)
+    {
+        if ((pos.x >= 0 ? (pos.x > maxMapSize / 2) : (pos.x < -maxMapSize / 2)) || (pos.y >= 0 ? (pos.y > maxMapSize / 2) : (pos.y < -maxMapSize / 2)))
+        {
+            Debug.Log("Input size exceeds map's max size.");
+            return;
+        }
+        if (!objectGrid.ContainsKey(pos))
+        {
+            objectGrid.Add(pos, Instantiate(MapManager.inst.objects[(int)objType - 1], new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+            switch (objType)
+            {
+                case ObjType.Briefcase:
+                    objectGrid[pos].GetObject().GetComponent<Briefcase>().Init(GetFloorAtPos(pos));
+                    return;
+                case ObjType.Camera:
+                    objectGrid[pos].GetObject().GetComponent<CameraTurret>().Init(GetFloorAtPos(pos));
+                    return;
+                //Need to make mannequin init
+                /*case ObjType.Mannequin:
+                    objectGrid[pos].GetObject().GetComponent<Mannequin>().Init(GetFloorAtPos(pos));
+                    return;*/
+            }
+            StartCoroutine(MapManager.inst.Rebaker());
+        }
+        else
+            Debug.Log("Object already exists at : (" + pos.x + ", " + pos.y + ")");
+    }
+    /// <summary>
+    /// Remove Object at position.
+    /// </summary>
+    /// <param name="pos">Position of object.</param>
+    public void RemoveObject(Vector2Int pos)
+    {
+        if (objectGrid.ContainsKey(pos))
+        {
+            Destroy(objectGrid[pos].GetObject());
+            objectGrid.Remove(pos);
+            StartCoroutine(MapManager.inst.Rebaker());
+        }
+        else
+            Debug.Log("Object doesn't exists between : " + pos);
+    }
 
     private void LoadObjects()
     {
@@ -185,6 +237,7 @@ public class Map : MonoBehaviour
     {
         floorGrid = new Dictionary<Vector2Int, Floor>();
         wallGrid = new Dictionary<Vector2, Wall>();
+        objectGrid = new Dictionary<Vector2Int, IObject>();
         startFloors = new List<Floor>();
     }
 
@@ -196,7 +249,7 @@ public class Map : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log((-0.5 * 10) % 10);
+
     }
 
     // Update is called once per frame

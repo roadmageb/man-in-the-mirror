@@ -8,13 +8,14 @@ public class CameraController : MonoBehaviour
     public float dragSpeed;
     Vector3 previousPos;
     Vector3 previousAngle;
-    float shootingFov = 60f;
-    float mapFov = 40f;
+    float shootingFov = 40f;
+    float mapFov = 20f;
     float rotationX = 0;
     float rotationY = 0;
     float sensitivity = 30;
 
     Vector3 centerPos = new Vector3(0, 0, 0);
+
     /// <summary>
     /// Move camera.
     /// </summary>
@@ -76,6 +77,9 @@ public class CameraController : MonoBehaviour
         rotationX = transform.eulerAngles.y;
         rotationY = transform.eulerAngles.x;
         PlayerController.inst.isZooming = false;
+        PlayerController.inst.currentPlayer.GetComponent<Animator>().SetBool("isShooting", true);
+        PlayerController.inst.currentPlayer.GetComponent<Player>().head.SetActive(false);
+
     }
     /// <summary>
     /// Zoom out from player.
@@ -87,17 +91,15 @@ public class CameraController : MonoBehaviour
         Vector3 posDiff = (previousPos - transform.position) / 40;
         float fovDiff = (mapFov - shootingFov) / 40f;
         PlayerController.inst.isZooming = true;
+        PlayerController.inst.currentPlayer.GetComponent<Animator>().SetBool("isShooting", false);
+        PlayerController.inst.currentPlayer.GetComponent<Player>().head.SetActive(true);
         Vector3 tempAngle = new Vector3(transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x,
             transform.eulerAngles.y > 180 ? transform.eulerAngles.y - 360 : transform.eulerAngles.y,
             transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z);
-
         Vector3 angleDiff = (previousAngle - tempAngle) / 40;
         angleDiff = new Vector3(angleDiff.x > 180 ? 360 - angleDiff.x : angleDiff.x,
             angleDiff.y > 180 ? 360 - angleDiff.y : angleDiff.y,
             angleDiff.z > 180 ? 360 - angleDiff.z : angleDiff.z);
-        Debug.Log(previousAngle + "previousAngle");
-        Debug.Log(tempAngle + "tempAngle");
-        Debug.Log(angleDiff + "angleDiff");
         for (int i = 0; i < 40; i++)
         {
             yield return null;

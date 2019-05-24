@@ -12,9 +12,13 @@ public class Player : MonoBehaviour
 
     Coroutine playerArrivalCheck;
     public GameObject head;
+    public GameObject shootingArm;
     Animator anim;
-    NavMeshAgent agent;
 
+    /// <summary>
+    /// Set this player as the current player.
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator SetCurrentPlayer()
     {
         GetComponent<NavMeshObstacle>().enabled = false;
@@ -22,6 +26,10 @@ public class Player : MonoBehaviour
         GetComponent<NavMeshAgent>().enabled = true;
         StartCoroutine(MapManager.inst.Rebaker());
     }
+    /// <summary>
+    /// Reset this player from the current player.
+    /// </summary>
+    /// <returns></returns>
     public void ResetCurrentPlayer()
     {
         GetComponent<NavMeshAgent>().enabled = false;
@@ -67,11 +75,16 @@ public class Player : MonoBehaviour
         anim.SetBool("isWalking", false);
         PlayerController.inst.isPlayerMoving = false;
     }
+    /// <summary>
+    /// Count 2 second to make player in shooting mode.
+    /// </summary>
+    /// <param name="startTime">Start time of the timer.</param>
+    /// <returns></returns>
     public IEnumerator CountPlayerClick(float startTime)
     {
         float time = Time.time;
         float endTime = startTime + 2;
-        while(time <= endTime)
+        while (time <= endTime)
         {
             yield return null;
             time = Time.time;
@@ -84,22 +97,17 @@ public class Player : MonoBehaviour
             StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomInAtPlayer(this));
         }
     }
+
+
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
-        agent = GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
     void Update()
     {
 
-    }
-
-    private void LateUpdate()
-    {
-        if(agent.isActiveAndEnabled && agent.velocity.magnitude > 0)
-            transform.rotation = Quaternion.LookRotation(agent.velocity.normalized);
     }
 }
