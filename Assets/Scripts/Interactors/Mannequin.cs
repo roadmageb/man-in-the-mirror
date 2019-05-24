@@ -7,6 +7,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
 	[SerializeField]
 	private Mesh[] mannequinMesh = new Mesh[2];
 	private Color _color;
+    [SerializeField] private Floor floor;
     public Color Color {
         get
         {
@@ -44,7 +45,12 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
         }
     }
 
-    public void Init(bool isWhite)
+    public void Init(Floor floor)
+    {
+        this.floor = floor;
+    }
+
+    public void SetColor(bool isWhite)
     {
         Color = isWhite ? Color.white : Color.black;
     }

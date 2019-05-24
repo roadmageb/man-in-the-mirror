@@ -12,6 +12,7 @@ public enum ObjType
 
 public interface IObject
 {
+    void Init(Floor floor);
     GameObject GetObject();
     Vector2Int GetPos();
     ObjType GetType();
