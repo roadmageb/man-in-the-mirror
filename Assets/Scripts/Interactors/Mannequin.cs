@@ -43,7 +43,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
 			Color = Color.black;
         }
     }
-
+    
     public void Init(bool isWhite)
     {
         Color = isWhite ? Color.white : Color.black;

@@ -84,7 +84,7 @@ public class Player : MonoBehaviour
     {
         float time = Time.time;
         float endTime = startTime + 2;
-        while(time <= endTime)
+        while (time <= endTime)
         {
             yield return null;
             time = Time.time;

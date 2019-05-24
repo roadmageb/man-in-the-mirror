@@ -48,9 +48,13 @@ MonoBehaviour:
   normalWall: {fileID: 2953616027608884528, guid: a4dcd71ec9f819f4e88c7b5ac24f4b0d,
     type: 3}
   mirror: {fileID: 17874052963739924, guid: 90282f1c82fff7545962b5ca66f1a102, type: 3}
+  objects:
+  - {fileID: 2534561534465535505, guid: 0b323beb318071144aef94132be66541, type: 3}
+  - {fileID: 6001025753464815805, guid: df6f1d8b9377ec346af4255abe290fbb, type: 3}
+  - {fileID: 33432975985984805, guid: ec20e06c4a993924791d02d7a4c9375c, type: 3}
   players: []
-  player: {fileID: 8862060874303168220, guid: 6ba287375b5ad4b458a7b7b99c6d6a08, type: 3}
+  player: {fileID: 494213313239918027, guid: 449b2ca4d925da541bb45c84b63aab98, type: 3}
   currentMap: {fileID: 0}
   surface: {fileID: 0}
   stage:
-  - {fileID: 7116745361094357555, guid: 32ff564f49869bf40a53d07394eb081b, type: 3}
+  - {fileID: 2496973653136699540, guid: dbb2e09c19fe5ad49b11a6b95e5ac9e8, type: 3}
