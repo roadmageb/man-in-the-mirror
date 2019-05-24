@@ -6,8 +6,9 @@ using UnityEngine.UI;
 public class TestTools : MonoBehaviour
 {
     public InputField floorXInput, floorYInput;
-
     public InputField wallXInput, wallYInput;
+    public InputField objectXInput, objectYInput;
+    public Text currentBullet;
 
     public void AddFloor()
     {
@@ -25,13 +26,21 @@ public class TestTools : MonoBehaviour
     {
         MapManager.inst.currentMap.RemoveWall(new Vector2(float.Parse(wallXInput.text), float.Parse(wallYInput.text)));
     }
+    public void AddCase()
+    {
+        MapManager.inst.currentMap.CreateObject(new Vector2Int(int.Parse(objectXInput.text), int.Parse(objectYInput.text)), ObjType.Briefcase);
+    }
     public void AddTurret()
     {
-        MapManager.inst.currentMap.CreateObject(new Vector2Int(int.Parse(floorXInput.text), int.Parse(floorYInput.text)), ObjType.Camera);
+        MapManager.inst.currentMap.CreateObject(new Vector2Int(int.Parse(objectXInput.text), int.Parse(objectYInput.text)), ObjType.Camera);
     }
-    public void RemoveTurret()
+    public void AddMannequin()
     {
-        MapManager.inst.currentMap.RemoveObject(new Vector2Int(int.Parse(floorXInput.text), int.Parse(floorYInput.text)));
+        MapManager.inst.currentMap.CreateObject(new Vector2Int(int.Parse(objectXInput.text), int.Parse(objectYInput.text)), ObjType.Mannequin);
+    }
+    public void RemoveObject()
+    {
+        MapManager.inst.currentMap.RemoveObject(new Vector2Int(int.Parse(objectXInput.text), int.Parse(objectYInput.text)));
     }
 
     public void SaveMap()
@@ -52,6 +61,6 @@ public class TestTools : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        currentBullet.text = "Current Bullet : " + PlayerController.inst.GetCurrentBullet();
     }
 }

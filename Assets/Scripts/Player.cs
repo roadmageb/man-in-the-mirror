@@ -98,6 +98,11 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void Shoot(BulletCode bulletCode)
+    {
+        Bullet newBullet = MapManager.inst.bulletFactory.MakeBullet(bulletCode);
+        newBullet.Init(transform.forward);
+    }
 
     // Start is called before the first frame update
     void Start()

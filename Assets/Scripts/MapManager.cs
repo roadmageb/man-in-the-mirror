@@ -16,6 +16,8 @@ public class MapManager : SingletonBehaviour<MapManager>
     public Map currentMap;
     public NavMeshSurface surface;
     public Map[] stage;
+    public GameObject truthBullet, fakeBullet, mirrorBullet;
+    public BulletFactory bulletFactory;
 
     public void LoadMap(Map _newMap)
     {
@@ -36,6 +38,7 @@ public class MapManager : SingletonBehaviour<MapManager>
     private void Awake()
     {
         players = new List<GameObject>();
+        bulletFactory = new BulletFactory(truthBullet, fakeBullet, mirrorBullet);
     }
 
     // Start is called before the first frame update

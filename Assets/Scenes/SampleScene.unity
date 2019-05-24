@@ -645,6 +645,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1444571407667829093, guid: 0b18400fb62a12d4e9cb5fbb8ecbb53f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b18400fb62a12d4e9cb5fbb8ecbb53f, type: 3}
 --- !u!1001 &5089720519379341084
@@ -728,11 +733,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapManager
       objectReference: {fileID: 0}
-    - target: {fileID: 6014610519130626400, guid: 11285456de5f1854d947bea83275646f,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6014610519130626206, guid: 11285456de5f1854d947bea83275646f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -793,18 +793,6 @@ PrefabInstance:
       propertyPath: surface
       value: 
       objectReference: {fileID: 2102809461}
-    - target: {fileID: 3268100033343711389, guid: 11285456de5f1854d947bea83275646f,
-        type: 3}
-      propertyPath: player
-      value: 
-      objectReference: {fileID: 494213313239918027, guid: 449b2ca4d925da541bb45c84b63aab98,
-        type: 3}
-    - target: {fileID: 3268100033343711389, guid: 11285456de5f1854d947bea83275646f,
-        type: 3}
-      propertyPath: stage.Array.data[0]
-      value: 
-      objectReference: {fileID: 2496973653136699540, guid: dbb2e09c19fe5ad49b11a6b95e5ac9e8,
-        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11285456de5f1854d947bea83275646f, type: 3}
 --- !u!1001 &7277015660625800392

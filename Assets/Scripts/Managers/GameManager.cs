@@ -6,7 +6,9 @@ using System.Linq;
 public class GameManager : SingletonBehaviour<GameManager>
 {
     public Material mirrorMaterial;
-	/*
+
+    
+    /*
     private List<IPlayerInteractor> playerInteractors; 
 
     public void UpdateInteractorList()

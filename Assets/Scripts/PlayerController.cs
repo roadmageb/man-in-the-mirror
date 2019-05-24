@@ -7,9 +7,9 @@ using UnityEngine.AI;
 public class PlayerController : SingletonBehaviour<PlayerController>
 {
     public Player currentPlayer;
-    public bool isPlayerMoving;
-    public bool isPlayerShooting;
-    public bool isZooming;
+    public bool isPlayerMoving, isPlayerShooting, isZooming;
+    private List<BulletCode> bulletList = new List<BulletCode>();
+    private int bulletCount = 0;
     private Vector2Int prePos;
     public Vector2Int MapPos
     {
@@ -24,10 +24,30 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 
 	public event Action<Vector2Int> OnPlayerMove;
 
+    public string GetCurrentBullet()
+    {
+        return bulletList.Count > 0 ? bulletList[bulletCount].ToString() : null;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         prePos = MapPos;
+        bulletList.Add(BulletCode.True);
+        bulletList.Add(BulletCode.True);
+        bulletList.Add(BulletCode.True);
+        bulletList.Add(BulletCode.True);
+        bulletList.Add(BulletCode.True);
+        bulletList.Add(BulletCode.False);
+        bulletList.Add(BulletCode.False);
+        bulletList.Add(BulletCode.False);
+        bulletList.Add(BulletCode.False);
+        bulletList.Add(BulletCode.False);
+        bulletList.Add(BulletCode.Mirror);
+        bulletList.Add(BulletCode.Mirror);
+        bulletList.Add(BulletCode.Mirror);
+        bulletList.Add(BulletCode.Mirror);
+        bulletList.Add(BulletCode.Mirror);
     }
 
     // Update is called once per frame
@@ -71,6 +91,14 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                             currentPlayer.ResetCurrentPlayer();
                     }
                 }
+                else if (isPlayerShooting)
+                {
+                    if (bulletList.Count > 0)
+                    {
+                        currentPlayer.Shoot(bulletList[bulletCount]);
+                        bulletList.RemoveAt(bulletCount);
+                    }
+                }
             }
             else if (Input.GetMouseButtonDown(1) && isPlayerShooting)
             {
@@ -87,10 +115,6 @@ public class PlayerController : SingletonBehaviour<PlayerController>
         {
             Quaternion destinationRotation = Quaternion.Euler(new Vector3(transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, currentPlayer.transform.eulerAngles.z));
             currentPlayer.transform.rotation = Quaternion.Lerp(currentPlayer.transform.rotation, destinationRotation, Time.deltaTime * 10);
-            Debug.Log(currentPlayer.shootingArm.transform.position);
-            Debug.Log(currentPlayer.shootingArm.transform.eulerAngles);
-            Debug.Log(Camera.main.transform.position);
-            Debug.Log(Camera.main.transform.eulerAngles);
         }
     }
 }

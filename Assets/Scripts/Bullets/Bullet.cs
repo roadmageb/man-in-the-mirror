@@ -14,6 +14,6 @@ public abstract class Bullet : MonoBehaviour
 
     public void Init(Vector3 velocity)
     {
-        rb.velocity = velocity;
+        GetComponent<Rigidbody>().velocity = velocity;
     }
 }
