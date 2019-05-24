@@ -5,6 +5,7 @@ using UnityEngine;
 public class AnimTest : MonoBehaviour
 {
     Animator anim;
+    [Range(-1, 1)] public float xAngle = 0;
 
     private void Start()
     {
@@ -28,5 +29,8 @@ public class AnimTest : MonoBehaviour
             anim.SetBool("isShooting", true);
         else if (Input.GetKey(KeyCode.H))
             anim.SetBool("isShooting", false);
+
+        anim.SetLayerWeight(1, Mathf.Abs(xAngle));
+        anim.SetFloat("xAngle", xAngle);
     }
 }
