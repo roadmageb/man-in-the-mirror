@@ -10,14 +10,17 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     public bool isPlayerMoving;
     public bool isPlayerShooting;
     public bool isZooming;
-    private Vector2Int prePos;
+    [SerializeField] private Vector2Int prePos;
     public Vector2Int MapPos
     {
         get
         {
             Vector2Int pos = Vector2Int.zero;
-            pos.x = Mathf.RoundToInt(transform.position.x);
-            pos.y = Mathf.RoundToInt(transform.position.y);
+            if (currentPlayer)
+            {
+                pos.x = Mathf.RoundToInt(currentPlayer.transform.position.x);
+                pos.y = Mathf.RoundToInt(currentPlayer.transform.position.z);   
+            }
             return pos;
         }
     }
