@@ -44,8 +44,13 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
 			Color = Color.black;
         }
     }
-    
-    public void Init(bool isWhite)
+
+    public void Init(Floor floor)
+    {
+        this.floor = floor;
+    }
+
+    public void SetColor(bool isWhite)
     {
         Color = isWhite ? Color.white : Color.black;
     }

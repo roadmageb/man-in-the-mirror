@@ -1432,7 +1432,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   head: {fileID: 3233955354714130270}
-  shootingArm: {fileID: 0}
+  shootingArm: {fileID: 494213313239917623}
 --- !u!1 &494213313239918029
 GameObject:
   m_ObjectHideFlags: 0

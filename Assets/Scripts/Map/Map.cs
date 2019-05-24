@@ -177,19 +177,7 @@ public class Map : MonoBehaviour
         if (!objectGrid.ContainsKey(pos))
         {
             objectGrid.Add(pos, Instantiate(MapManager.inst.objects[(int)objType - 1], new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
-            switch (objType)
-            {
-                case ObjType.Briefcase:
-                    objectGrid[pos].GetObject().GetComponent<Briefcase>().Init(GetFloorAtPos(pos));
-                    return;
-                case ObjType.Camera:
-                    objectGrid[pos].GetObject().GetComponent<CameraTurret>().Init(GetFloorAtPos(pos));
-                    return;
-                //Need to make mannequin init
-                /*case ObjType.Mannequin:
-                    objectGrid[pos].GetObject().GetComponent<Mannequin>().Init(GetFloorAtPos(pos));
-                    return;*/
-            }
+            objectGrid[pos].Init(GetFloorAtPos(pos));
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
