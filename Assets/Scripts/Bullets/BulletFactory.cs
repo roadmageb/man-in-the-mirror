@@ -11,16 +11,13 @@ public enum BulletCode
 
 public class BulletFactory
 {
-	public bool isInit = false;
-	public static GameObject truthBulletPrefab = null, fakeBulletPrefab = null, mirrorBulletPrefab = null;
+	private GameObject truthBulletPrefab = null, fakeBulletPrefab = null, mirrorBulletPrefab = null;
 
-	public BulletFactory()
+	public BulletFactory(GameObject truthBullet, GameObject fakeBullet, GameObject mirrorBullet)
 	{
-		if (isInit)
-			return;
-		truthBulletPrefab = Resources.Load<GameObject>("Prefabs/Bullets/TruthBullet");
-		fakeBulletPrefab = Resources.Load<GameObject>("Prefabs/Bullets/FakeBullet");
-		mirrorBulletPrefab = Resources.Load<GameObject>("Prefabs/Bullets/MirrorBullet");
+		truthBulletPrefab = truthBullet;
+		fakeBulletPrefab = fakeBullet;
+		mirrorBulletPrefab = mirrorBullet;
 	}
 
 	/// <summary>
@@ -28,7 +25,7 @@ public class BulletFactory
 	/// </summary>
 	/// <param name="bulletCode">Type of bullet that wants to make</param>
 	/// <returns></returns>
-	public static Bullet MakeBullet(BulletCode bulletCode)
+	public Bullet MakeBullet(BulletCode bulletCode)
     {
         switch (bulletCode)
         {
