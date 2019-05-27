@@ -12,12 +12,7 @@ public class NormalWall : Wall, IBulletInteractor
         }
         else if (bullet is MirrorBullet)
         {
-            Mirror mirror = gameObject.AddComponent<Mirror>();
-            GetComponent<Renderer>().material = GameManager.inst.mirrorMaterial;
-            mirror.mapPos = mapPos;
-            mirror.len = len;
-            mirror.type = WallType.Mirror;
-            Destroy(this);
+            MapManager.inst.currentMap.ChangeToMirror(mapPos);
         }
     }
 }

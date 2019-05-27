@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     Coroutine playerArrivalCheck;
     public GameObject head;
     public GameObject shootingArm;
+    public GameObject shootingFinger;
     Animator anim;
 
     /// <summary>
@@ -101,6 +102,7 @@ public class Player : MonoBehaviour
     public void Shoot(BulletCode bulletCode)
     {
         Bullet newBullet = MapManager.inst.bulletFactory.MakeBullet(bulletCode);
+        newBullet.transform.position = shootingFinger.transform.position;
         newBullet.Init(transform.forward);
     }
 

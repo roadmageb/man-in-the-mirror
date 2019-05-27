@@ -14,6 +14,7 @@ public class TruthBullet : Bullet
         {
             other.GetComponent<IBulletInteractor>().Interact(this);
         }
+        Debug.Log(other.name);
         Destroy(gameObject);
     }
 }
