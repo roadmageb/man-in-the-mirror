@@ -16,8 +16,11 @@ public class PlayerController : SingletonBehaviour<PlayerController>
         get
         {
             Vector2Int pos = Vector2Int.zero;
-            pos.x = Mathf.RoundToInt(transform.position.x);
-            pos.y = Mathf.RoundToInt(transform.position.y);
+            if (currentPlayer)
+            {
+                pos.x = Mathf.RoundToInt(currentPlayer.transform.position.x);
+                pos.y = Mathf.RoundToInt(currentPlayer.transform.position.z);   
+            }
             return pos;
         }
     }

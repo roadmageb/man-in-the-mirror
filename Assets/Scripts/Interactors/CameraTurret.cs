@@ -21,9 +21,9 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 
     public void Interact(Vector2Int pos)
     {
-		if (Position.IsInSquareArea(pos, 1))
+		if (Position.IsInAdjacentArea(pos, 1))
 		{
-			Debug.Log("Stage Restart!");
+			Debug.Log(Position.x + " " + Position.y +" Stage Restart!");
 			//TODO : Restart Level
 		}
     }
