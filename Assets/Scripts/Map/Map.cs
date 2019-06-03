@@ -5,7 +5,7 @@ using System.IO;
 
 public class Map : MonoBehaviour
 {
-    public int testInputSizeX, testInputSizeY;
+    [Header("Map Data")]
     public int maxMapSize;
     public Dictionary<Vector2Int, Floor> floorGrid;
     public Dictionary<Vector2, Wall> wallGrid;
@@ -14,6 +14,8 @@ public class Map : MonoBehaviour
     public GameObject walls;
     public GameObject objects;
     public List<Floor> startFloors;
+
+    public List<ClearCondition> clearConditions;
 
     /// <summary>
     /// Get floor at position.

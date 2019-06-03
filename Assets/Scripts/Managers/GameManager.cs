@@ -7,26 +7,16 @@ public class GameManager : SingletonBehaviour<GameManager>
 {
     public Material mirrorMaterial;
 
-    
-    /*
-    private List<IPlayerInteractor> playerInteractors; 
+    public int[] clearIndex = new int[9];
+    public int clearCounter = 0;
 
-    public void UpdateInteractorList()
+    private void GetClearIndex(Map map)
     {
-        playerInteractors = FindObjectsOfType<MonoBehaviour>().OfType<IPlayerInteractor>().ToList();
+        for (int i = 0; i < 9; i++) clearIndex[i] = -1;
+        foreach (var child in map.clearConditions)
+        {
+            clearIndex[(int)child.type] = map.clearConditions.IndexOf(child);
+            clearCounter++;
+        }
     }
-
-	public void AddInteractor()
-	{
-
-	}
-
-	public void TriggerPlayerInteractors(Vector2Int pos)
-	{
-		foreach (var interactor in playerInteractors)
-		{
-			interactor.Interact(pos);
-		}
-	}
-	*/
 }
