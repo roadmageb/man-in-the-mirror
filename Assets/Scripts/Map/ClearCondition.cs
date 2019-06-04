@@ -21,6 +21,7 @@ public class ClearCondition
     public ClearType type;
     public int count;
     public int goal;
+    bool isDone = false;
 
     public ClearCondition(ClearType _type, int _goal)
     {
@@ -29,14 +30,19 @@ public class ClearCondition
         count = 0;
     }
 
-    public bool IsDone()
+    public void IsDone()
     {
-        if (goal <= count)
+        if (!isDone)
         {
-            GameManager.inst.clearCounter--;
-            GameManager.inst.clearIndex[(int)type] = -1;
-            return true;
+            count++;
+            if (goal <= count)
+            {
+                GameManager.inst.clearCounter--;
+                GameManager.inst.clearIndex[(int)type] = -1;
+                isDone = true;
+                if (GameManager.inst.clearCounter == 0)
+                    GameManager.inst.ClearStage();
+            }
         }
-        else return false;
     }
 }

@@ -55,9 +55,7 @@ public class Player : MonoBehaviour
             GetComponent<NavMeshAgent>().SetDestination(destination);
         }
         else
-        {
             Debug.Log("Destination is not reachable.");
-        }
     }
     /// <summary>
     /// Check if player is arrived at the destination.
@@ -68,10 +66,17 @@ public class Player : MonoBehaviour
     {
         anim.SetBool("isWalking", true);
         while (Mathf.Abs(transform.position.x - destination.x) > 0.01f || Mathf.Abs(transform.position.z - destination.z) > 0.01f)
-		{
 			yield return null;
-        }
         transform.position = new Vector3(destination.x, transform.position.y, destination.z);
+        Floor currentFloor = MapManager.inst.currentMap.GetFloorAtPos(new Vector2Int((int)destination.x, (int)destination.z));
+        if (!currentFloor.isPassed)
+        {
+            currentFloor.isPassed = true;
+            if (GameManager.aFloor >= 0)
+                MapManager.inst.currentMap.clearConditions[GameManager.aFloor].IsDone();
+            if (GameManager.nFloor >= 0)
+                MapManager.inst.currentMap.clearConditions[GameManager.nFloor].IsDone();
+        }
         anim.SetBool("isWalking", false);
         PlayerController.inst.isPlayerMoving = false;
     }

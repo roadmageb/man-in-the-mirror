@@ -106,6 +106,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 1, y: 0}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &1634709099193762938
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,6 +214,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -2, y: -1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &1638206002697659172
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,6 +322,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 1, y: 1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &1737410653383664023
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,16 +381,10 @@ MonoBehaviour:
   clearConditions:
   - type: 0
     count: 0
-    goal: 0
-  - type: 0
+    goal: 4
+  - type: 3
     count: 0
-    goal: 0
-  - type: 0
-    count: 0
-    goal: 0
-  - type: 0
-    count: 0
-    goal: 0
+    goal: 3
 --- !u!1 &2104754727029010325
 GameObject:
   m_ObjectHideFlags: 0
@@ -491,6 +491,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 2, y: 0}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &2189700681577347922
 GameObject:
   m_ObjectHideFlags: 0
@@ -597,6 +599,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -2, y: 2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &2292282653549884484
 GameObject:
   m_ObjectHideFlags: 0
@@ -703,6 +707,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -1, y: 2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &2339437859421285817
 GameObject:
   m_ObjectHideFlags: 0
@@ -809,6 +815,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -2, y: -2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &2681926362236754680
 GameObject:
   m_ObjectHideFlags: 0
@@ -915,6 +923,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 2, y: 1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &3525591482656589422
 GameObject:
   m_ObjectHideFlags: 0
@@ -1021,6 +1031,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 2, y: -2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &4007647678807291638
 GameObject:
   m_ObjectHideFlags: 0
@@ -1252,6 +1264,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 1, y: -2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &4592160369612705167
 GameObject:
   m_ObjectHideFlags: 0
@@ -1358,6 +1372,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 1, y: -1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &4709249395185914413
 GameObject:
   m_ObjectHideFlags: 0
@@ -1464,6 +1480,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 1, y: 2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &4810397660174508062
 GameObject:
   m_ObjectHideFlags: 0
@@ -1570,6 +1588,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -1, y: -1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &5069305046428251933
 GameObject:
   m_ObjectHideFlags: 0
@@ -1676,6 +1696,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -1, y: 0}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &5342110572568681991
 GameObject:
   m_ObjectHideFlags: 0
@@ -1782,6 +1804,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: -2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &5390496715387352304
 GameObject:
   m_ObjectHideFlags: 0
@@ -2068,6 +2092,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &6532917746544365902
 GameObject:
   m_ObjectHideFlags: 0
@@ -2208,6 +2234,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -2, y: 1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &7141810549857698684
 GameObject:
   m_ObjectHideFlags: 0
@@ -2314,6 +2342,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 0}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &7422189717627061705
 GameObject:
   m_ObjectHideFlags: 0
@@ -2545,6 +2575,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -2, y: 0}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &7560450311381198066
 GameObject:
   m_ObjectHideFlags: 0
@@ -2806,6 +2838,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -1, y: 1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &8683807963293059402
 GameObject:
   m_ObjectHideFlags: 0
@@ -2912,6 +2946,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &8695425579486219508
 GameObject:
   m_ObjectHideFlags: 0
@@ -3018,6 +3054,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 2, y: 2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &8852115476851130467
 GameObject:
   m_ObjectHideFlags: 0
@@ -3124,6 +3162,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: -1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &9046791506793280589
 GameObject:
   m_ObjectHideFlags: 0
@@ -3230,6 +3270,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -1, y: -2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &9206324191454810788
 GameObject:
   m_ObjectHideFlags: 0
@@ -3336,3 +3378,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 2, y: -1}
+  isPassed: 0
+  isGoalFloor: 0

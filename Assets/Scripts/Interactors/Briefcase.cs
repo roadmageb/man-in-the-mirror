@@ -7,8 +7,6 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 	[SerializeField]
 	private Floor floor = null;
 	public Vector2Int Position { get { return floor != null ? floor.mapPos : throw new UnassignedReferenceException("Floor of Interactor is not assigned"); } }
-    private int aCase;
-    private int nCase;
 
     public GameObject GetObject()
     {
@@ -22,9 +20,7 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 
     public void Init(Floor floor)
 	{
-        aCase = GameManager.inst.clearIndex[(int)ClearType.AllCase];
-        nCase = GameManager.inst.clearIndex[(int)ClearType.NCase];
-        if (aCase >= 0) MapManager.inst.currentMap.clearConditions[aCase].goal++;
+        if (GameManager.aCase >= 0) MapManager.inst.currentMap.clearConditions[GameManager.aCase].goal++;
         this.floor = floor;
 		PlayerController.inst.OnPlayerMove += Interact;
 	}
@@ -34,16 +30,10 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 		Debug.Log(Position + " " + position);
 		if (Position == position)
 		{
-            if (aCase >= 0)
-            {
-                MapManager.inst.currentMap.clearConditions[aCase].count++;
-                MapManager.inst.currentMap.clearConditions[aCase].IsDone();
-            }
-            if (nCase >= 0)
-            {
-                MapManager.inst.currentMap.clearConditions[nCase].count++;
-                MapManager.inst.currentMap.clearConditions[nCase].IsDone();
-            }
+            if (GameManager.aCase >= 0)
+                MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone();
+            if (GameManager.nCase >= 0)
+                MapManager.inst.currentMap.clearConditions[GameManager.nCase].IsDone();
 			Destroy(gameObject);
 		}
 	}

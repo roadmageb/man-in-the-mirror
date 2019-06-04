@@ -27,6 +27,16 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 
 	public event Action<Vector2Int> OnPlayerMove;
 
+    public void CreatePlayer(Vector3 playerPos)
+    {
+        MapManager.inst.players.Add(Instantiate(MapManager.inst.player, playerPos + new Vector3(0, 0.1f, 0), Quaternion.identity));
+        MapManager.inst.currentMap.clearConditions[GameManager.nPlayer].count = MapManager.inst.players.Count - 1;
+        Debug.Log(MapManager.inst.players.Count - 1);
+        MapManager.inst.currentMap.clearConditions[GameManager.nPlayer].IsDone();
+    }
+
+
+    //For test
     public string GetCurrentBullet()
     {
         return bulletList.Count > 0 ? bulletList[bulletCount].ToString() : null;
@@ -58,7 +68,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     {
         if (prePos != MapPos)
         {
-			Debug.Log(MapPos);
+			//Debug.Log(MapPos);
 			OnPlayerMove?.Invoke(MapPos);
 			prePos = MapPos;
 		}
@@ -80,13 +90,13 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                         currentPlayer = hit.transform.gameObject.GetComponent<Player>();
                         StartCoroutine(currentPlayer.SetCurrentPlayer());
                         StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
-                        Debug.Log(hit.collider.gameObject.tag);
+                        //Debug.Log(hit.collider.gameObject.tag);
                     }
                     else if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("floor"))
                     {
                         if (currentPlayer != null)
                             currentPlayer.MovePlayer(hit.collider.gameObject.transform.position);
-                        Debug.Log(hit.collider.gameObject.tag);
+                        //Debug.Log(hit.collider.gameObject.tag);
                     }
                     else if (hit.collider == null)
                     {

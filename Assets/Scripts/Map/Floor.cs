@@ -8,6 +8,8 @@ public class Floor : MonoBehaviour
     /// Position of this floor at the map.
     /// </summary>
     public Vector2Int mapPos;
+    public bool isPassed;
+    public bool isGoalFloor = false;
 
     // Start is called before the first frame update
     void Start()
