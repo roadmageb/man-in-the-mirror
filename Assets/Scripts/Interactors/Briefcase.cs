@@ -31,9 +31,15 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 		if (Position == position)
 		{
             if (GameManager.aCase >= 0)
+            {
+                MapManager.inst.currentMap.clearConditions[GameManager.aCase].count++;
                 MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone();
+            }
             if (GameManager.nCase >= 0)
+            {
+                MapManager.inst.currentMap.clearConditions[GameManager.nCase].count++;
                 MapManager.inst.currentMap.clearConditions[GameManager.nCase].IsDone();
+            }
 			Destroy(gameObject);
 		}
 	}

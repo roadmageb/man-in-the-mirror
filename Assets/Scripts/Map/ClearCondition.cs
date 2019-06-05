@@ -34,7 +34,6 @@ public class ClearCondition
     {
         if (!isDone)
         {
-            count++;
             if (goal <= count)
             {
                 GameManager.inst.clearCounter--;

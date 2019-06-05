@@ -27,14 +27,40 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 
 	public event Action<Vector2Int> OnPlayerMove;
 
-    public void CreatePlayer(Vector3 playerPos)
+    public void CreatePlayer(Floor floor)
     {
-        MapManager.inst.players.Add(Instantiate(MapManager.inst.player, playerPos + new Vector3(0, 0.1f, 0), Quaternion.identity));
-        MapManager.inst.currentMap.clearConditions[GameManager.nPlayer].count = MapManager.inst.players.Count - 1;
-        Debug.Log(MapManager.inst.players.Count - 1);
-        MapManager.inst.currentMap.clearConditions[GameManager.nPlayer].IsDone();
+        GameObject player = Instantiate(MapManager.inst.player, floor.transform.position + new Vector3(0, 0.1f, 0), Quaternion.identity);
+        player.GetComponent<Player>().currentFloor = floor;
+        MapManager.inst.players.Add(player);
+        if (GameManager.nPlayer >= 0)
+        {
+            MapManager.inst.currentMap.clearConditions[GameManager.nPlayer].count = MapManager.inst.players.Count;
+            MapManager.inst.currentMap.clearConditions[GameManager.nPlayer].IsDone();
+        }
+        CheckCurrentFloors();
     }
 
+    public void CheckCurrentFloors()
+    {
+        int goalFloorCount = 0;
+        foreach (GameObject child in MapManager.inst.players)
+        {
+            Debug.Log("df");
+            if (child.GetComponent<Player>().currentFloor.isGoalFloor)
+                goalFloorCount++;
+            Debug.Log(goalFloorCount);
+        }
+        if (GameManager.aFloor >= 0)
+        {
+            MapManager.inst.currentMap.clearConditions[GameManager.aFloor].count = goalFloorCount;
+            MapManager.inst.currentMap.clearConditions[GameManager.aFloor].IsDone();
+        }
+        if (GameManager.nFloor >= 0)
+        {
+            MapManager.inst.currentMap.clearConditions[GameManager.nFloor].count = goalFloorCount;
+            MapManager.inst.currentMap.clearConditions[GameManager.nFloor].IsDone();
+        }
+    }
 
     //For test
     public string GetCurrentBullet()

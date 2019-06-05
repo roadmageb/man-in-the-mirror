@@ -60,6 +60,8 @@ public class Map : MonoBehaviour
             floorGrid.Add(pos, Instantiate(MapManager.inst.floor, new Vector3(pos.x, 0, pos.y), Quaternion.identity, floors.transform).GetComponent<Floor>());
             floorGrid[pos].mapPos = pos;
             floorGrid[pos].isPassed = false;
+            if (GameManager.aFloor >= 0)
+                MapManager.inst.currentMap.clearConditions[GameManager.aFloor].goal++;
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else

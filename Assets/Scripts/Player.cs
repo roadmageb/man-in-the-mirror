@@ -15,6 +15,8 @@ public class Player : MonoBehaviour
     public GameObject shootingArm;
     Animator anim;
 
+    public Floor currentFloor;
+
     /// <summary>
     /// Set this player as the current player.
     /// </summary>
@@ -68,15 +70,8 @@ public class Player : MonoBehaviour
         while (Mathf.Abs(transform.position.x - destination.x) > 0.01f || Mathf.Abs(transform.position.z - destination.z) > 0.01f)
 			yield return null;
         transform.position = new Vector3(destination.x, transform.position.y, destination.z);
-        Floor currentFloor = MapManager.inst.currentMap.GetFloorAtPos(new Vector2Int((int)destination.x, (int)destination.z));
-        if (!currentFloor.isPassed)
-        {
-            currentFloor.isPassed = true;
-            if (GameManager.aFloor >= 0)
-                MapManager.inst.currentMap.clearConditions[GameManager.aFloor].IsDone();
-            if (GameManager.nFloor >= 0)
-                MapManager.inst.currentMap.clearConditions[GameManager.nFloor].IsDone();
-        }
+        currentFloor = MapManager.inst.currentMap.GetFloorAtPos(new Vector2Int((int)destination.x, (int)destination.z));
+        PlayerController.inst.CheckCurrentFloors();
         anim.SetBool("isWalking", false);
         PlayerController.inst.isPlayerMoving = false;
     }

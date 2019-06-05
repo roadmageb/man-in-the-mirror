@@ -29,7 +29,7 @@ public class MapManager : SingletonBehaviour<MapManager>
         surface.BuildNavMesh();
         GameManager.inst.SetClearIndex(currentMap);
         for (int i = 0; i < currentMap.startFloors.Count; i++)
-            PlayerController.inst.CreatePlayer(currentMap.startFloors[i].transform.position);
+            PlayerController.inst.CreatePlayer(currentMap.startFloors[i]);
     }
     public IEnumerator Rebaker()
     {
