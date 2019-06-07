@@ -1433,6 +1433,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   head: {fileID: 3233955354714130270}
   shootingArm: {fileID: 494213313239917623}
+  shootingFinger: {fileID: 494213313239918045}
 --- !u!1 &494213313239918029
 GameObject:
   m_ObjectHideFlags: 0

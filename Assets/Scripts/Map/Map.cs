@@ -153,6 +153,37 @@ public class Map : MonoBehaviour
         }
     }
     /// <summary>
+    /// Change normal wall at position to mirror.
+    /// </summary>
+    /// <param name="pos">Position of wall.</param>
+    public void ChangeToMirror(Vector2 pos)
+    {
+        if (((int)pos.x >= 0 ? ((int)pos.x > maxMapSize / 2) : ((int)pos.x < -maxMapSize / 2)) || ((int)pos.y >= 0 ? ((int)pos.y > maxMapSize / 2) : ((int)pos.y < -maxMapSize / 2)))
+        {
+            Debug.Log("Input size exceeds map's max size.");
+            return;
+        }
+        if (Mathf.Abs(pos.x * 10) % 5 != 0 || Mathf.Abs(pos.y * 10) % 5 != 0 || (Mathf.Abs(pos.x * 10) % 10 == 5 && Mathf.Abs(pos.y * 10) % 10 == 5) || (Mathf.Abs(pos.x * 10) % 10 != 5 && Mathf.Abs(pos.y * 10) % 10 != 5))
+        {
+            Debug.Log("Inappropriate position of wall.");
+            return;
+        }
+        if (wallGrid.ContainsKey(pos))
+        {
+            RemoveWall(pos);
+            wallGrid.Add(pos, Instantiate(MapManager.inst.mirror, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
+            wallGrid[pos].mapPos = pos;
+            wallGrid[pos].type = WallType.Mirror;
+            if (Mathf.Abs(pos.x * 10) % 10 == 5)
+                wallGrid[pos].transform.eulerAngles = new Vector3(0, 90, 0);
+            else if (Mathf.Abs(pos.y * 10) % 10 == 5)
+                wallGrid[pos].transform.eulerAngles = new Vector3(0, 0, 0);
+            StartCoroutine(MapManager.inst.Rebaker());
+        }
+        else
+            Debug.Log("Wall already exists at : " + pos);
+    }
+    /// <summary>
     /// Remove wall at position.
     /// </summary>
     /// <param name="pos">Position of wall.</param>
