@@ -67,6 +67,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -105,6 +106,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 1, y: 0}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &1634709099193762938
 GameObject:
   m_ObjectHideFlags: 0
@@ -172,6 +175,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -210,6 +214,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -2, y: -1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &1638206002697659172
 GameObject:
   m_ObjectHideFlags: 0
@@ -277,6 +283,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -315,6 +322,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 1, y: 1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &1737410653383664023
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,7 +335,7 @@ GameObject:
   - component: {fileID: 5186655675642147998}
   - component: {fileID: 2496973653136699540}
   m_Layer: 0
-  m_Name: SavedMap_2019-05-14-22-18-37
+  m_Name: Player3Test
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -361,8 +370,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa2c12f6bf26415469ec088e3e4c4dc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testInputSizeX: 0
-  testInputSizeY: 0
   maxMapSize: 5
   floors: {fileID: 5390496715387352304}
   walls: {fileID: 6532917746544365902}
@@ -371,6 +378,13 @@ MonoBehaviour:
   - {fileID: 6317210441967747213}
   - {fileID: 8692496119037193698}
   - {fileID: 4002211523417806573}
+  clearConditions:
+  - type: 0
+    count: 0
+    goal: 3
+  - type: 3
+    count: 0
+    goal: 3
 --- !u!1 &2104754727029010325
 GameObject:
   m_ObjectHideFlags: 0
@@ -438,6 +452,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -476,6 +491,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 2, y: 0}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &2189700681577347922
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,6 +560,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -581,6 +599,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -2, y: 2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &2292282653549884484
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,6 +668,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -686,6 +707,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -1, y: 2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &2339437859421285817
 GameObject:
   m_ObjectHideFlags: 0
@@ -753,6 +776,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -791,6 +815,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -2, y: -2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &2681926362236754680
 GameObject:
   m_ObjectHideFlags: 0
@@ -858,6 +884,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -896,6 +923,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 2, y: 1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &3525591482656589422
 GameObject:
   m_ObjectHideFlags: 0
@@ -963,6 +992,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1001,6 +1031,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 2, y: -2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &4007647678807291638
 GameObject:
   m_ObjectHideFlags: 0
@@ -1069,6 +1101,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1192,6 +1225,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1230,6 +1264,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 1, y: -2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &4592160369612705167
 GameObject:
   m_ObjectHideFlags: 0
@@ -1297,6 +1333,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1335,6 +1372,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 1, y: -1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &4709249395185914413
 GameObject:
   m_ObjectHideFlags: 0
@@ -1402,6 +1441,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1440,6 +1480,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 1, y: 2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &4810397660174508062
 GameObject:
   m_ObjectHideFlags: 0
@@ -1507,6 +1549,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1545,6 +1588,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -1, y: -1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &5069305046428251933
 GameObject:
   m_ObjectHideFlags: 0
@@ -1612,6 +1657,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1650,6 +1696,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -1, y: 0}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &5342110572568681991
 GameObject:
   m_ObjectHideFlags: 0
@@ -1717,6 +1765,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1755,6 +1804,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: -2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &5390496715387352304
 GameObject:
   m_ObjectHideFlags: 0
@@ -1878,6 +1929,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2001,6 +2053,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2039,6 +2092,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &6532917746544365902
 GameObject:
   m_ObjectHideFlags: 0
@@ -2140,6 +2195,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2178,6 +2234,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -2, y: 1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &7141810549857698684
 GameObject:
   m_ObjectHideFlags: 0
@@ -2245,6 +2303,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2283,6 +2342,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 0}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &7422189717627061705
 GameObject:
   m_ObjectHideFlags: 0
@@ -2351,6 +2412,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2474,6 +2536,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2512,6 +2575,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -2, y: 0}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &7560450311381198066
 GameObject:
   m_ObjectHideFlags: 0
@@ -2580,6 +2645,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2733,6 +2799,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2771,6 +2838,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -1, y: 1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &8683807963293059402
 GameObject:
   m_ObjectHideFlags: 0
@@ -2838,6 +2907,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2876,6 +2946,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &8695425579486219508
 GameObject:
   m_ObjectHideFlags: 0
@@ -2943,6 +3015,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2981,6 +3054,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 2, y: 2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &8852115476851130467
 GameObject:
   m_ObjectHideFlags: 0
@@ -3048,6 +3123,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -3086,6 +3162,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: -1}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &9046791506793280589
 GameObject:
   m_ObjectHideFlags: 0
@@ -3153,6 +3231,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -3191,6 +3270,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: -1, y: -2}
+  isPassed: 0
+  isGoalFloor: 0
 --- !u!1 &9206324191454810788
 GameObject:
   m_ObjectHideFlags: 0
@@ -3258,6 +3339,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -3296,3 +3378,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPos: {x: 2, y: -1}
+  isPassed: 0
+  isGoalFloor: 0

@@ -7,16 +7,17 @@ using UnityEngine.AI;
 public class MapManager : SingletonBehaviour<MapManager>
 {
     public bool isMapEditingOn;
+    [Header("Instances")]
     public Floor floor;
     public NormalWall normalWall;
     public Mirror mirror;
     public GameObject[] objects;
+    public GameObject truthBullet, fakeBullet, mirrorBullet;
     public List<GameObject> players;
     public GameObject player;
     public Map currentMap;
     public NavMeshSurface surface;
     public Map[] stage;
-    public GameObject truthBullet, fakeBullet, mirrorBullet;
     public BulletFactory bulletFactory;
 
     public void LoadMap(Map _newMap)
@@ -26,8 +27,9 @@ public class MapManager : SingletonBehaviour<MapManager>
         currentMap = Instantiate(_newMap);
         currentMap.transform.position = new Vector3(0, 0, 0);
         surface.BuildNavMesh();
+        GameManager.inst.SetClearIndex(currentMap);
         for (int i = 0; i < currentMap.startFloors.Count; i++)
-            players.Add(Instantiate(player, currentMap.startFloors[i].transform.position + new Vector3(0, 0.1f, 0), Quaternion.identity));
+            PlayerController.inst.CreatePlayer(currentMap.startFloors[i]);
     }
     public IEnumerator Rebaker()
     {
@@ -44,8 +46,7 @@ public class MapManager : SingletonBehaviour<MapManager>
     // Start is called before the first frame update
     void Start()
     {
-        if(!isMapEditingOn)
-            LoadMap(stage[0]);
+
     }
 
     // Update is called once per frame

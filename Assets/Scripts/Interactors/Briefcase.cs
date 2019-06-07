@@ -20,7 +20,8 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 
     public void Init(Floor floor)
 	{
-		this.floor = floor;
+        if (GameManager.aCase >= 0) MapManager.inst.currentMap.clearConditions[GameManager.aCase].goal++;
+        this.floor = floor;
 		PlayerController.inst.OnPlayerMove += Interact;
 	}
 
@@ -29,7 +30,16 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 		Debug.Log(Position + " " + position);
 		if (Position == position)
 		{
-			IngameManager.inst.BriefcaseCount++;
+            if (GameManager.aCase >= 0)
+            {
+                MapManager.inst.currentMap.clearConditions[GameManager.aCase].count++;
+                MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone();
+            }
+            if (GameManager.nCase >= 0)
+            {
+                MapManager.inst.currentMap.clearConditions[GameManager.nCase].count++;
+                MapManager.inst.currentMap.clearConditions[GameManager.nCase].IsDone();
+            }
 			Destroy(gameObject);
 		}
 	}

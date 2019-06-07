@@ -27,6 +27,42 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 
 	public event Action<Vector2Int> OnPlayerMove;
 
+    public void CreatePlayer(Floor floor)
+    {
+        GameObject player = Instantiate(MapManager.inst.player, floor.transform.position + new Vector3(0, 0.1f, 0), Quaternion.identity);
+        player.GetComponent<Player>().currentFloor = floor;
+        MapManager.inst.players.Add(player);
+        if (GameManager.nPlayer >= 0)
+        {
+            MapManager.inst.currentMap.clearConditions[GameManager.nPlayer].count = MapManager.inst.players.Count;
+            MapManager.inst.currentMap.clearConditions[GameManager.nPlayer].IsDone();
+        }
+        CheckCurrentFloors();
+    }
+
+    public void CheckCurrentFloors()
+    {
+        int goalFloorCount = 0;
+        foreach (GameObject child in MapManager.inst.players)
+        {
+            Debug.Log("df");
+            if (child.GetComponent<Player>().currentFloor.isGoalFloor)
+                goalFloorCount++;
+            Debug.Log(goalFloorCount);
+        }
+        if (GameManager.aFloor >= 0)
+        {
+            MapManager.inst.currentMap.clearConditions[GameManager.aFloor].count = goalFloorCount;
+            MapManager.inst.currentMap.clearConditions[GameManager.aFloor].IsDone();
+        }
+        if (GameManager.nFloor >= 0)
+        {
+            MapManager.inst.currentMap.clearConditions[GameManager.nFloor].count = goalFloorCount;
+            MapManager.inst.currentMap.clearConditions[GameManager.nFloor].IsDone();
+        }
+    }
+
+    //For test
     public string GetCurrentBullet()
     {
         return bulletList.Count > 0 ? bulletList[bulletCount].ToString() : null;
@@ -58,7 +94,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     {
         if (prePos != MapPos)
         {
-			Debug.Log(MapPos);
+			//Debug.Log(MapPos);
 			OnPlayerMove?.Invoke(MapPos);
 			prePos = MapPos;
 		}
@@ -80,13 +116,13 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                         currentPlayer = hit.transform.gameObject.GetComponent<Player>();
                         StartCoroutine(currentPlayer.SetCurrentPlayer());
                         StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
-                        Debug.Log(hit.collider.gameObject.tag);
+                        //Debug.Log(hit.collider.gameObject.tag);
                     }
                     else if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("floor"))
                     {
                         if (currentPlayer != null)
                             currentPlayer.MovePlayer(hit.collider.gameObject.transform.position);
-                        Debug.Log(hit.collider.gameObject.tag);
+                        //Debug.Log(hit.collider.gameObject.tag);
                     }
                     else if (hit.collider == null)
                     {

@@ -5,7 +5,7 @@ using System.IO;
 
 public class Map : MonoBehaviour
 {
-    public int testInputSizeX, testInputSizeY;
+    [Header("Map Data")]
     public int maxMapSize;
     public Dictionary<Vector2Int, Floor> floorGrid;
     public Dictionary<Vector2, Wall> wallGrid;
@@ -14,6 +14,8 @@ public class Map : MonoBehaviour
     public GameObject walls;
     public GameObject objects;
     public List<Floor> startFloors;
+
+    public List<ClearCondition> clearConditions;
 
     /// <summary>
     /// Get floor at position.
@@ -57,6 +59,9 @@ public class Map : MonoBehaviour
         {
             floorGrid.Add(pos, Instantiate(MapManager.inst.floor, new Vector3(pos.x, 0, pos.y), Quaternion.identity, floors.transform).GetComponent<Floor>());
             floorGrid[pos].mapPos = pos;
+            floorGrid[pos].isPassed = false;
+            if (GameManager.aFloor >= 0)
+                MapManager.inst.currentMap.clearConditions[GameManager.aFloor].goal++;
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else

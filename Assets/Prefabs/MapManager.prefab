@@ -52,15 +52,15 @@ MonoBehaviour:
   - {fileID: 2534561534465535505, guid: 0b323beb318071144aef94132be66541, type: 3}
   - {fileID: 6001025753464815805, guid: df6f1d8b9377ec346af4255abe290fbb, type: 3}
   - {fileID: 33432975985984805, guid: ec20e06c4a993924791d02d7a4c9375c, type: 3}
-  players: []
-  player: {fileID: 494213313239918027, guid: 449b2ca4d925da541bb45c84b63aab98, type: 3}
-  currentMap: {fileID: 0}
-  surface: {fileID: 0}
-  stage:
-  - {fileID: 2496973653136699540, guid: dbb2e09c19fe5ad49b11a6b95e5ac9e8, type: 3}
   truthBullet: {fileID: 7554112578236620015, guid: bfe2c93abf5421b4a9b142f60d689533,
     type: 3}
   fakeBullet: {fileID: 5866539243986221368, guid: a1830defb592fe841ab1732fd18f73a1,
     type: 3}
   mirrorBullet: {fileID: 3200095709359611570, guid: bb70103aa487bc346a6df423335477a2,
     type: 3}
+  players: []
+  player: {fileID: 494213313239918027, guid: 449b2ca4d925da541bb45c84b63aab98, type: 3}
+  currentMap: {fileID: 0}
+  surface: {fileID: 0}
+  stage:
+  - {fileID: 2496973653136699540, guid: dbb2e09c19fe5ad49b11a6b95e5ac9e8, type: 3}

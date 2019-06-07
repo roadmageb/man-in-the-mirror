@@ -802,11 +802,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7277015661519863741, guid: 20dee07e28273f049a9093ae4453912f,
-        type: 3}
-      propertyPath: m_NavMeshData
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 7277015661519863740, guid: 20dee07e28273f049a9093ae4453912f,
         type: 3}
       propertyPath: m_Name
@@ -816,6 +811,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7277015661519863741, guid: 20dee07e28273f049a9093ae4453912f,
+        type: 3}
+      propertyPath: m_NavMeshData
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7277015661519863742, guid: 20dee07e28273f049a9093ae4453912f,
         type: 3}
