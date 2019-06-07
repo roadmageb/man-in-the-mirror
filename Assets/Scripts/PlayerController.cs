@@ -148,12 +148,18 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 
     void LateUpdate()
     {
-        if (currentPlayer != null && currentPlayer.GetComponent<NavMeshAgent>().velocity.magnitude > 0)
-            transform.rotation = Quaternion.LookRotation(currentPlayer.GetComponent<NavMeshAgent>().velocity.normalized);
-        if (isPlayerShooting)
+        if(currentPlayer != null)
         {
-            Quaternion destinationRotation = Quaternion.Euler(new Vector3(transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, currentPlayer.transform.eulerAngles.z));
-            currentPlayer.transform.rotation = Quaternion.Lerp(currentPlayer.transform.rotation, destinationRotation, Time.deltaTime * 10);
+            if (currentPlayer.GetComponent<NavMeshAgent>().velocity.magnitude > 0)
+                transform.rotation = Quaternion.LookRotation(currentPlayer.GetComponent<NavMeshAgent>().velocity.normalized);
+            if (isPlayerShooting)
+            {
+                Quaternion destinationRotation = Quaternion.Euler(new Vector3(transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, currentPlayer.transform.eulerAngles.z));
+                currentPlayer.transform.rotation = Quaternion.Lerp(currentPlayer.transform.rotation, destinationRotation, Time.deltaTime * 10);
+                currentPlayer.shootingArm.LookAt(Camera.main.transform.forward + Camera.main.transform.position);
+            }
+            else
+                currentPlayer.shootingArm.rotation = currentPlayer.armRotation;
         }
     }
 }

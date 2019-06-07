@@ -12,8 +12,9 @@ public class Player : MonoBehaviour
 
     Coroutine playerArrivalCheck;
     public GameObject head;
-    public GameObject shootingArm;
+    public Transform shootingArm;
     public GameObject shootingFinger;
+    public Quaternion armRotation;
     Animator anim;
 
     public Floor currentFloor;
@@ -110,6 +111,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
+        armRotation = shootingArm.rotation;
     }
 
     // Update is called once per frame

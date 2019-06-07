@@ -8,7 +8,7 @@ public class CameraController : MonoBehaviour
     public float dragSpeed;
     Vector3 previousPos;
     Vector3 previousAngle;
-    float shootingFov = 40f;
+    float shootingFov = 60f;
     float mapFov = 20f;
     float rotationX = 0;
     float rotationY = 0;
@@ -135,7 +135,7 @@ public class CameraController : MonoBehaviour
                 float mouseMoveValueY = Input.GetAxis("Mouse Y");
                 rotationX += mouseMoveValueX * sensitivity * Time.deltaTime;
                 rotationY += mouseMoveValueY * sensitivity * Time.deltaTime;
-                rotationY = Mathf.Clamp(rotationY, -50, 20);
+                rotationY = Mathf.Clamp(rotationY, -20, 10);
                 transform.eulerAngles = new Vector3(-rotationY, rotationX, 0);
             }
         }

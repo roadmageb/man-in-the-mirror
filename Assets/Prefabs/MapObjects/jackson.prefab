@@ -1432,8 +1432,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   head: {fileID: 3233955354714130270}
-  shootingArm: {fileID: 494213313239917623}
+  shootingArm: {fileID: 7838800661811206189}
   shootingFinger: {fileID: 494213313239918045}
+  armRotation: {x: 0, y: 0, z: 0, w: 0}
+  currentFloor: {fileID: 0}
 --- !u!1 &494213313239918029
 GameObject:
   m_ObjectHideFlags: 0
@@ -2122,14 +2124,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 494213313239918065}
-  m_LocalRotation: {x: -0.046910297, y: -0.005540491, z: -0.012098737, w: 0.99881047}
+  m_LocalRotation: {x: -0.059248388, y: -0.0022251606, z: 0.02602184, w: 0.99790156}
   m_LocalPosition: {x: 6.938353e-10, y: 0.0029668214, z: -8.381903e-11}
   m_LocalScale: {x: 0.99999994, y: 1.0000002, z: 1.0000001}
   m_Children:
   - {fileID: 494213313239497103}
   m_Father: {fileID: 494213313239496727}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -6.7840004, y: -0.43400002, z: 3.0130002}
 --- !u!1 &494213313239918067
 GameObject:
   m_ObjectHideFlags: 0
