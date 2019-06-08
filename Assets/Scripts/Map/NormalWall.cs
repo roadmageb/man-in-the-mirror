@@ -6,11 +6,7 @@ public class NormalWall : Wall, IBulletInteractor
 {
     public void Interact(Bullet bullet)
     {
-        if (bullet is TruthBullet)
-        {
-            Destroy(gameObject);
-        }
-        else if (bullet is MirrorBullet)
+        if (bullet is MirrorBullet)
         {
             MapManager.inst.currentMap.ChangeToMirror(mapPos);
         }

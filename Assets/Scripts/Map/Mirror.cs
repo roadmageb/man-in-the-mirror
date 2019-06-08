@@ -17,10 +17,6 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             // Make reflected objects
             CopyObjects(PlayerController.inst.currentPlayer);
         }
-        else if (bullet is TruthBullet)
-        {
-            // Break Mirror
-        }
     }
 
     /// <summary>
