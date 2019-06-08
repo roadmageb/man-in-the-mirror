@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     public Transform shootingArm;
     public GameObject shootingFinger;
     public Quaternion armRotation;
-    Animator anim;
+    public Animator anim;
 
     public Floor currentFloor;
 

@@ -77,22 +77,23 @@ public class CameraController : MonoBehaviour
         rotationX = transform.eulerAngles.y;
         rotationY = transform.eulerAngles.x;
         PlayerController.inst.isZooming = false;
-        PlayerController.inst.currentPlayer.GetComponent<Animator>().SetBool("isShooting", true);
-        PlayerController.inst.currentPlayer.GetComponent<Player>().head.SetActive(false);
+        player.anim.SetBool("isShooting", true);
+        player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Head");
 
     }
     /// <summary>
     /// Zoom out from player.
     /// </summary>
     /// <returns></returns>
-    public IEnumerator ZoomOutFromPlayer()
+    public IEnumerator ZoomOutFromPlayer(Player player)
     {
         float startTime = Time.time;
         Vector3 posDiff = (previousPos - transform.position) / 40;
         float fovDiff = (mapFov - shootingFov) / 40f;
         PlayerController.inst.isZooming = true;
-        PlayerController.inst.currentPlayer.GetComponent<Animator>().SetBool("isShooting", false);
-        PlayerController.inst.currentPlayer.GetComponent<Player>().head.SetActive(true);
+        player.anim.SetBool("isShooting", false);
+        player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Player");
+        player.head.SetActive(true);
         Vector3 tempAngle = new Vector3(transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x,
             transform.eulerAngles.y > 180 ? transform.eulerAngles.y - 360 : transform.eulerAngles.y,
             transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z);
