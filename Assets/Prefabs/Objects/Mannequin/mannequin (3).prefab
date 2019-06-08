@@ -1245,6 +1245,7 @@ SkinnedMeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1874,6 +1875,7 @@ SkinnedMeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2024,6 +2026,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6840018466224560459}
   - component: {fileID: 6862997482539891855}
+  - component: {fileID: 2423524975426210005}
   m_Layer: 0
   m_Name: mannequin (3)
   m_TagString: Untagged
@@ -2040,7 +2043,7 @@ Transform:
   m_GameObject: {fileID: 6840018466224391531}
   m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
   m_LocalPosition: {x: -0.029588563, y: 0.110000014, z: 6.009}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children:
   - {fileID: 6840018466224560411}
   - {fileID: 6840018466224560419}
@@ -2060,9 +2063,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f15a625122ee354090202ddf9cb0299, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  white: {fileID: 2100000, guid: af605edc8af008346a3f42f355847da6, type: 2}
-  black: {fileID: 2100000, guid: 36f9d35b500106b42b6a47c516bf7b38, type: 2}
-  isWhite: 0
+  renderers:
+  - {fileID: 6840018466229602339}
+  - {fileID: 6840018466229602337}
+  mannequinMaterial:
+  - {fileID: 2100000, guid: 36f9d35b500106b42b6a47c516bf7b38, type: 2}
+  - {fileID: 2100000, guid: af605edc8af008346a3f42f355847da6, type: 2}
+  floor: {fileID: 0}
+--- !u!65 &2423524975426210005
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6840018466224391531}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.81, y: 1.6, z: 0.3}
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!1 &6840018466224391533
 GameObject:
   m_ObjectHideFlags: 0
