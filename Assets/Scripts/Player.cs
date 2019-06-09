@@ -104,7 +104,8 @@ public class Player : MonoBehaviour
     {
         Bullet newBullet = MapManager.inst.bulletFactory.MakeBullet(bulletCode);
         newBullet.transform.position = shootingFinger.transform.position;
-        newBullet.Init(transform.forward);
+        newBullet.transform.LookAt(shootingArm.transform.forward + newBullet.transform.position);
+        newBullet.Init(shootingArm.transform.forward);
     }
 
     // Start is called before the first frame update

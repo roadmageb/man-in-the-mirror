@@ -193,7 +193,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0.140625, z: 0.03125, w: -0.03125}
+  m_BoundingSphereOverride: {x: -2.0000007, y: 2.66e-43, z: 0.0000000030205385, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -788,6 +788,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7277015661519863741, guid: 20dee07e28273f049a9093ae4453912f,
+        type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7277015661519863740, guid: 20dee07e28273f049a9093ae4453912f,
         type: 3}
       propertyPath: m_Name
@@ -797,11 +802,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7277015661519863741, guid: 20dee07e28273f049a9093ae4453912f,
-        type: 3}
-      propertyPath: m_NavMeshData
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7277015661519863742, guid: 20dee07e28273f049a9093ae4453912f,
         type: 3}

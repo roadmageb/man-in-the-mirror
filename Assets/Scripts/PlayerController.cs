@@ -142,6 +142,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
             else if (Input.GetMouseButtonDown(1) && isPlayerShooting)
             {
                 StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomOutFromPlayer());
+                currentPlayer.shootingArm.rotation = currentPlayer.armRotation;
             }
         }
     }
