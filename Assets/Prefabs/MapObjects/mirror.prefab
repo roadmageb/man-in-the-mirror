@@ -288,10 +288,15 @@ PrefabInstance:
       propertyPath: TextureSize
       value: 768
       objectReference: {fileID: 0}
+    - target: {fileID: 5956712601794644638, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+        type: 3}
+      propertyPath: ReflectLayers.m_Bits
+      value: 5943
+      objectReference: {fileID: 0}
     - target: {fileID: 5956712601804180398, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
       propertyPath: m_CullingMask.m_Bits
-      value: 1335
+      value: 5431
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6cee9ce2ee605c54c957dc68c69cea90, type: 3}
@@ -383,10 +388,15 @@ PrefabInstance:
       propertyPath: TextureSize
       value: 768
       objectReference: {fileID: 0}
+    - target: {fileID: 5956712601794644638, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+        type: 3}
+      propertyPath: ReflectLayers.m_Bits
+      value: 5943
+      objectReference: {fileID: 0}
     - target: {fileID: 5956712601804180398, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
       propertyPath: m_CullingMask.m_Bits
-      value: 1335
+      value: 5431
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6cee9ce2ee605c54c957dc68c69cea90, type: 3}
