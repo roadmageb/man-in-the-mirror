@@ -653,6 +653,7 @@ SkinnedMeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -741,6 +742,7 @@ GameObject:
   m_Component:
   - component: {fileID: 87051754405658857}
   - component: {fileID: 2798309523397132260}
+  - component: {fileID: 4743889867940665203}
   m_Layer: 0
   m_Name: mannequin (5)
   m_TagString: Untagged
@@ -757,7 +759,7 @@ Transform:
   m_GameObject: {fileID: 87051754405567689}
   m_LocalRotation: {x: 0, y: 0.18129157, z: 0, w: 0.9834294}
   m_LocalPosition: {x: 0.01, y: 0.110000014, z: 7.86}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children:
   - {fileID: 87051754405658809}
   - {fileID: 87051754405658753}
@@ -777,9 +779,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f15a625122ee354090202ddf9cb0299, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  white: {fileID: 2100000, guid: af605edc8af008346a3f42f355847da6, type: 2}
-  black: {fileID: 2100000, guid: 36f9d35b500106b42b6a47c516bf7b38, type: 2}
-  isWhite: 0
+  renderers:
+  - {fileID: 87051754410840449}
+  - {fileID: 87051754410840451}
+  mannequinMaterial:
+  - {fileID: 2100000, guid: 36f9d35b500106b42b6a47c516bf7b38, type: 2}
+  - {fileID: 2100000, guid: af605edc8af008346a3f42f355847da6, type: 2}
+  floor: {fileID: 0}
+--- !u!65 &4743889867940665203
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87051754405567689}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.81, y: 1.6, z: 0.3}
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!1 &87051754405567691
 GameObject:
   m_ObjectHideFlags: 0
@@ -1177,6 +1196,7 @@ SkinnedMeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0

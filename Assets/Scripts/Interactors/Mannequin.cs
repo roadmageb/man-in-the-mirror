@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
 {
-	[SerializeField]
-	private Mesh[] mannequinMesh = new Mesh[2];
-	private Color _color;
+    [SerializeField] private SkinnedMeshRenderer[] renderers = new SkinnedMeshRenderer[2];
+    [SerializeField] private Material[] mannequinMaterial = new Material[2];
     [SerializeField] private Floor floor;
+    private Color _color;
     public Color Color {
         get
         {
@@ -17,14 +17,20 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
         {
 			if (value == Color.black)
 			{
-				GetComponent<MeshFilter>().mesh = mannequinMesh[0];
+                foreach (var renderer in renderers)
+                {
+                    renderer.material = mannequinMaterial[0];
+                }
 				//Change mesh to black mannequin
 			}
 			else if (value == Color.white)
 			{
-				GetComponent<MeshFilter>().mesh = mannequinMesh[1];
-				//Change mesh to white mannequin
-			}
+                foreach (var renderer in renderers)
+                {
+                    renderer.material = mannequinMaterial[1];
+                }
+                //Change mesh to white mannequin
+            }
 			else
 			{
 				Debug.LogWarning("Invalid color input");
@@ -37,7 +43,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     {
         if (bullet is TruthBullet)
         {
-           Color = Color.white;
+            Color = Color.white;
         }
         if (bullet is FakeBullet)
         {
@@ -55,6 +61,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
         Color = isWhite ? Color.white : Color.black;
     }
 
+    #region IObject Override
     public GameObject GetObject()
     {
         return gameObject;
@@ -69,4 +76,5 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     {
         return ObjType.Mannequin;
     }
+    #endregion
 }
