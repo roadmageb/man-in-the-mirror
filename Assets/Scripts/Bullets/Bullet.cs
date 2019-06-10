@@ -15,5 +15,6 @@ public abstract class Bullet : MonoBehaviour
     public void Init(Vector3 velocity)
     {
         GetComponent<Rigidbody>().velocity = velocity;
-    }
+        Destroy(gameObject, MapManager.inst.currentMap.maxMapSize / velocity.magnitude);
+    }    
 }
