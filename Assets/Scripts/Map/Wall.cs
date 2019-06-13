@@ -17,7 +17,7 @@ public class Wall : MonoBehaviour
     public Vector2 mapPos;
     public Vector2Int ldPos // left down pos
     {
-        get { return new Vector2Int((int)mapPos.x, (int)mapPos.y); }
+        get { return new Vector2Int((int)(mapPos.x + 0.5f), (int)(mapPos.y + 0.5f)); }
     }
     public Vector2Int rdPos // right down pos
     {
@@ -33,7 +33,7 @@ public class Wall : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame

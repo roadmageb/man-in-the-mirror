@@ -14,8 +14,10 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
     {
         if (bullet is FakeBullet)
         {
+            Debug.Log(ldPos);
             // Make reflected objects
-            CopyObjects(PlayerController.inst.currentPlayer);
+            StartCoroutine(CopyObjects(PlayerController.inst.currentPlayer));
+            //Destroy(gameObject, 1f);
         }
     }
 
@@ -23,7 +25,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
     /// copy objects which reflected by this mirror
     /// </summary>
     /// <param name="_shooter">transform of shooter</param>
-    private void CopyObjects(Player _shooter)
+    IEnumerator CopyObjects(Player _shooter)
     {
         Vector2Int stPos = _shooter.pos; // position of shooter's cell
         List<Pair<float, float>> parRay = new List<Pair<float, float>>
@@ -34,12 +36,17 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         // check before reflect (check walls and mirrors)
         foreach (var wall in MapManager.inst.currentMap.wallGrid)
         {
-            if (wall.Value.mapPos != mapPos)
+            if (wall.Value.GetInstanceID() != GetInstanceID())
             {
                 Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
                 if (pair.l > pair.r) pair = pair.Swap();
                 SubtractRay(parRay, pair);
+                yield return null;
             }
+        }
+        foreach (var ray in parRay)
+        {
+            Debug.Log("Ray: " + ray.l + "~" + ray.r);
         }
 
         // check after reflect, if obj or floor, copy else if wall or mirror, Subtract
@@ -54,46 +61,51 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             side = (ldPos.x - stPos.x > 0) ? -1 : 1;
             i = ldPos.x;
         }
-        for (; i < MapManager.inst.currentMap.maxMapSize; i += side)
+        yield return null;
+        
+        for (; Mathf.Abs(i) < MapManager.inst.currentMap.maxMapSize; i += side)
         {
             foreach (var floor in MapManager.inst.currentMap.floorGrid)
             {
                 if ((dir ? floor.Key.y : floor.Key.x) == i)
                 {
-                    if (IsInRay(parRay, PointToParRay(stPos, floor.Value.mapPos, true))) 
+                    if (IsInRay(parRay, PointToParRay(stPos, floor.Key, true)))
                     {
                         /*copy floor*/
                         int nextx = dir ? floor.Key.x : 2 * ldPos.x - floor.Key.x;
                         int nexty = dir ? 2 * ldPos.y - floor.Key.y : floor.Key.y;
                         MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty));
+                        Debug.Log(i + " " + MapManager.inst.currentMap.maxMapSize);
+                        yield return null;
                     }
                 }
             }
-            foreach (var obj in MapManager.inst.currentMap.objectGrid)
-            {
-                if ((dir ? obj.Key.y : obj.Key.x) == i)
-                {
-                    if (IsInRay(parRay, PointToParRay(stPos, obj.Value.GetPos(), true)))
-                    {
-                        /*copy object*/
-                    }
-                }
-            }
-            foreach (var wall in MapManager.inst.currentMap.wallGrid)
-            {
-                if ((dir ? wall.Key.y : wall.Key.x) == i)
-                {
-                    Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, wall.Value.ldPos, true), PointToParRay(stPos, wall.Value.rdPos, true));
-                    if (pair.l > pair.r) pair = pair.Swap();
+            //foreach (var obj in MapManager.inst.currentMap.objectGrid)
+            //{
+            //    if ((dir ? obj.Key.y : obj.Key.x) == i)
+            //    {
+            //        if (IsInRay(parRay, PointToParRay(stPos, obj.Value.GetPos(), true)))
+            //        {
+            //            /*copy object*/
+            //        }
+            //    }
+            //}
+            //Debug.Log("4");
+            //foreach (var wall in MapManager.inst.currentMap.wallGrid)
+            //{
+            //    if ((dir ? wall.Key.y : wall.Key.x) == i)
+            //    {
+            //        Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, wall.Value.ldPos, true), PointToParRay(stPos, wall.Value.rdPos, true));
+            //        if (pair.l > pair.r) pair = pair.Swap();
 
-                    /*copy wall*/
-                    float nextx = dir ? wall.Key.x : 2 * ldPos.x - wall.Key.x;
-                    float nexty = dir ? 2 * ldPos.y - wall.Key.y : wall.Key.y;
-                    MapManager.inst.currentMap.CreateWall(new Vector2(nextx, nexty), wall.Value.type);
+            //        /*copy wall*/
+            //        float nextx = dir ? wall.Key.x : 2 * ldPos.x - wall.Key.x;
+            //        float nexty = dir ? 2 * ldPos.y - wall.Key.y : wall.Key.y;
+            //        MapManager.inst.currentMap.CreateWall(new Vector2(nextx, nexty), wall.Value.type);
 
-                    SubtractRay(parRay, pair);
-                }
-            }
+            //        SubtractRay(parRay, pair);
+            //    }
+            //}
         }
     }
 
@@ -108,38 +120,39 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         {
             if (pair.r < _sub.l || pair.l > _sub.r) continue;
             float[] arr = { pair.l, pair.r, _sub.l, _sub.r };
+            float[] sortArr = new float[4];
 
             for (int i = 0; i < 4; i++) // sort arr
             {
                 float smallest = arr[i];
-                int smallIdx = i;
                 for (int j = i + 1; j < 4; j++)
                 {
                     if (smallest > arr[j])
                     {
                         smallest = arr[j];
-                        smallIdx = j;
                     }
                 }
-                float temp = arr[i];
-                arr[i] = smallest;
-                arr[smallIdx] = temp;
+                sortArr[i] = smallest;
             }
 
             // subtract
-            if      (arr[0] == _sub.l && arr[2] == _sub.r)
+            if      (sortArr[0] == _sub.l && sortArr[2] == _sub.r)
             {
                 pair.l = _sub.r;
             }
-            else if (arr[1] == _sub.l && arr[3] == _sub.r)
+            else if (sortArr[1] == _sub.l && sortArr[3] == _sub.r)
             {
                 pair.r = _sub.l;
             }
-            else if (arr[1] == _sub.l && arr[2] == _sub.r)
+            else if (sortArr[1] == _sub.l && sortArr[2] == _sub.r)
             {
-                _parRay.Add(new Pair<float, float>(pair.r, _sub.r));
+                _parRay.Add(new Pair<float, float>(_sub.r, pair.r));
                 pair.r = _sub.l;
             }
+        }
+        for (int i = 0; i < _parRay.Count; i++)
+        {
+            if (_parRay[i].r - _parRay[i].l < 0.01f) _parRay.Remove(_parRay[i]);
         }
     }
 
@@ -182,19 +195,17 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
     /// <returns>float value of _chPos is posed</returns>
     float PointToParRay(Vector2 _stPos, Vector2 _chPos, bool _isRefl)
     {
-        if (dir) // horizontal
+        if (dir)
         {
-            float dist = _chPos.y - _stPos.y + (_isRefl ? (ldPos.y - _chPos.y) * 2 : 0);
-            float spreadLen = len * dist / (ldPos.y - _stPos.y);
-            float rayStPos = _stPos.x + (ldPos.x - _stPos.x) * dist / (ldPos.y - _stPos.y);
-            return (_chPos.x - rayStPos) / spreadLen;
+            float px = _chPos.x - ((_chPos.y - ldPos.y) * (_chPos.x - _stPos.x) / (3 * _chPos.y - 2 * ldPos.y - _stPos.y));
+            Debug.Log("PointToParRay x: " + (px - ldPos.x) + " pos: " + _chPos);
+            return px - ldPos.x;
         }
-        else // vertical
+        else
         {
-            float dist = _chPos.x - _stPos.x + (_isRefl ? (ldPos.x - _chPos.x) * 2 : 0);
-            float spreadLen = len * dist / (ldPos.x - _stPos.x);
-            float rayStPos = _stPos.y + (ldPos.y - _stPos.y) * dist / (ldPos.x - _stPos.x);
-            return (_chPos.y - rayStPos) / spreadLen;
+            float py = _chPos.y - ((_chPos.x - ldPos.x) * (_chPos.y - _stPos.y) / (3 * _chPos.x - 2 * ldPos.x - _stPos.x));
+            Debug.Log("PointToParRay y: " + (py - ldPos.y) + " pos: " + _chPos);
+            return py - ldPos.y;
         }
     }
 }
