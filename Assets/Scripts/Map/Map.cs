@@ -203,7 +203,7 @@ public class Map : MonoBehaviour
     /// </summary>
     /// <param name="pos">Position of object.</param>
     /// <param name="objType">Type of object.</param>
-    public void CreateObject(Vector2Int pos, ObjType objType)
+    public void CreateObject(Vector2Int pos, ObjType objType, bool isWhite = true)
     {
         if ((pos.x >= 0 ? (pos.x > maxMapSize / 2) : (pos.x < -maxMapSize / 2)) || (pos.y >= 0 ? (pos.y > maxMapSize / 2) : (pos.y < -maxMapSize / 2)))
         {
@@ -212,7 +212,19 @@ public class Map : MonoBehaviour
         }
         if (!objectGrid.ContainsKey(pos))
         {
-            objectGrid.Add(pos, Instantiate(MapManager.inst.objects[(int)objType - 1], new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+            switch (objType)
+            {
+                case ObjType.Briefcase:
+                    objectGrid.Add(pos, Instantiate(MapManager.inst.briefCase, new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+                    break;
+                case ObjType.Camera:
+                    objectGrid.Add(pos, Instantiate(MapManager.inst.cameraTurret, new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+                    break;
+                case ObjType.Mannequin:
+                    objectGrid.Add(pos, Instantiate(MapManager.inst.mannequins[Random.Range(0, 5)], new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+                    objectGrid[pos].GetObject().GetComponent<Mannequin>().SetColor(isWhite);
+                    break;
+            }
             objectGrid[pos].Init(GetFloorAtPos(pos));
             StartCoroutine(MapManager.inst.Rebaker());
         }

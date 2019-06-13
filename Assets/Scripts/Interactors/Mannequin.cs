@@ -54,6 +54,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     public void Init(Floor floor)
     {
         this.floor = floor;
+        transform.Rotate(new Vector3(0, Random.Range(0, 4) * 90, 0));
     }
 
     public void SetColor(bool isWhite)

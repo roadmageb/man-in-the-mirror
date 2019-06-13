@@ -7,16 +7,19 @@ using UnityEngine.AI;
 public class MapManager : SingletonBehaviour<MapManager>
 {
     public bool isMapEditingOn;
+    public NavMeshSurface surface;
+    public Map currentMap;
     [Header("Instances")]
     public Floor floor;
     public NormalWall normalWall;
     public Mirror mirror;
-    public GameObject[] objects;
     public GameObject truthBullet, fakeBullet, mirrorBullet;
+    [Tooltip("Objects without mannequin.")]
+    public GameObject briefCase;
+    public GameObject cameraTurret;
+    public GameObject[] mannequins;
     public List<GameObject> players;
     public GameObject player;
-    public Map currentMap;
-    public NavMeshSurface surface;
     public Map[] stage;
     public BulletFactory bulletFactory;
 

@@ -45,10 +45,8 @@ public class PlayerController : SingletonBehaviour<PlayerController>
         int goalFloorCount = 0;
         foreach (GameObject child in MapManager.inst.players)
         {
-            Debug.Log("df");
             if (child.GetComponent<Player>().currentFloor.isGoalFloor)
                 goalFloorCount++;
-            Debug.Log(goalFloorCount);
         }
         if (GameManager.aFloor >= 0)
         {
