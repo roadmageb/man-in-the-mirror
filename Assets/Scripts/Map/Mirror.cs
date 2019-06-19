@@ -86,7 +86,8 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     }
                 }
             }
-            foreach (var wall in MapManager.inst.currentMap.wallGrid)
+            Dictionary<Vector2, Wall> copyGrid = new Dictionary<Vector2, Wall>(MapManager.inst.currentMap.wallGrid);
+            foreach (var wall in copyGrid)
             {
                 if ((dir ? wall.Key.y : wall.Key.x) == i)
                 {
@@ -97,6 +98,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     float nextx = dir ? wall.Key.x : 2 * ldPos.x - wall.Key.x;
                     float nexty = dir ? 2 * ldPos.y - wall.Key.y : wall.Key.y;
                     MapManager.inst.currentMap.CreateWall(new Vector2(nextx, nexty), wall.Value.type);
+                    Debug.Log("created at " + nextx + ", " + nexty);
 
                     SubtractRay(parRay, pair);
                 }
@@ -146,14 +148,15 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 pair.r = _sub.l;
             }
         }
+        for (int i = 0; i < _parRay.Count; i++)
+        {
+            if (_parRay[i].r - _parRay[i].l < 0.001f) _parRay.Remove(_parRay[i]);
+        }
+
         Debug.Log("Ray count: " + _parRay.Count);
         foreach (var ray in _parRay)
         {
             Debug.Log("Ray: " + ray.l + "~" + ray.r);
-        }
-        for (int i = 0; i < _parRay.Count; i++)
-        {
-            if (_parRay[i].r - _parRay[i].l < 0.001f) _parRay.Remove(_parRay[i]);
         }
     }
 
@@ -199,13 +202,11 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         if (dir)
         {
             float px = (_chPos.x-_stPos.x)*(ldPos.y-_stPos.y)/(_isRefl ? 2*ldPos.y-_chPos.y-_stPos.y : _chPos.y-_stPos.y) + _stPos.x;
-            Debug.Log("PointToParRay x: " + (px - ldPos.x) + " pos: " + _chPos);
             return px - ldPos.x;
         }
         else
         {
             float py = (_chPos.y - _stPos.y) * (ldPos.x - _stPos.x) / (_isRefl ? 2 * ldPos.x - _chPos.x - _stPos.x : _chPos.x - _stPos.x) + _stPos.y;
-            Debug.Log("PointToParRay y: " + (py - ldPos.y) + " pos: " + _chPos);
             return py - ldPos.y;
         }
     }
