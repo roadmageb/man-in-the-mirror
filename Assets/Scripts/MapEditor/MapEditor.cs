@@ -9,7 +9,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public Map currentMap;
     public Map[] stage;
     public MapEditorTile tile;
-    public enum TileMode { None, Floor, NormalWall, Mirror, StartFloor };
+    public enum TileMode { None, Floor, NormalWall, Mirror, StartFloor, Briefcase, Camera, WMannequin, BMannequin };
     TileMode currentMode;
     public Text modeSign;
     public GameObject startSign;
@@ -192,6 +192,19 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                             startSigns.Remove(currentMap.GetFloorAtPos(clickedPos));
                         }
                     }
+                }
+                else if((int)currentMode >= 5)
+                {
+                    if (isCreateMode)
+                    {
+                        Debug.Log(wallPos);
+                        if(currentMode == TileMode.BMannequin)
+                            currentMap.CreateObject(clickedPos, ObjType.Mannequin, false);
+                        else
+                            currentMap.CreateObject(clickedPos, (ObjType)((int)currentMode - 4));
+                    }
+                    else
+                        currentMap.RemoveObject(clickedPos);
                 }
             }
         }
