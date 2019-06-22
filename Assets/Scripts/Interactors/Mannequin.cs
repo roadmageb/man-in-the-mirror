@@ -38,6 +38,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
 			_color = value;
 		}
     }
+    public bool isWhite;
 
     public void Interact(Bullet bullet)
     {
@@ -60,6 +61,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     public void SetColor(bool isWhite)
     {
         Color = isWhite ? Color.white : Color.black;
+        this.isWhite = isWhite;
     }
 
     #region IObject Override

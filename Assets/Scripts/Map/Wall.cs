@@ -15,13 +15,13 @@ public class Wall : MonoBehaviour
     /// Position of this floor at the map.
     /// </summary>
     public Vector2 mapPos;
-    public Vector2Int ldPos // left down pos
+    public Vector2 ldPos // left down pos
     {
-        get { return new Vector2Int((int)(mapPos.x + 0.5f), (int)(mapPos.y + 0.5f)); }
+        get { return new Vector2(dir ? mapPos.x - 0.5f : mapPos.x , !dir ? mapPos.y - 0.5f : mapPos.y); }
     }
-    public Vector2Int rdPos // right down pos
+    public Vector2 rdPos // right down pos
     {
-        get { return ldPos + (dir ? new Vector2Int(len, 0) : new Vector2Int(0, len)); }
+        get { return ldPos + (dir ? new Vector2(len, 0) : new Vector2(0, len)); }
     }
     public bool dir // false: ver, true: hor
     {
@@ -29,16 +29,4 @@ public class Wall : MonoBehaviour
     }
     public int len = 1; // length of wall
     public WallType type;
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

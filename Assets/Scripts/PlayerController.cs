@@ -71,13 +71,14 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     {
         prePos = MapPos;
         bulletList.Add(BulletCode.Mirror);
+        bulletList.Add(BulletCode.False);
         bulletList.Add(BulletCode.Mirror);
         bulletList.Add(BulletCode.False);
+        bulletList.Add(BulletCode.Mirror);
         bulletList.Add(BulletCode.False);
+        bulletList.Add(BulletCode.Mirror);
         bulletList.Add(BulletCode.False);
-        bulletList.Add(BulletCode.False);
-        bulletList.Add(BulletCode.False);
-        bulletList.Add(BulletCode.False);
+        bulletList.Add(BulletCode.Mirror);
         bulletList.Add(BulletCode.False);
     }
 
