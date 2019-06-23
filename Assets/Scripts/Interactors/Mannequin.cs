@@ -38,6 +38,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
 			_color = value;
 		}
     }
+    public bool isWhite;
 
     public void Interact(Bullet bullet)
     {
@@ -69,6 +70,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     public void SetColor(bool isWhite)
     {
         Color = isWhite ? Color.white : Color.black;
+        this.isWhite = isWhite;
         if (GameManager.white >= 0 && isWhite)
             MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(1);
         if (GameManager.black >= 0 && !isWhite)

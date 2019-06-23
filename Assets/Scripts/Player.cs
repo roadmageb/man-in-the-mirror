@@ -5,9 +5,9 @@ using UnityEngine.AI;
 
 public class Player : MonoBehaviour
 {
-    public Vector2Int pos
+    public Vector2 pos
     {
-        get { return new Vector2Int((int)transform.position.x, (int)transform.position.y); }
+        get { return new Vector2(currentFloor.mapPos.x, currentFloor.mapPos.y); }
     }
 
     Coroutine playerArrivalCheck;
