@@ -80,6 +80,9 @@ public class CameraController : MonoBehaviour
         player.anim.SetBool("isShooting", true);
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Head");
 
+        // Invisible mouse cursor
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
     /// <summary>
     /// Zoom out from player.
@@ -111,6 +114,10 @@ public class CameraController : MonoBehaviour
         transform.position = previousPos;
         PlayerController.inst.isPlayerShooting = false;
         PlayerController.inst.isZooming = false;
+
+        // Visible mouse cursor
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     // Start is called before the first frame update
