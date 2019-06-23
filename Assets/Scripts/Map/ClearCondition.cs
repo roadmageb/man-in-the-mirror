@@ -23,25 +23,29 @@ public class ClearCondition
     public int goal;
     bool isDone = false;
 
-    public ClearCondition(ClearType _type, int _goal)
+    /*public ClearCondition(ClearType _type, int _goal)
     {
         type = _type;
         goal = _goal;
         count = 0;
-    }
+    }*/
 
-    public void IsDone()
+    public void IsDone(int _count = 0, int _goal = 0)
     {
-        if (!isDone)
+        count += _count;
+        goal += _goal;
+        if (goal <= count)
         {
-            if (goal <= count)
-            {
-                GameManager.inst.clearCounter--;
-                GameManager.inst.clearIndex[(int)type] = -1;
-                isDone = true;
-                if (GameManager.inst.clearCounter == 0)
-                    GameManager.inst.ClearStage();
-            }
+            GameManager.inst.clearCounter--;
+            isDone = true;
+            Debug.Log(GameManager.inst.clearCounter);
+            if (GameManager.inst.clearCounter == 0)
+                GameManager.inst.ClearStage();
+        }
+        else if (goal > count && isDone)
+        {
+            GameManager.inst.clearCounter++;
+            isDone = false;
         }
     }
 }

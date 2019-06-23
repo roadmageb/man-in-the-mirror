@@ -41,13 +41,22 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
 
     public void Interact(Bullet bullet)
     {
-        if (bullet is TruthBullet)
+        Color tempColor = Color;
+        if (bullet is TruthBullet && tempColor == Color.black)
         {
             Color = Color.white;
+            if (GameManager.white >= 0)
+                MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(1);
+            if (GameManager.black >= 0)
+                MapManager.inst.currentMap.clearConditions[GameManager.black].IsDone(-1);
         }
-        if (bullet is FakeBullet)
+        else if (bullet is FakeBullet && tempColor == Color.white)
         {
 			Color = Color.black;
+            if (GameManager.black >= 0)
+                MapManager.inst.currentMap.clearConditions[GameManager.black].IsDone(1);
+            if (GameManager.white >= 0)
+                MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(-1);
         }
     }
 
@@ -60,6 +69,10 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     public void SetColor(bool isWhite)
     {
         Color = isWhite ? Color.white : Color.black;
+        if (GameManager.white >= 0 && isWhite)
+            MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(1);
+        if (GameManager.black >= 0 && !isWhite)
+            MapManager.inst.currentMap.clearConditions[GameManager.black].IsDone(1);
     }
 
     #region IObject Override

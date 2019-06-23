@@ -381,10 +381,10 @@ MonoBehaviour:
   clearConditions:
   - type: 0
     count: 0
-    goal: 3
-  - type: 3
+    goal: 2
+  - type: 7
     count: 0
-    goal: 3
+    goal: 1
 --- !u!1 &2104754727029010325
 GameObject:
   m_ObjectHideFlags: 0

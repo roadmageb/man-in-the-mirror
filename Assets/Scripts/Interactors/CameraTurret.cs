@@ -16,6 +16,10 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 
     public void Break()
     {
+        if (GameManager.aTurret >= 0)
+            MapManager.inst.currentMap.clearConditions[GameManager.aTurret].IsDone(1);
+        if (GameManager.nTurret >= 0)
+            MapManager.inst.currentMap.clearConditions[GameManager.nTurret].IsDone(1);
         Destroy(gameObject);
     }
 
@@ -24,8 +28,8 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 		if (Position.IsInAdjacentArea(pos, 1))
 		{
 			Debug.Log(Position.x + " " + Position.y +" Stage Restart!");
-			//TODO : Restart Level
-		}
+            //TODO : Restart Level
+        }
     }
 
     public GameObject GetObject()
