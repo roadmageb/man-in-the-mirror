@@ -251,9 +251,9 @@ public class Map : MonoBehaviour
                 MapManager.inst.currentMap.clearConditions[GameManager.aTurret].IsDone(0, -1);
             else if(objectGrid[pos].GetType() == ObjType.Mannequin)
             {
-                if(objectGrid[pos].GetObject().GetComponent<Mannequin>().Color == Color.white && GameManager.white >= 0)
+                if(objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.white >= 0)
                     MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(0, -1);
-                else if (objectGrid[pos].GetObject().GetComponent<Mannequin>().Color == Color.black && GameManager.black >= 0)
+                else if (!objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.black >= 0)
                     MapManager.inst.currentMap.clearConditions[GameManager.black].IsDone(0, -1);
             }
             Destroy(objectGrid[pos].GetObject());

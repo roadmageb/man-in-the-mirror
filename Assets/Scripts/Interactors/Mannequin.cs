@@ -46,6 +46,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
         if (bullet is TruthBullet && tempColor == Color.black)
         {
             Color = Color.white;
+            isWhite = true;
             if (GameManager.white >= 0)
                 MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(1);
             if (GameManager.black >= 0)
@@ -54,6 +55,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
         else if (bullet is FakeBullet && tempColor == Color.white)
         {
 			Color = Color.black;
+            isWhite = false;
             if (GameManager.black >= 0)
                 MapManager.inst.currentMap.clearConditions[GameManager.black].IsDone(1);
             if (GameManager.white >= 0)
