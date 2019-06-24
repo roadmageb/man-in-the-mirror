@@ -96,6 +96,10 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         else
             modeSign.text = sign + " Destroy";
     }
+    public void AddBulletToPlayer(int bulletMode)
+    {
+        PlayerController.inst.bulletList.Add((BulletCode)bulletMode);
+    }
 
     private void Awake()
     {

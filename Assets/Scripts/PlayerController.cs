@@ -8,7 +8,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 {
     public Player currentPlayer;
     public bool isPlayerMoving, isPlayerShooting, isZooming;
-    private List<BulletCode> bulletList = new List<BulletCode>();
+    public List<BulletCode> bulletList = new List<BulletCode>();
     private int bulletCount = 0;
     private Vector2Int prePos;
     public Vector2Int MapPos
