@@ -70,6 +70,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     void Start()
     {
         prePos = MapPos;
+        bulletList.Add(BulletCode.True);
         bulletList.Add(BulletCode.Mirror);
         bulletList.Add(BulletCode.False);
         bulletList.Add(BulletCode.Mirror);
