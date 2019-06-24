@@ -61,7 +61,7 @@ public class Map : MonoBehaviour
             floorGrid[pos].mapPos = pos;
             floorGrid[pos].isGoalFloor = isGoal;
             if (GameManager.aFloor >= 0 && isGoal)
-                MapManager.inst.currentMap.clearConditions[GameManager.aFloor].IsDone(0, 1);
+                clearConditions[GameManager.aFloor].IsDone(0, 1);
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
@@ -96,7 +96,7 @@ public class Map : MonoBehaviour
         if (floorGrid.ContainsKey(pos))
         {
             if (GameManager.aFloor >= 0 && floorGrid[pos].isGoalFloor)
-                MapManager.inst.currentMap.clearConditions[GameManager.aFloor].IsDone(0, -1);
+                clearConditions[GameManager.aFloor].IsDone(0, -1);
             Destroy(floorGrid[pos].gameObject);
             floorGrid.Remove(pos);
             StartCoroutine(MapManager.inst.Rebaker());
@@ -219,12 +219,12 @@ public class Map : MonoBehaviour
                 case ObjType.Briefcase:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.briefCase, new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
                     if (GameManager.aCase >= 0)
-                        MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone(0, 1);
+                        clearConditions[GameManager.aCase].IsDone(0, 1);
                     break;
                 case ObjType.Camera:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.cameraTurret, new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
                     if (GameManager.aTurret >= 0)
-                        MapManager.inst.currentMap.clearConditions[GameManager.aTurret].IsDone(0, 1);
+                        clearConditions[GameManager.aTurret].IsDone(0, 1);
                     break;
                 case ObjType.Mannequin:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.mannequins[Random.Range(0, 5)], new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
@@ -246,15 +246,15 @@ public class Map : MonoBehaviour
         if (objectGrid.ContainsKey(pos))
         {
             if(objectGrid[pos].GetType() == ObjType.Briefcase && GameManager.aCase >= 0)
-                MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone(0, -1);
+                clearConditions[GameManager.aCase].IsDone(0, -1);
             else if (objectGrid[pos].GetType() == ObjType.Camera && GameManager.aTurret >= 0)
-                MapManager.inst.currentMap.clearConditions[GameManager.aTurret].IsDone(0, -1);
+                clearConditions[GameManager.aTurret].IsDone(0, -1);
             else if(objectGrid[pos].GetType() == ObjType.Mannequin)
             {
                 if(objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.white >= 0)
-                    MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(0, -1);
+                    clearConditions[GameManager.white].IsDone(0, -1);
                 else if (!objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.black >= 0)
-                    MapManager.inst.currentMap.clearConditions[GameManager.black].IsDone(0, -1);
+                    clearConditions[GameManager.black].IsDone(0, -1);
             }
             Destroy(objectGrid[pos].GetObject());
             objectGrid.Remove(pos);

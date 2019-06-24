@@ -2381,10 +2381,13 @@ MonoBehaviour:
   modeSign: {fileID: 153720729}
   startSign: {fileID: 1215997560627761150, guid: 106914c4661964b47ad09efcc4bfba69,
     type: 3}
+  goalSign: {fileID: 646008409675212278, guid: 6801da87b9c13dc4a97e2c31d6e37ab3, type: 3}
   mapSizeSetter: {fileID: 8774990006778924709}
   mapEditorTiles: {fileID: 1549724121}
-  editWallMat: {fileID: 2100000, guid: c741ce421701e7c43b7a48c4045a116b, type: 2}
-  realWallMat: {fileID: 2100000, guid: 9274dfd686c38aa4f91d973c6de1c8e9, type: 2}
+  editNormalMat: {fileID: 2100000, guid: c741ce421701e7c43b7a48c4045a116b, type: 2}
+  editMirrorMat: {fileID: 2100000, guid: 27bba424cd653c047a5d5f6dbd1a0da5, type: 2}
+  realNormalMat: {fileID: 2100000, guid: 9274dfd686c38aa4f91d973c6de1c8e9, type: 2}
+  realMirrorMat: {fileID: 2100000, guid: d8c28898e746cd84d8503fbd26995a55, type: 2}
 --- !u!1 &1444571408998523813
 GameObject:
   m_ObjectHideFlags: 0
