@@ -64,14 +64,46 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 yield return null;
             }
         }
-
+        
         Dictionary<Vector2Int, Floor> copyFloorGrid = new Dictionary<Vector2Int, Floor>(MapManager.inst.currentMap.floorGrid);
         Dictionary<Vector2Int, IObject> copyObjGrid = new Dictionary<Vector2Int, IObject>(MapManager.inst.currentMap.objectGrid);
         Dictionary<Vector2, Wall> copyWallGrid = new Dictionary<Vector2, Wall>(MapManager.inst.currentMap.wallGrid);
+        List<GameObject> copyPlayers = new List<GameObject>(MapManager.inst.players);
 
         // remove backside of mirror
         for (int j = iBack; Mathf.Abs(j) < MapManager.inst.currentMap.maxMapSize; j -= side)
         {
+            Debug.Log(j);
+            foreach (var obj in copyObjGrid)
+            {
+                if ((dir ? obj.Key.y : obj.Key.x) == j)
+                {
+                    if (IsInRay(parRay, PointToParRay(stPos, obj.Key, false)))
+                    {
+                        /*remove object*/
+                        MapManager.inst.currentMap.RemoveObject(obj.Key);
+                        yield return null;
+                    }
+                }
+            }
+            foreach (var ply in copyPlayers)
+            {
+                if (ply)
+                {
+                    Floor plyFloor = ply.GetComponent<Player>().currentFloor;
+                    if ((dir ? plyFloor.mapPos.y : plyFloor.mapPos.x) == j)
+                    {
+
+                        if (IsInRay(parRay, PointToParRay(stPos, plyFloor.mapPos, false)))
+                        {
+                            /*remove player*/
+                            PlayerController.inst.RemovePlayer(plyFloor.mapPos);
+                            yield return null;
+                        }
+                    }
+                }
+            }
+            //Debug.Log(i + "th Object End");
             foreach (var floor in copyFloorGrid)
             {
                 if ((dir ? floor.Key.y : floor.Key.x) == j)
@@ -85,19 +117,6 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 }
             }
             //Debug.Log(i + "th Floor End");
-            foreach (var obj in copyObjGrid)
-            {
-                if ((dir ? obj.Key.y : obj.Key.x) == j)
-                {
-                    if (IsInRay(parRay, PointToParRay(stPos, obj.Key, false)))
-                    {
-                        /*remove object*/
-                        MapManager.inst.currentMap.RemoveObject(obj.Key);
-                        yield return null;
-                    }
-                }
-            }
-            //Debug.Log(i + "th Object End");
             float rangeL = j - 0.25f * side;
             float rangeR = j + 0.25f * side;
             foreach (var wall in copyWallGrid)
@@ -106,6 +125,8 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 if (wall.Value.GetInstanceID() != GetInstanceID() && (side < 0 ? wallPos < rangeL && wallPos > rangeR : wallPos > rangeL && wallPos < rangeR))
                 {
                     Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
+                    if (pair.l > pair.r) pair.Swap();
+
                     if (IsInRay(parRay, pair.l) && IsInRay(parRay, pair.r))
                     {
                         /*remove wall*/
@@ -136,6 +157,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         copyFloorGrid = new Dictionary<Vector2Int, Floor>(MapManager.inst.currentMap.floorGrid);
         copyObjGrid = new Dictionary<Vector2Int, IObject>(MapManager.inst.currentMap.objectGrid);
         copyWallGrid = new Dictionary<Vector2, Wall>(MapManager.inst.currentMap.wallGrid);
+        copyPlayers = new List<GameObject>(MapManager.inst.players);
 
         Debug.Log("Start Reflecting.");
         // check after reflect, if obj or floor, copy else if wall or mirror, Subtract
@@ -168,6 +190,22 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         ObjType type = obj.Value.GetType();
 
                         MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), type, (type == ObjType.Mannequin ? ((Mannequin)(obj.Value)).isWhite : true));
+                        yield return null;
+                    }
+                }
+            }
+            foreach (var ply in copyPlayers)
+            {
+                Floor plyFloor = ply.GetComponent<Player>().currentFloor;
+                if ((dir ? plyFloor.mapPos.y : plyFloor.mapPos.x) == i)
+                {
+                    if (IsInRay(parRay, PointToParRay(stPos, plyFloor.mapPos, true)))
+                    {
+                        /*copy player*/
+                        int nextx = dir ? plyFloor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - plyFloor.mapPos.x);
+                        int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - plyFloor.mapPos.y) : plyFloor.mapPos.y;
+
+                        PlayerController.inst.CreatePlayer(new Vector2Int(nextx, nexty));
                         yield return null;
                     }
                 }

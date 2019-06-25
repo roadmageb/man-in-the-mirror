@@ -29,6 +29,14 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 
     public void CreatePlayer(Floor floor)
     {
+        foreach (var obj in MapManager.inst.players)
+        {
+            if (obj.GetComponent<Player>().currentFloor == floor)
+            {
+                Debug.Log("there are player on that floor.");
+                return;
+            }
+        }
         GameObject player = Instantiate(MapManager.inst.player, floor.transform.position + new Vector3(0, 0.1f, 0), Quaternion.identity);
         player.GetComponent<Player>().currentFloor = floor;
         MapManager.inst.players.Add(player);
@@ -38,6 +46,54 @@ public class PlayerController : SingletonBehaviour<PlayerController>
             MapManager.inst.currentMap.clearConditions[GameManager.nPlayer].IsDone();
         }
         CheckCurrentFloors();
+    }
+    public void CreatePlayer(Vector2Int floorPos)
+    {
+        if (MapManager.inst.currentMap.floorGrid.TryGetValue(floorPos, out Floor floor))
+        {
+            CreatePlayer(floor);
+        }
+        else
+        {
+            Debug.Log("there are no floor");
+        }
+    }
+
+    public void RemovePlayer(Floor floor)
+    {
+        if (!floor)
+        {
+            Debug.Log("there are no floor");
+            return;
+        }
+
+        List<GameObject> copyPlayers = new List<GameObject>(MapManager.inst.players);
+        foreach (var obj in copyPlayers)
+        {
+            if (obj.GetComponent<Player>().currentFloor == floor)
+            {
+                MapManager.inst.players.Remove(obj);
+                if (GameManager.nPlayer >= 0)
+                {
+                    MapManager.inst.currentMap.clearConditions[GameManager.nPlayer].count = MapManager.inst.players.Count;
+                    MapManager.inst.currentMap.clearConditions[GameManager.nPlayer].IsDone();
+                }
+                Destroy(obj);
+                CheckCurrentFloors();
+                return;
+            }
+        }
+    }
+    public void RemovePlayer(Vector2Int floorPos)
+    {
+        if (MapManager.inst.currentMap.floorGrid.TryGetValue(floorPos, out Floor floor))
+        {
+            RemovePlayer(floor);
+        }
+        else
+        {
+            Debug.Log("there are no floor");
+        }
     }
 
     public void CheckCurrentFloors()
