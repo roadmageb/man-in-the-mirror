@@ -33,19 +33,19 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             new Pair<float, float>(0, 1)
         };
 
-        int side, i, iReset, stCheck;
+        int side, i, iBack, stCheck;
         if (dir) // horizontal, parallel with x
         {
             side = (mapPos.y - stPos.y > 0) ? -1 : 1;
             i = side > 0 ? Mathf.CeilToInt(mapPos.y) : Mathf.FloorToInt(mapPos.y);
-            iReset = i;
+            iBack = side < 0 ? Mathf.CeilToInt(mapPos.y) : Mathf.FloorToInt(mapPos.y);
             stCheck = (int)stPos.y;
         }
         else // vertical, parallel with y
         {
             side = (mapPos.x - stPos.x > 0) ? -1 : 1;
             i = side > 0 ? Mathf.CeilToInt(mapPos.x) : Mathf.FloorToInt(mapPos.x);
-            iReset = i;
+            iBack = side < 0 ? Mathf.CeilToInt(mapPos.x) : Mathf.FloorToInt(mapPos.x);
             stCheck = (int)stPos.x;
         }
         yield return null;
@@ -65,13 +65,81 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             }
         }
 
-        Debug.Log("Start Reflecting.");
-        // check after reflect, if obj or floor, copy else if wall or mirror, Subtract
         Dictionary<Vector2Int, Floor> copyFloorGrid = new Dictionary<Vector2Int, Floor>(MapManager.inst.currentMap.floorGrid);
         Dictionary<Vector2Int, IObject> copyObjGrid = new Dictionary<Vector2Int, IObject>(MapManager.inst.currentMap.objectGrid);
         Dictionary<Vector2, Wall> copyWallGrid = new Dictionary<Vector2, Wall>(MapManager.inst.currentMap.wallGrid);
 
-        for (i = iReset; Mathf.Abs(i) < MapManager.inst.currentMap.maxMapSize; i += side)
+        // remove backside of mirror
+        for (int j = iBack; Mathf.Abs(j) < MapManager.inst.currentMap.maxMapSize; j -= side)
+        {
+            foreach (var floor in copyFloorGrid)
+            {
+                if ((dir ? floor.Key.y : floor.Key.x) == j)
+                {
+                    if (IsInRay(parRay, PointToParRay(stPos, floor.Key, false)))
+                    {
+                        /*remove floor*/
+                        MapManager.inst.currentMap.RemoveFloor(floor.Key);
+                        yield return null;
+                    }
+                }
+            }
+            //Debug.Log(i + "th Floor End");
+            foreach (var obj in copyObjGrid)
+            {
+                if ((dir ? obj.Key.y : obj.Key.x) == j)
+                {
+                    if (IsInRay(parRay, PointToParRay(stPos, obj.Key, false)))
+                    {
+                        /*remove object*/
+                        MapManager.inst.currentMap.RemoveObject(obj.Key);
+                        yield return null;
+                    }
+                }
+            }
+            //Debug.Log(i + "th Object End");
+            float rangeL = j - 0.25f * side;
+            float rangeR = j + 0.25f * side;
+            foreach (var wall in copyWallGrid)
+            {
+                float wallPos = (dir ? wall.Key.y : wall.Key.x);
+                if (wall.Value.GetInstanceID() != GetInstanceID() && (side < 0 ? wallPos < rangeL && wallPos > rangeR : wallPos > rangeL && wallPos < rangeR))
+                {
+                    Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
+                    if (IsInRay(parRay, pair.l) && IsInRay(parRay, pair.r))
+                    {
+                        /*remove wall*/
+                        MapManager.inst.currentMap.RemoveWall(wall.Key);
+                        yield return null;
+                    }
+                }
+            }
+            rangeL = j - 0.25f * side + 0.5f;
+            rangeR = j + 0.25f * side + 0.5f;
+            foreach (var wall in copyWallGrid)
+            {
+                float wallPos = (dir ? wall.Key.y : wall.Key.x);
+                if (wall.Value.GetInstanceID() != GetInstanceID() && (side < 0 ? wallPos < rangeL && wallPos > rangeR : wallPos > rangeL && wallPos < rangeR))
+                {
+                    Pair<float, float> pair = new Pair<float, float>(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
+                    if (IsInRay(parRay, pair.l) && IsInRay(parRay, pair.r))
+                    {
+                        /*remove wall*/
+                        MapManager.inst.currentMap.RemoveWall(wall.Key);
+                        yield return null;
+                    }
+                }
+            }
+            //Debug.Log(i + "th Wall End");
+        }
+
+        copyFloorGrid = new Dictionary<Vector2Int, Floor>(MapManager.inst.currentMap.floorGrid);
+        copyObjGrid = new Dictionary<Vector2Int, IObject>(MapManager.inst.currentMap.objectGrid);
+        copyWallGrid = new Dictionary<Vector2, Wall>(MapManager.inst.currentMap.wallGrid);
+
+        Debug.Log("Start Reflecting.");
+        // check after reflect, if obj or floor, copy else if wall or mirror, Subtract
+        for (; Mathf.Abs(i) < MapManager.inst.currentMap.maxMapSize; i += side)
         {
             foreach (var floor in copyFloorGrid)
             {
