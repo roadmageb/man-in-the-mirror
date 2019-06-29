@@ -8,7 +8,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 {
     public Player currentPlayer;
     public bool isPlayerMoving, isPlayerShooting, isZooming;
-    private List<BulletCode> bulletList = new List<BulletCode>();
+    public List<BulletCode> bulletList = new List<BulletCode>();
     private int bulletCount = 0;
     private Vector2Int prePos;
     public Vector2Int MapPos
@@ -126,16 +126,6 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     void Start()
     {
         prePos = MapPos;
-        bulletList.Add(BulletCode.Mirror);
-        bulletList.Add(BulletCode.False);
-        bulletList.Add(BulletCode.Mirror);
-        bulletList.Add(BulletCode.False);
-        bulletList.Add(BulletCode.Mirror);
-        bulletList.Add(BulletCode.False);
-        bulletList.Add(BulletCode.Mirror);
-        bulletList.Add(BulletCode.False);
-        bulletList.Add(BulletCode.Mirror);
-        bulletList.Add(BulletCode.False);
     }
 
     // Update is called once per frame

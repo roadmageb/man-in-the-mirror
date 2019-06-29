@@ -40,5 +40,18 @@ public class GameManager : SingletonBehaviour<GameManager>
     {
         if (!MapManager.inst.isMapEditingOn)
             MapManager.inst.LoadMap(MapManager.inst.stage[0]);
+        else
+        {
+            for (int i = 0; i < 9; i++) clearIndex[i] = -1;
+            nFloor = clearIndex[(int)ClearType.NFloor];
+            nTurret = clearIndex[(int)ClearType.NTurret];
+            nCase = clearIndex[(int)ClearType.NCase];
+            nPlayer = clearIndex[(int)ClearType.NPlayer];
+            aFloor = clearIndex[(int)ClearType.AllFloor];
+            aTurret = clearIndex[(int)ClearType.AllTurret];
+            aCase = clearIndex[(int)ClearType.AllCase];
+            white = clearIndex[(int)ClearType.White];
+            black = clearIndex[(int)ClearType.Black];
+        }
     }
 }

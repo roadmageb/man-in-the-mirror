@@ -32,20 +32,23 @@ public class ClearCondition
 
     public void IsDone(int _count = 0, int _goal = 0)
     {
-        count += _count;
-        goal += _goal;
-        if (goal <= count)
+        if (!MapManager.inst.isMapEditingOn)
         {
-            GameManager.inst.clearCounter--;
-            isDone = true;
-            Debug.Log(GameManager.inst.clearCounter);
-            if (GameManager.inst.clearCounter == 0)
-                GameManager.inst.ClearStage();
-        }
-        else if (goal > count && isDone)
-        {
-            GameManager.inst.clearCounter++;
-            isDone = false;
+            count += _count;
+            goal += _goal;
+            if (goal <= count)
+            {
+                GameManager.inst.clearCounter--;
+                isDone = true;
+                Debug.Log(GameManager.inst.clearCounter);
+                if (GameManager.inst.clearCounter == 0)
+                    GameManager.inst.ClearStage();
+            }
+            else if (goal > count && isDone)
+            {
+                GameManager.inst.clearCounter++;
+                isDone = false;
+            }
         }
     }
 }

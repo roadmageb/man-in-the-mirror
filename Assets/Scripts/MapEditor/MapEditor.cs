@@ -9,16 +9,13 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public Map currentMap;
     public Map[] stage;
     public MapEditorTile tile;
-    public enum TileMode { None, Floor, NormalWall, Mirror, StartFloor, Briefcase, Camera, WMannequin, BMannequin };
+    public enum TileMode { None, Floor, Normal, Mirror, StartFloor, Briefcase, Camera, WMannequin, BMannequin, goalFloor };
     TileMode currentMode;
     public Text modeSign;
-    public GameObject startSign;
-    public Dictionary<Floor, GameObject> startSigns;
-    public GameObject mapSizeSetter;
-    public GameObject mapEditorTiles;
+    public GameObject startSign, goalSign, mapSizeSetter, mapEditorTiles;
+    public Dictionary<Floor, GameObject> startSigns, goalSigns;
 
-    public Material editWallMat;
-    public Material realWallMat;
+    public Material editNormalMat, realNormalMat;
     
     bool isEditorStarted;
     bool isCreateMode;
@@ -45,16 +42,14 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             Debug.Log("There is no start floor.");
         else
         {
-            foreach(Transform child in currentMap.walls.transform)
-            {
-                child.gameObject.GetComponent<MeshRenderer>().material = realWallMat;
-            }
+            foreach (Transform child in currentMap.walls.transform)
+                if (child.GetComponent<Wall>() is NormalWall)
+                    child.gameObject.GetComponent<MeshRenderer>().material = realNormalMat;
             PrefabUtility.SaveAsPrefabAsset(_newMap.gameObject, localPath);
             Debug.Log("Map saved at " + localPath);
             foreach (Transform child in currentMap.walls.transform)
-            {
-                child.gameObject.GetComponent<MeshRenderer>().material = editWallMat;
-            }
+                if (child.GetComponent<Wall>() is NormalWall)
+                    child.gameObject.GetComponent<MeshRenderer>().material = editNormalMat;
         }
     }
     public void SaveCurrentMap()
@@ -101,6 +96,11 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         else
             modeSign.text = sign + " Destroy";
     }
+    public void AddBulletToPlayer(int bulletMode)
+    {
+        currentMap.initialBullets.Add((BulletCode)bulletMode);
+        //PlayerController.inst.bulletList.Add((BulletCode)bulletMode);
+    }
 
     private void Awake()
     {
@@ -108,6 +108,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         isEditorStarted = false;
         isCreateMode = true;
         startSigns = new Dictionary<Floor, GameObject>();
+        goalSigns = new Dictionary<Floor, GameObject>();
     }
 
     // Start is called before the first frame update
@@ -140,26 +141,14 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                     else
                         currentMap.RemoveFloor(clickedPos);
                 }
-                else if(currentMode == TileMode.NormalWall)
+                else if(currentMode == TileMode.Normal || currentMode == TileMode.Mirror)
                 {
                     if (isCreateMode)
                     {
                         Debug.Log(wallPos);
-                        currentMap.CreateWall(wallPos, WallType.Normal);
-                        if(currentMap.GetWallAtPos(wallPos) != null)
-                            currentMap.GetWallAtPos(wallPos).gameObject.GetComponent<MeshRenderer>().material = editWallMat;
-                    }
-                    else
-                        currentMap.RemoveWall(wallPos);
-                }
-                else if (currentMode == TileMode.Mirror)
-                {
-                    if (isCreateMode)
-                    {
-                        Debug.Log(wallPos);
-                        currentMap.CreateWall(wallPos, WallType.Mirror);
-                        if (currentMap.GetWallAtPos(wallPos) != null)
-                            currentMap.GetWallAtPos(wallPos).gameObject.GetComponent<MeshRenderer>().material = editWallMat;
+                        currentMap.CreateWall(wallPos, (WallType)((int)currentMode - 1));
+                        if (currentMap.GetWallAtPos(wallPos) != null && currentMap.GetWallAtPos(wallPos).GetComponent<Wall>() is NormalWall)
+                            currentMap.GetWallAtPos(wallPos).gameObject.GetComponent<MeshRenderer>().material = editNormalMat;
                     }
                     else
                         currentMap.RemoveWall(wallPos);
@@ -193,7 +182,33 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         }
                     }
                 }
-                else if((int)currentMode >= 5)
+                else if(currentMode == TileMode.goalFloor)
+                {
+                    if (isCreateMode)
+                    {
+                        if (currentMap.GetFloorAtPos(clickedPos).isGoalFloor)
+                            Debug.Log("Goal floor already exists at : (" + clickedPos.x + ", " + clickedPos.y + ")");
+                        else
+                        {
+                            currentMap.GetFloorAtPos(clickedPos).isGoalFloor = true;
+                            goalSigns.Add(currentMap.GetFloorAtPos(clickedPos), 
+                                Instantiate(goalSign));
+                            goalSigns[currentMap.GetFloorAtPos(clickedPos)].transform.position = new Vector3(clickedPos.x, 2, clickedPos.y);
+                        }
+                    }
+                    else
+                    {
+                        if (!currentMap.GetFloorAtPos(clickedPos).isGoalFloor)
+                            Debug.Log("Goal floor doesn't exist at : (" + clickedPos.x + ", " + clickedPos.y + ")");
+                        else
+                        {
+                            currentMap.GetFloorAtPos(clickedPos).isGoalFloor = false;
+                            Destroy(goalSigns[currentMap.GetFloorAtPos(clickedPos)].gameObject);
+                            goalSigns.Remove(currentMap.GetFloorAtPos(clickedPos));
+                        }
+                    }
+                }
+                else if((int)currentMode >= 5 && (int)currentMode <= 8)
                 {
                     if (isCreateMode)
                     {
