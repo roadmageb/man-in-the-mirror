@@ -6,6 +6,7 @@ using System.Linq;
 public class GameManager : SingletonBehaviour<GameManager>
 {
     public Material mirrorMaterial;
+    public ClearUIGenerator uiGenerator;
 
     public int[] clearIndex = new int[9];
     public int clearCounter = 0;

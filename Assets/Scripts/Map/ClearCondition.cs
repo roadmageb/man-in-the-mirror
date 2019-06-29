@@ -21,7 +21,8 @@ public class ClearCondition
     public ClearType type;
     public int count;
     public int goal;
-    bool isDone = false;
+    public bool isDone = false;
+    public ClearStatusUI assignedClearUI;
 
     /*public ClearCondition(ClearType _type, int _goal)
     {
@@ -41,6 +42,7 @@ public class ClearCondition
                 GameManager.inst.clearCounter--;
                 isDone = true;
                 Debug.Log(GameManager.inst.clearCounter);
+                assignedClearUI.RefreshClearCondition();
                 if (GameManager.inst.clearCounter == 0)
                     GameManager.inst.ClearStage();
             }
@@ -48,6 +50,7 @@ public class ClearCondition
             {
                 GameManager.inst.clearCounter++;
                 isDone = false;
+                assignedClearUI.RefreshClearCondition();
             }
         }
     }

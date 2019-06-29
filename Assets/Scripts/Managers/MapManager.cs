@@ -31,6 +31,7 @@ public class MapManager : SingletonBehaviour<MapManager>
         currentMap.transform.position = new Vector3(0, 0, 0);
         surface.BuildNavMesh();
         GameManager.inst.SetClearIndex(currentMap);
+        GameManager.inst.uiGenerator.GenerateAllClearUI();
         for (int i = 0; i < currentMap.startFloors.Count; i++)
             PlayerController.inst.CreatePlayer(currentMap.startFloors[i]);
         for (int i = 0; i < currentMap.initialBullets.Count; i++)
