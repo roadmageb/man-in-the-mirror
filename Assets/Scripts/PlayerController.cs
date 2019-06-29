@@ -70,16 +70,6 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     void Start()
     {
         prePos = MapPos;
-        bulletList.Add(BulletCode.Mirror);
-        bulletList.Add(BulletCode.False);
-        bulletList.Add(BulletCode.Mirror);
-        bulletList.Add(BulletCode.False);
-        bulletList.Add(BulletCode.Mirror);
-        bulletList.Add(BulletCode.False);
-        bulletList.Add(BulletCode.Mirror);
-        bulletList.Add(BulletCode.False);
-        bulletList.Add(BulletCode.Mirror);
-        bulletList.Add(BulletCode.False);
     }
 
     // Update is called once per frame

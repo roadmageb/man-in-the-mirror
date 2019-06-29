@@ -14,6 +14,7 @@ public class Map : MonoBehaviour
     public GameObject walls;
     public GameObject objects;
     public List<Floor> startFloors;
+    public List<BulletCode> initialBullets;
 
     public List<ClearCondition> clearConditions;
 

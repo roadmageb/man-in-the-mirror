@@ -98,7 +98,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     }
     public void AddBulletToPlayer(int bulletMode)
     {
-        PlayerController.inst.bulletList.Add((BulletCode)bulletMode);
+        currentMap.initialBullets.Add((BulletCode)bulletMode);
+        //PlayerController.inst.bulletList.Add((BulletCode)bulletMode);
     }
 
     private void Awake()
@@ -107,6 +108,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         isEditorStarted = false;
         isCreateMode = true;
         startSigns = new Dictionary<Floor, GameObject>();
+        goalSigns = new Dictionary<Floor, GameObject>();
     }
 
     // Start is called before the first frame update
@@ -189,7 +191,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         else
                         {
                             currentMap.GetFloorAtPos(clickedPos).isGoalFloor = true;
-                            goalSigns.Add(currentMap.GetFloorAtPos(clickedPos), Instantiate(goalSign));
+                            goalSigns.Add(currentMap.GetFloorAtPos(clickedPos), 
+                                Instantiate(goalSign));
                             goalSigns[currentMap.GetFloorAtPos(clickedPos)].transform.position = new Vector3(clickedPos.x, 2, clickedPos.y);
                         }
                     }

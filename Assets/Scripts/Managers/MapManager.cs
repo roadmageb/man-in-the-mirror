@@ -25,7 +25,7 @@ public class MapManager : SingletonBehaviour<MapManager>
 
     public void LoadMap(Map _newMap)
     {
-        if(currentMap != null)
+        if (currentMap != null)
             Destroy(currentMap.gameObject);
         currentMap = Instantiate(_newMap);
         currentMap.transform.position = new Vector3(0, 0, 0);
@@ -33,6 +33,8 @@ public class MapManager : SingletonBehaviour<MapManager>
         GameManager.inst.SetClearIndex(currentMap);
         for (int i = 0; i < currentMap.startFloors.Count; i++)
             PlayerController.inst.CreatePlayer(currentMap.startFloors[i]);
+        for (int i = 0; i < currentMap.initialBullets.Count; i++)
+            PlayerController.inst.bulletList.Add(currentMap.initialBullets[i]);
     }
     public IEnumerator Rebaker()
     {
