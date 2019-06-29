@@ -44,11 +44,6 @@ public class TestTools : MonoBehaviour
     {
         MapManager.inst.currentMap.RemoveObject(new Vector2Int(int.Parse(xInput.text), int.Parse(yInput.text)));
     }
-
-    public void SaveMap()
-    {
-        MapEditor.inst.SaveMap(MapManager.inst.currentMap);
-    }
     public void LoadMap()
     {
         MapManager.inst.LoadMap(MapManager.inst.stage[1]);

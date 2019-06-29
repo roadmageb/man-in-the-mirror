@@ -66,7 +66,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         int yMax = y % 2 == 0 ? y / 2 - 1 : y / 2;
         for(int i = 0; i < mapEditorTiles.transform.childCount; i++)
             Destroy(mapEditorTiles.transform.GetChild(i).gameObject);
-        currentMap.maxMapSize = Mathf.Max(x, y);
+        currentMap.maxMapSize = 5 * Mathf.Max(x, y);
         for (int i = -x / 2; i <= xMax; i++)
             for (int j = -y / 2; j <= yMax; j++)
                 Instantiate(tile, new Vector3(i, -0.3f, j), Quaternion.identity, mapEditorTiles.transform).GetComponent<MapEditorTile>().mapPos = new Vector2(i, j);

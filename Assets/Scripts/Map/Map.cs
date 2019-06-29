@@ -218,7 +218,7 @@ public class Map : MonoBehaviour
             switch (objType)
             {
                 case ObjType.Briefcase:
-                    objectGrid.Add(pos, Instantiate(MapManager.inst.briefCase, new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+                    objectGrid.Add(pos, Instantiate(MapManager.inst.briefCase, new Vector3(pos.x, 0.35f, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
                     if (GameManager.aCase >= 0)
                         clearConditions[GameManager.aCase].IsDone(0, 1);
                     break;
