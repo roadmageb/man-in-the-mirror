@@ -1,21 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using UnityEngine.UI;
+using System.IO;
 
 public class MapEditor : SingletonBehaviour<MapEditor>
 {
+    class MapSaveData
+    {
+        public TileMode tag;
+        public float xPos, yPos;
+        public MapSaveData(TileMode _tag, Vector2 _pos)
+        {
+            tag = _tag;
+            xPos = _pos.x;
+            yPos = _pos.y;
+        }
+    }
+    public enum TileMode { None, Floor, Normal, Mirror, StartFloor, Briefcase, Camera, WMannequin, BMannequin, goalFloor };
     public Map currentMap;
     public Map[] stage;
     public MapEditorTile tile;
-    public enum TileMode { None, Floor, Normal, Mirror, StartFloor, Briefcase, Camera, WMannequin, BMannequin, goalFloor };
     TileMode currentMode;
     public Text modeSign;
     public GameObject startSign, goalSign, mapSizeSetter, mapEditorTiles;
     public Dictionary<Floor, GameObject> startSigns, goalSigns;
 
-    public Material editNormalMat, realNormalMat;
+    public Material editNormalMat;
     
     bool isEditorStarted;
     bool isCreateMode;
@@ -35,22 +46,57 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public void SaveMap(Map _newMap)
     {
         System.DateTime time = System.DateTime.Now;
-        string localPath = "Assets/SavedMap_" + time.ToShortDateString() + "-" + time.Hour + "-" + time.Minute + "-" + time.Second + ".prefab";
-        if (AssetDatabase.LoadAssetAtPath(localPath, typeof(GameObject)))
-            Debug.Log("Object with same name already exists.");
-        else if(currentMap.startFloors.Count == 0)
+        string localPath = Application.dataPath + time.ToShortDateString() + "-" + time.Hour + "-" + time.Minute + "-" + time.Second + ".json";
+        if(currentMap.startFloors.Count == 0)
             Debug.Log("There is no start floor.");
         else
         {
-            foreach (Transform child in currentMap.walls.transform)
-                if (child.GetComponent<Wall>() is NormalWall)
-                    child.gameObject.GetComponent<MeshRenderer>().material = realNormalMat;
-            PrefabUtility.SaveAsPrefabAsset(_newMap.gameObject, localPath);
-            Debug.Log("Map saved at " + localPath);
-            foreach (Transform child in currentMap.walls.transform)
-                if (child.GetComponent<Wall>() is NormalWall)
-                    child.gameObject.GetComponent<MeshRenderer>().material = editNormalMat;
-        }
+            List<MapSaveData> mapSaveData = new List<MapSaveData>();
+            mapSaveData.Add(new MapSaveData(TileMode.None, new Vector2(currentMap.maxMapSize, currentMap.maxMapSize)));
+            foreach(Transform child in currentMap.walls.transform)
+            {
+                Wall temp = child.GetComponent<Wall>();
+                if (temp is NormalWall)
+                    mapSaveData.Add(new MapSaveData(TileMode.Normal, temp.mapPos));
+                else
+                    mapSaveData.Add(new MapSaveData(TileMode.Mirror, temp.mapPos));
+            }
+            foreach(Transform child in currentMap.floors.transform)
+            {
+                Debug.Log("dD");
+                Floor temp = child.GetComponent<Floor>();
+                mapSaveData.Add(new MapSaveData(TileMode.Floor, temp.mapPos));
+                if (child.GetComponent<Floor>().isGoalFloor)
+                    mapSaveData.Add(new MapSaveData(TileMode.goalFloor, temp.mapPos));
+            }
+            foreach(Floor child in currentMap.startFloors)
+            {
+                Floor temp = child.GetComponent<Floor>();
+                mapSaveData.Add(new MapSaveData(TileMode.StartFloor, temp.mapPos));
+            }
+            foreach (Transform child in currentMap.objects.transform)
+            {
+                IObject temp = child.GetComponent<IObject>();
+                if (temp.GetType() == ObjType.Briefcase)
+                    mapSaveData.Add(new MapSaveData(TileMode.Briefcase, temp.GetPos()));
+                else if(temp.GetType() == ObjType.Camera)
+                    mapSaveData.Add(new MapSaveData(TileMode.Camera, temp.GetPos()));
+                else if (temp.GetType() == ObjType.Mannequin)
+                {
+                    if (temp.GetObject().GetComponent<Mannequin>().isWhite)
+                        mapSaveData.Add(new MapSaveData(TileMode.WMannequin, temp.GetPos()));
+                    else
+                        mapSaveData.Add(new MapSaveData(TileMode.BMannequin, temp.GetPos()));
+                }
+            }
+
+            List<MapSaveData> a = new List<MapSaveData>();
+            a.Add(new MapSaveData(TileMode.None, new Vector2(2, 3)));
+            string mapSaveJson = JsonUtility.ToJson(a);
+            Debug.Log(mapSaveJson);
+            File.WriteAllText(localPath, mapSaveJson);
+            
+            Debug.Log("Map saved at " + localPath);}
     }
     public void SaveCurrentMap()
     {

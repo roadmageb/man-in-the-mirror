@@ -1413,7 +1413,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 494213313239918027}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.3
   m_Height: 2
@@ -1435,6 +1435,7 @@ MonoBehaviour:
   shootingArm: {fileID: 7838800661811206189}
   shootingFinger: {fileID: 494213313239918045}
   armRotation: {x: 0, y: 0, z: 0, w: 0}
+  anim: {fileID: 0}
   currentFloor: {fileID: 0}
 --- !u!1 &494213313239918029
 GameObject:
