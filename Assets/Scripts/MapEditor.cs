@@ -16,19 +16,33 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             tag = _tag; xPos = _pos.x; yPos = _pos.y;
         }
     }
+    public class clearData
+    {
+        public ClearType type;
+        public int goal;
+        public clearData(ClearType _type, int _goal)
+        {
+            type = _type; goal = _goal;
+        }
+    }
     public class MapSaveData
     {
         public List<objectData> objects;
+        public List<clearData> clears;
         public MapSaveData()
         {
             objects = new List<objectData>();
+            clears = new List<clearData>();
         }
         public void AddObject(TileMode _tag, Vector2 _pos)
         {
             objects.Add(new objectData(_tag, _pos));
         }
+        public void AddClears(ClearType _type, int _goal)
+        {
+            clears.Add(new clearData(_type, _goal));
+        }
     }
-    public enum TileMode { None, Floor, Normal, Mirror, StartFloor, Briefcase, Camera, WMannequin, BMannequin, goalFloor };
     public Map currentMap;
     public Map[] stage;
     public MapEditorTile tile;
@@ -57,7 +71,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public void SaveMap(Map _newMap)
     {
         System.DateTime time = System.DateTime.Now;
-        string localPath = Application.dataPath + time.ToShortDateString() + "-" + time.Hour + "-" + time.Minute + "-" + time.Second + ".json";
+        string localPath = "Assets/" + time.ToShortDateString() + "-" + time.Hour + "-" + time.Minute + "-" + time.Second + ".json";
         if(currentMap.startFloors.Count == 0)
             Debug.Log("There is no start floor.");
         else
@@ -99,6 +113,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         mapSaveData.AddObject(TileMode.BMannequin, temp.GetPos());
                 }
             }
+            for(int i = 0; i < currentMap.clearConditions.Count; i++)
+                mapSaveData.AddClears(currentMap.clearConditions[i].type, currentMap.clearConditions[i].goal);
             File.WriteAllText(localPath, JsonConvert.SerializeObject(mapSaveData));
             Debug.Log("Map saved at " + localPath);}
     }

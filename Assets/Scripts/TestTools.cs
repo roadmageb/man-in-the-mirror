@@ -44,10 +44,6 @@ public class TestTools : MonoBehaviour
     {
         MapManager.inst.currentMap.RemoveObject(new Vector2Int(int.Parse(xInput.text), int.Parse(yInput.text)));
     }
-    public void LoadMap()
-    {
-        MapManager.inst.LoadMap(MapManager.inst.stage[1]);
-    }
 
     // Start is called before the first frame update
     void Start()

@@ -1138,7 +1138,12 @@ PrefabInstance:
         type: 3}
       propertyPath: stage.Array.data[0]
       value: 
-      objectReference: {fileID: 3529117415661273963, guid: 3d35fd3e6a494bc42921ce1cd03fc637,
+      objectReference: {fileID: 4900000, guid: 9bcb1c6d3d1a47046806d043fdde78d7, type: 3}
+    - target: {fileID: 3268100033343711389, guid: 11285456de5f1854d947bea83275646f,
+        type: 3}
+      propertyPath: emptyMap
+      value: 
+      objectReference: {fileID: 630498074781569474, guid: 759f352c81f1b5a40b2d8d241cdf273b,
         type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11285456de5f1854d947bea83275646f, type: 3}
@@ -1149,11 +1154,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7277015661519863741, guid: 20dee07e28273f049a9093ae4453912f,
-        type: 3}
-      propertyPath: m_NavMeshData
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 7277015661519863740, guid: 20dee07e28273f049a9093ae4453912f,
         type: 3}
       propertyPath: m_Name
@@ -1218,6 +1218,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7277015661519863741, guid: 20dee07e28273f049a9093ae4453912f,
+        type: 3}
+      propertyPath: m_NavMeshData
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 20dee07e28273f049a9093ae4453912f, type: 3}

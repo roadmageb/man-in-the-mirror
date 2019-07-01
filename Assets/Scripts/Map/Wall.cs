@@ -2,13 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum WallType
-{
-    NULL,
-    Normal,
-    Mirror
-}
-
 public class Wall : MonoBehaviour
 {
     /// <summary>

@@ -8,7 +8,7 @@ public class MapManager : SingletonBehaviour<MapManager>
 {
     public bool isMapEditingOn;
     public NavMeshSurface surface;
-    public Map currentMap;
+    public Map currentMap, emptyMap;
     [Header("Instances")]
     public Floor floor;
     public NormalWall normalWall;
@@ -20,13 +20,70 @@ public class MapManager : SingletonBehaviour<MapManager>
     public GameObject[] mannequins;
     public List<GameObject> players;
     public GameObject player;
-    public Map[] stage;
+    public TextAsset[] stage;
     public BulletFactory bulletFactory;
 
-    public void LoadMap(Map _newMap)
+    /// <summary>
+    /// Load and make a map by map data json file.
+    /// </summary>
+    /// <param name="_newMap">The json file of the map data to be created.</param>
+    public void LoadMap(TextAsset _newMap)
     {
-        //var loadedMapData = JsonConvert.DeserializeObject<MapEditor.MapSaveData>(_newMap.ToString());
-        //loadedMapData.
+        if (currentMap != null)
+            Destroy(currentMap.gameObject);
+        var loadedMapData = JsonConvert.DeserializeObject<MapEditor.MapSaveData>(_newMap.ToString());
+        currentMap = Instantiate(emptyMap, new Vector3(0, 0, 0), Quaternion.identity);
+        GameManager.inst.ResetClearIndex();
+        currentMap.InitiateMap();
+        currentMap.maxMapSize = (int)loadedMapData.objects[0].xPos;
+        for(int i = 1; i < loadedMapData.objects.Count; i++)
+        {
+            var temp = loadedMapData.objects[i];
+            switch (temp.tag)
+            {
+                case TileMode.Floor:
+                    currentMap.CreateFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos));
+                    break;
+                case TileMode.Normal:
+                    currentMap.CreateWall(new Vector2(temp.xPos, temp.yPos), WallType.Normal);
+                    break;
+                case TileMode.Mirror:
+                    currentMap.CreateWall(new Vector2(temp.xPos, temp.yPos), WallType.Mirror);
+                    break;
+                case TileMode.StartFloor:
+                    currentMap.startFloors.Add(currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)));
+                    break;
+                case TileMode.Briefcase:
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase);
+                    break;
+                case TileMode.Camera:
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Camera);
+                    break;
+                case TileMode.WMannequin:
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Mannequin, true);
+                    break;
+                case TileMode.BMannequin:
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Mannequin, false);
+                    break;
+                case TileMode.goalFloor:
+                    currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)).isGoalFloor = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+        for (int i = 0; i < loadedMapData.clears.Count; i++)
+        {
+            var temp = loadedMapData.clears[i];
+            currentMap.clearConditions.Add(new ClearCondition(temp.type, temp.goal));
+        }
+        GameManager.inst.SetClearIndex(currentMap);
+        surface.BuildNavMesh();
+        GameManager.inst.uiGenerator.GenerateAllClearUI();
+        for (int i = 0; i < currentMap.startFloors.Count; i++)
+            PlayerController.inst.CreatePlayer(currentMap.startFloors[i]);
+        for (int i = 0; i < currentMap.initialBullets.Count; i++)
+            PlayerController.inst.bulletList.Add(currentMap.initialBullets[i]);
 
 
         /*if (currentMap != null)

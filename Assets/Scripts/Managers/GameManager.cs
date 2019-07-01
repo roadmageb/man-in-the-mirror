@@ -12,9 +12,15 @@ public class GameManager : SingletonBehaviour<GameManager>
     public int clearCounter = 0;
     public static int nFloor, nTurret, nCase, nPlayer, aFloor, aTurret, aCase, white, black;
 
+    //Reset clear index to -1.
+    public void ResetClearIndex()
+    {
+        nFloor = nTurret = nCase = nPlayer = aFloor = aTurret = aCase = white = black = -1;
+    }
+
+    //Find and set the index of clear conditions of the map to clear type.
     public void SetClearIndex(Map map)
     {
-        for (int i = 0; i < 9; i++) clearIndex[i] = -1;
         foreach (var child in map.clearConditions)
         {
             clearIndex[(int)child.type] = map.clearConditions.IndexOf(child);

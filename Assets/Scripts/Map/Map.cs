@@ -297,7 +297,7 @@ public class Map : MonoBehaviour
 
     private void Awake()
     {
-        LoadObjects();
+        //LoadObjects();
     }
 
     // Start is called before the first frame update
