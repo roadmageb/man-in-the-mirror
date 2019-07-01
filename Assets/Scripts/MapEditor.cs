@@ -7,6 +7,27 @@ using System.IO;
 
 public class MapEditor : SingletonBehaviour<MapEditor>
 {
+    public class objectData
+    {
+        public TileMode tag;
+        public float xPos, yPos;
+        public objectData(TileMode _tag, Vector2 _pos)
+        {
+            tag = _tag; xPos = _pos.x; yPos = _pos.y;
+        }
+    }
+    public class MapSaveData
+    {
+        public List<objectData> objects;
+        public MapSaveData()
+        {
+            objects = new List<objectData>();
+        }
+        public void AddObject(TileMode _tag, Vector2 _pos)
+        {
+            objects.Add(new objectData(_tag, _pos));
+        }
+    }
     public enum TileMode { None, Floor, Normal, Mirror, StartFloor, Briefcase, Camera, WMannequin, BMannequin, goalFloor };
     public Map currentMap;
     public Map[] stage;
