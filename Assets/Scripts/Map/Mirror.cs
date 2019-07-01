@@ -78,7 +78,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             {
                 if ((dir ? obj.Key.y : obj.Key.x) == j)
                 {
-                    if (IsInRay(parRay, PointToParRay(stPos, obj.Key, false), -0.1f))
+                    if (IsInRay(parRay, PointToParRay(stPos, obj.Key, false)))
                     {
                         /*remove object*/
                         MapManager.inst.currentMap.RemoveObject(obj.Key);
@@ -94,7 +94,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     if ((dir ? plyFloor.mapPos.y : plyFloor.mapPos.x) == j)
                     {
 
-                        if (IsInRay(parRay, PointToParRay(stPos, plyFloor.mapPos, false), -0.1f))
+                        if (IsInRay(parRay, PointToParRay(stPos, plyFloor.mapPos, false)))
                         {
                             /*remove player*/
                             PlayerController.inst.RemovePlayer(plyFloor.mapPos);
@@ -108,7 +108,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             {
                 if ((dir ? floor.Key.y : floor.Key.x) == j)
                 {
-                    if (IsInRay(parRay, PointToParRay(stPos, floor.Key, false), 0))
+                    if (IsInRay(parRay, PointToParRay(stPos, floor.Key, false)))
                     {
                         /*remove floor*/
                         MapManager.inst.currentMap.RemoveFloor(floor.Key);
@@ -126,7 +126,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 {
                     Pair  pair = new Pair (PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
                     if (pair.l > pair.r) pair.Swap();
-                    if (IsInRay(parRay, pair, 0))
+                    if (IsInRay(parRay, pair))
                     {
                         /*remove wall*/
                         MapManager.inst.currentMap.RemoveWall(wall.Key);
@@ -143,7 +143,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 {
                     Pair pair = new Pair (PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
                     if (pair.l > pair.r) pair.Swap();
-                    if (IsInRay(parRay, pair, 0))
+                    if (IsInRay(parRay, pair))
                     {
                         /*remove wall*/
                         MapManager.inst.currentMap.RemoveWall(wall.Key);
@@ -172,7 +172,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 {
                     Pair pair = new Pair(PointToParRay(stPos, wall.Value.ldPos, true), PointToParRay(stPos, wall.Value.rdPos, true));
                     if (pair.l > pair.r) pair = pair.Swap();
-                    if (IsInRay(parRay, pair, 0))
+                    if (IsInRay(parRay, pair))
                     {
                         /*copy wall*/
                         float nextx = dir ? wall.Key.x : 2 * mapPos.x - wall.Key.x;
@@ -193,7 +193,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 {
                     Pair pair = new Pair(PointToParRay(stPos, wall.Value.ldPos, true), PointToParRay(stPos, wall.Value.rdPos, true));
                     if (pair.l > pair.r) pair = pair.Swap();
-                    if (IsInRay(parRay, pair, 0))
+                    if (IsInRay(parRay, pair))
                     {
                         /*copy wall*/
                         float nextx = dir ? wall.Key.x : 2 * mapPos.x - wall.Key.x;
@@ -210,7 +210,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             {
                 if ((dir ? floor.Key.y : floor.Key.x) == i)
                 {
-                    if (IsInRay(parRay, PointToParRay(stPos, floor.Key, true), 0.5f))
+                    if (IsInRay(parRay, PointToParRay(stPos, floor.Key, true)))
                     {
                         /*copy floor*/
                         int nextx = dir ? floor.Key.x : Mathf.RoundToInt(2 * ldPos.x - floor.Key.x);
@@ -225,7 +225,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             {
                 if ((dir ? obj.Key.y : obj.Key.x) == i)
                 {
-                    if (IsInRay(parRay, PointToParRay(stPos, obj.Key, true), 0.5f))
+                    if (IsInRay(parRay, PointToParRay(stPos, obj.Key, true)))
                     {
                         /*copy object*/
                         int nextx = dir ? obj.Key.x : Mathf.RoundToInt(2 * ldPos.x - obj.Key.x);
@@ -242,7 +242,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 Floor plyFloor = ply.GetComponent<Player>().currentFloor;
                 if ((dir ? plyFloor.mapPos.y : plyFloor.mapPos.x) == i)
                 {
-                    if (IsInRay(parRay, PointToParRay(stPos, plyFloor.mapPos, true), 0.5f))
+                    if (IsInRay(parRay, PointToParRay(stPos, plyFloor.mapPos, true)))
                     {
                         /*copy player*/
                         int nextx = dir ? plyFloor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - plyFloor.mapPos.x);
@@ -320,13 +320,12 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
     /// <param name="_parRay">ray list to be checked</param>
     /// <param name="_range">range to check</param>
     /// <returns>if _range is included in _parRay, return true</returns>
-    bool IsInRay(List<Pair> _parRay, Pair _range, float margin)
+    bool IsInRay(List<Pair> _parRay, Pair _range)
     {
         bool output = false;
         foreach (Pair pair in _parRay)
         {
-            Pair temp = pair.ApplyMargin(margin);
-            if (temp.r <= _range.l || temp.l >= _range.r) continue;
+            if (pair.r <= _range.l || pair.l >= _range.r) continue;
             else
             {
                 output = true;
@@ -336,12 +335,11 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         return output;
     }
 
-    bool IsInRay(List<Pair> _parRay, float _obj, float margin)
+    bool IsInRay(List<Pair> _parRay, float _obj)
     {
         foreach (Pair pair in _parRay)
         {
-            Pair temp = pair.ApplyMargin(margin);
-            if (temp.l <= _obj && temp.r >= _obj) return true;
+            if (pair.l <= _obj && pair.r >= _obj) return true;
         }
         return false;
     }
