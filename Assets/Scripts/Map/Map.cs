@@ -27,6 +27,10 @@ public class Map : MonoBehaviour
     {
         return floorGrid.ContainsKey(pos) ? floorGrid[pos] : null;
     }
+    public Floor GetFloorAtPos(int x, int y)
+    {
+        return GetFloorAtPos(new Vector2Int(x, y));
+    }
     /// <summary>
     /// Get floor at position.
     /// </summary>

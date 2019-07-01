@@ -206,35 +206,58 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 }
             }
             //Debug.Log(i + "th Wall End");
-            float range = i - 0.5f;
+            float range = i + 0.5f * side;
             float minMap = -1 * MapManager.inst.currentMap.maxMapSize / 2 - 1.5f;
             float maxMap = MapManager.inst.currentMap.maxMapSize / 2 + 1.5f;
             for (float j = minMap; Mathf.Abs(j) < maxMap; j++)
             {
-                /*
-                 * if ((range, j) is in ray)
-                 * {
-                 *      사방에 있는거 카피, 그위의 오브젝트도 카피
-                 * }
-                 * */
-            }
-            //Debug.Log(i + "th Floor End");
-            foreach (var obj in copyObjGrid)
-            {
-                if ((dir ? obj.Key.y : obj.Key.x) == i)
+                Vector2 point = dir ? new Vector2(j, range) : new Vector2(range, j);
+                if (IsInRay(parRay, PointToParRay(stPos, point, true)))
                 {
-                    if (IsInRay(parRay, PointToParRay(stPos, obj.Key, true)))
+                    // 사방의 바닥 카피, 그 위의 오브젝트도 카피
+                    Floor floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.FloorToInt(point.x), Mathf.FloorToInt(point.y));
+                    if (floor != null)
                     {
-                        /*copy object*/
-                        int nextx = dir ? obj.Key.x : Mathf.RoundToInt(2 * ldPos.x - obj.Key.x);
-                        int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - obj.Key.y) : obj.Key.y;
-                        ObjType type = obj.Value.GetType();
-
-                        MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), type, (type == ObjType.Mannequin ? ((Mannequin)(obj.Value)).isWhite : true));
+                        int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
+                        int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - floor.mapPos.y) : floor.mapPos.y;
+                        MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty), floor.isGoalFloor);
+                        if (floor.objOnFloor != null)
+                            MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                        yield return null;
+                    }
+                    floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.FloorToInt(point.x), Mathf.CeilToInt(point.y));
+                    if (floor != null)
+                    {
+                        int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
+                        int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - floor.mapPos.y) : floor.mapPos.y;
+                        MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty), floor.isGoalFloor);
+                        if (floor.objOnFloor != null)
+                            MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                        yield return null;
+                    }
+                    floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.CeilToInt(point.x), Mathf.FloorToInt(point.y));
+                    if (floor != null)
+                    {
+                        int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
+                        int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - floor.mapPos.y) : floor.mapPos.y;
+                        MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty), floor.isGoalFloor);
+                        if (floor.objOnFloor != null)
+                            MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                        yield return null;
+                    }
+                    floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.CeilToInt(point.x), Mathf.CeilToInt(point.y));
+                    if (floor != null)
+                    {
+                        int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
+                        int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - floor.mapPos.y) : floor.mapPos.y;
+                        MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty), floor.isGoalFloor);
+                        if (floor.objOnFloor != null)
+                            MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
                         yield return null;
                     }
                 }
             }
+            //Debug.Log(i + "th Floor End");
             foreach (var ply in copyPlayers)
             {
                 Floor plyFloor = ply.GetComponent<Player>().currentFloor;
@@ -251,7 +274,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     }
                 }
             }
-            //Debug.Log(i + "th Object End");
+            //Debug.Log(i + "th Player End");
         }
         MapManager.inst.currentMap.RemoveWall(mapPos);
     }
@@ -337,7 +360,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
     {
         foreach (Pair pair in _parRay)
         {
-            if (pair.l <= _obj && pair.r >= _obj) return true;
+            if (pair.l < _obj && pair.r > _obj) return true;
         }
         return false;
     }
