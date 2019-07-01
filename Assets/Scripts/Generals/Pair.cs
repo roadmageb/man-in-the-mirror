@@ -2,19 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pair<L, R>
+public class Pair
 {
-    public L l;
-    public R r;
+    public float l;
+    public float r;
 
-    public Pair(L _l, R _r)
+    public Pair(float _l, float _r)
     {
         this.l = _l;
         this.r = _r;
     }
 
-    public Pair<R, L> Swap()
+    public Pair Swap()
     {
-        return new Pair<R, L>(r, l);
+        return new Pair(r, l);
+    }
+
+    public Pair ApplyMargin(float margin)
+    {
+        return new Pair(l - margin, r + margin);
     }
 }
