@@ -7,17 +7,6 @@ using System.IO;
 
 public class MapEditor : SingletonBehaviour<MapEditor>
 {
-    class MapSaveData
-    {
-        public TileMode tag;
-        public float xPos, yPos;
-        public MapSaveData(TileMode _tag, Vector2 _pos)
-        {
-            tag = _tag;
-            xPos = _pos.x;
-            yPos = _pos.y;
-        }
-    }
     public enum TileMode { None, Floor, Normal, Mirror, StartFloor, Briefcase, Camera, WMannequin, BMannequin, goalFloor };
     public Map currentMap;
     public Map[] stage;
@@ -52,41 +41,41 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             Debug.Log("There is no start floor.");
         else
         {
-            List<MapSaveData> mapSaveData = new List<MapSaveData>();
-            mapSaveData.Add(new MapSaveData(TileMode.None, new Vector2(currentMap.maxMapSize, currentMap.maxMapSize)));
+            MapSaveData mapSaveData = new MapSaveData();
+            mapSaveData.AddObject(TileMode.None, new Vector2(currentMap.maxMapSize, 0));
             foreach(Transform child in currentMap.walls.transform)
             {
                 Wall temp = child.GetComponent<Wall>();
                 if (temp is NormalWall)
-                    mapSaveData.Add(new MapSaveData(TileMode.Normal, temp.mapPos));
+                    mapSaveData.AddObject(TileMode.Normal, temp.mapPos);
                 else
-                    mapSaveData.Add(new MapSaveData(TileMode.Mirror, temp.mapPos));
+                    mapSaveData.AddObject(TileMode.Mirror, temp.mapPos);
             }
             foreach(Transform child in currentMap.floors.transform)
             {
                 Floor temp = child.GetComponent<Floor>();
-                mapSaveData.Add(new MapSaveData(TileMode.Floor, temp.mapPos));
+                mapSaveData.AddObject(TileMode.Floor, temp.mapPos);
                 if (child.GetComponent<Floor>().isGoalFloor)
-                    mapSaveData.Add(new MapSaveData(TileMode.goalFloor, temp.mapPos));
+                    mapSaveData.AddObject(TileMode.goalFloor, temp.mapPos);
             }
             foreach(Floor child in currentMap.startFloors)
             {
                 Floor temp = child.GetComponent<Floor>();
-                mapSaveData.Add(new MapSaveData(TileMode.StartFloor, temp.mapPos));
+                mapSaveData.AddObject(TileMode.StartFloor, temp.mapPos);
             }
             foreach (Transform child in currentMap.objects.transform)
             {
                 IObject temp = child.GetComponent<IObject>();
                 if (temp.GetType() == ObjType.Briefcase)
-                    mapSaveData.Add(new MapSaveData(TileMode.Briefcase, temp.GetPos()));
+                    mapSaveData.AddObject(TileMode.Briefcase, temp.GetPos());
                 else if(temp.GetType() == ObjType.Camera)
-                    mapSaveData.Add(new MapSaveData(TileMode.Camera, temp.GetPos()));
+                    mapSaveData.AddObject(TileMode.Camera, temp.GetPos());
                 else if (temp.GetType() == ObjType.Mannequin)
                 {
                     if (temp.GetObject().GetComponent<Mannequin>().isWhite)
-                        mapSaveData.Add(new MapSaveData(TileMode.WMannequin, temp.GetPos()));
+                        mapSaveData.AddObject(TileMode.WMannequin, temp.GetPos());
                     else
-                        mapSaveData.Add(new MapSaveData(TileMode.BMannequin, temp.GetPos()));
+                        mapSaveData.AddObject(TileMode.BMannequin, temp.GetPos());
                 }
             }
             File.WriteAllText(localPath, JsonConvert.SerializeObject(mapSaveData));

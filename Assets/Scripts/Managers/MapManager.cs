@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using UnityEngine.AI;
-using System.Text;
+using Newtonsoft.Json;
 
 public class MapManager : SingletonBehaviour<MapManager>
 {
@@ -24,12 +23,10 @@ public class MapManager : SingletonBehaviour<MapManager>
     public Map[] stage;
     public BulletFactory bulletFactory;
 
-    public TextAsset asd;
-
     public void LoadMap(Map _newMap)
     {
-
-
+        //var loadedMapData = JsonConvert.DeserializeObject<MapEditor.MapSaveData>(_newMap.ToString());
+        //loadedMapData.
 
 
         /*if (currentMap != null)
