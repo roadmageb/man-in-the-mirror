@@ -206,19 +206,17 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 }
             }
             //Debug.Log(i + "th Wall End");
-            foreach (var floor in copyFloorGrid)
+            float range = i - 0.5f;
+            float minMap = -1 * MapManager.inst.currentMap.maxMapSize / 2 - 1.5f;
+            float maxMap = MapManager.inst.currentMap.maxMapSize / 2 + 1.5f;
+            for (float j = minMap; Mathf.Abs(j) < maxMap; j++)
             {
-                if ((dir ? floor.Key.y : floor.Key.x) == i)
-                {
-                    if (IsInRay(parRay, PointToParRay(stPos, floor.Key, true)))
-                    {
-                        /*copy floor*/
-                        int nextx = dir ? floor.Key.x : Mathf.RoundToInt(2 * ldPos.x - floor.Key.x);
-                        int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - floor.Key.y) : floor.Key.y;
-                        MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty));
-                        yield return null;
-                    }
-                }
+                /*
+                 * if ((range, j) is in ray)
+                 * {
+                 *      사방에 있는거 카피, 그위의 오브젝트도 카피
+                 * }
+                 * */
             }
             //Debug.Log(i + "th Floor End");
             foreach (var obj in copyObjGrid)
