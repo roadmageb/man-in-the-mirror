@@ -8,18 +8,19 @@ public class MapManager : SingletonBehaviour<MapManager>
 {
     public bool isMapEditingOn;
     public NavMeshSurface surface;
-    public Map currentMap, emptyMap;
+    public Map currentMap;
     [Header("Instances")]
     public Floor floor;
     public NormalWall normalWall;
     public Mirror mirror;
     public GameObject truthBullet, fakeBullet, mirrorBullet;
-    [Tooltip("Objects without mannequin.")]
     public GameObject briefCase;
     public GameObject cameraTurret;
     public GameObject[] mannequins;
-    public List<GameObject> players;
     public GameObject player;
+    [Header("All players")]
+    public List<GameObject> players;
+    [Header("All stages")]
     public TextAsset[] stage;
     public BulletFactory bulletFactory;
 
@@ -29,11 +30,8 @@ public class MapManager : SingletonBehaviour<MapManager>
     /// <param name="_newMap">The json file of the map data to be created.</param>
     public void LoadMap(TextAsset _newMap)
     {
-        if (currentMap != null)
-            Destroy(currentMap.gameObject);
         var loadedMapData = JsonConvert.DeserializeObject<MapEditor.MapSaveData>(_newMap.ToString());
-        currentMap = Instantiate(emptyMap, new Vector3(0, 0, 0), Quaternion.identity);
-        GameManager.inst.ResetClearIndex();
+        currentMap = Instantiate(currentMap, new Vector3(0, 0, 0), Quaternion.identity);
         currentMap.InitiateMap();
         currentMap.maxMapSize = (int)loadedMapData.objects[0].xPos;
         for(int i = 1; i < loadedMapData.objects.Count; i++)
@@ -82,21 +80,8 @@ public class MapManager : SingletonBehaviour<MapManager>
         GameManager.inst.uiGenerator.GenerateAllClearUI();
         for (int i = 0; i < currentMap.startFloors.Count; i++)
             PlayerController.inst.CreatePlayer(currentMap.startFloors[i]);
-        for (int i = 0; i < currentMap.initialBullets.Count; i++)
-            PlayerController.inst.bulletList.Add(currentMap.initialBullets[i]);
-
-
-        /*if (currentMap != null)
-            Destroy(currentMap.gameObject);
-        currentMap = Instantiate(_newMap);
-        currentMap.transform.position = new Vector3(0, 0, 0);
-        surface.BuildNavMesh();
-        GameManager.inst.SetClearIndex(currentMap);
-        GameManager.inst.uiGenerator.GenerateAllClearUI();
-        for (int i = 0; i < currentMap.startFloors.Count; i++)
-            PlayerController.inst.CreatePlayer(currentMap.startFloors[i]);
-        for (int i = 0; i < currentMap.initialBullets.Count; i++)
-            PlayerController.inst.bulletList.Add(currentMap.initialBullets[i]);*/
+        for (int i = 0; i < loadedMapData.bullets.Count; i++)
+            PlayerController.inst.bulletList.Add(loadedMapData.bullets[i]);
     }
     public IEnumerator Rebaker()
     {

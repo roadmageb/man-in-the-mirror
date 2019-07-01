@@ -2668,9 +2668,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ad2f39c48d82964f86cd2d6e1e94641, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMap: {fileID: 0}
-  stage:
-  - {fileID: 630498074781569474, guid: 759f352c81f1b5a40b2d8d241cdf273b, type: 3}
+  currentMap: {fileID: 630498074781569474, guid: 759f352c81f1b5a40b2d8d241cdf273b,
+    type: 3}
   tile: {fileID: 7449840556337937162, guid: 90d0ab9f40a0ddc4c871130319d86cd5, type: 3}
   modeSign: {fileID: 153720729}
   startSign: {fileID: 1215997560627761150, guid: 106914c4661964b47ad09efcc4bfba69,

@@ -1134,17 +1134,6 @@ PrefabInstance:
       propertyPath: surface
       value: 
       objectReference: {fileID: 2102809461}
-    - target: {fileID: 3268100033343711389, guid: 11285456de5f1854d947bea83275646f,
-        type: 3}
-      propertyPath: stage.Array.data[0]
-      value: 
-      objectReference: {fileID: 4900000, guid: 9bcb1c6d3d1a47046806d043fdde78d7, type: 3}
-    - target: {fileID: 3268100033343711389, guid: 11285456de5f1854d947bea83275646f,
-        type: 3}
-      propertyPath: emptyMap
-      value: 
-      objectReference: {fileID: 630498074781569474, guid: 759f352c81f1b5a40b2d8d241cdf273b,
-        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11285456de5f1854d947bea83275646f, type: 3}
 --- !u!1001 &7277015660625800392

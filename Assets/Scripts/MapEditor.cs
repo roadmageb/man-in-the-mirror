@@ -29,10 +29,12 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     {
         public List<objectData> objects;
         public List<clearData> clears;
+        public List<BulletCode> bullets;
         public MapSaveData()
         {
             objects = new List<objectData>();
             clears = new List<clearData>();
+            bullets = new List<BulletCode>();
         }
         public void AddObject(TileMode _tag, Vector2 _pos)
         {
@@ -44,7 +46,6 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         }
     }
     public Map currentMap;
-    public Map[] stage;
     public MapEditorTile tile;
     TileMode currentMode;
     public Text modeSign;
@@ -58,8 +59,6 @@ public class MapEditor : SingletonBehaviour<MapEditor>
 
     public void StartMap(Map _newMap)
     {
-        if (currentMap != null)
-            Destroy(currentMap.gameObject);
         currentMap = Instantiate(_newMap);
         currentMap.transform.position = new Vector3(0, 0, 0);
         currentMap.InitiateMap();
@@ -115,6 +114,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             }
             for(int i = 0; i < currentMap.clearConditions.Count; i++)
                 mapSaveData.AddClears(currentMap.clearConditions[i].type, currentMap.clearConditions[i].goal);
+            for (int i = 0; i < currentMap.initialBullets.Count; i++)
+                mapSaveData.bullets.Add(currentMap.initialBullets[i]);
             File.WriteAllText(localPath, JsonConvert.SerializeObject(mapSaveData));
             Debug.Log("Map saved at " + localPath);}
     }
@@ -180,7 +181,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     // Start is called before the first frame update
     void Start()
     {
-        StartMap(stage[0]);
+        StartMap(currentMap);
         SwitchMode(0);
     }
 
