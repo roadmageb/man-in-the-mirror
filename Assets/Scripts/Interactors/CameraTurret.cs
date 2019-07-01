@@ -11,6 +11,7 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 	public void Init(Floor floor)
     {
 		this.floor = floor;
+        floor.objOnFloor = this;
 		PlayerController.inst.OnPlayerMove += Interact;
 	}
 

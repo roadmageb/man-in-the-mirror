@@ -66,6 +66,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     public void Init(Floor floor)
     {
         this.floor = floor;
+        floor.objOnFloor = this;
         transform.Rotate(new Vector3(0, Random.Range(0, 4) * 90, 0));
     }
 
