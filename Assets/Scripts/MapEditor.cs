@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Newtonsoft.Json;
 using System.IO;
 
 public class MapEditor : SingletonBehaviour<MapEditor>
@@ -63,7 +64,6 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             }
             foreach(Transform child in currentMap.floors.transform)
             {
-                Debug.Log("dD");
                 Floor temp = child.GetComponent<Floor>();
                 mapSaveData.Add(new MapSaveData(TileMode.Floor, temp.mapPos));
                 if (child.GetComponent<Floor>().isGoalFloor)
@@ -89,13 +89,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         mapSaveData.Add(new MapSaveData(TileMode.BMannequin, temp.GetPos()));
                 }
             }
-
-            List<MapSaveData> a = new List<MapSaveData>();
-            a.Add(new MapSaveData(TileMode.None, new Vector2(2, 3)));
-            string mapSaveJson = JsonUtility.ToJson(a);
-            Debug.Log(mapSaveJson);
-            File.WriteAllText(localPath, mapSaveJson);
-            
+            File.WriteAllText(localPath, JsonConvert.SerializeObject(mapSaveData));
             Debug.Log("Map saved at " + localPath);}
     }
     public void SaveCurrentMap()
