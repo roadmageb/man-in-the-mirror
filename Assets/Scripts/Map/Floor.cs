@@ -10,8 +10,7 @@ public class Floor : MonoBehaviour
     public Vector2Int mapPos;
     public bool isGoalFloor = false;
     public IObject objOnFloor = null;
-
-    public int copyCounter = 0; // count for mirror copy
+    public bool isPlayerOn = false;
 
     // Start is called before the first frame update
     void Start()

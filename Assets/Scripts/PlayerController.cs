@@ -38,6 +38,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
         }
         GameObject player = Instantiate(MapManager.inst.player, floor.transform.position + new Vector3(0, 0.1f, 0), Quaternion.identity);
         player.GetComponent<Player>().currentFloor = floor;
+        floor.isPlayerOn = true;
         MapManager.inst.players.Add(player);
         if (GameManager.nPlayer >= 0)
         {
@@ -67,6 +68,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
         {
             if (obj.GetComponent<Player>().currentFloor == floor)
             {
+                floor.isPlayerOn = false;
                 MapManager.inst.players.Remove(obj);
                 if (GameManager.nPlayer >= 0)
                 {
