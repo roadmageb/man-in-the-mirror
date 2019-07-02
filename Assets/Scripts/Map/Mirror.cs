@@ -154,6 +154,8 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             //Debug.Log(i + "th Wall End");
         }
 
+        yield return new WaitForSeconds(3f);
+
         copyFloorGrid = new Dictionary<Vector2Int, Floor>(MapManager.inst.currentMap.floorGrid);
         copyObjGrid = new Dictionary<Vector2Int, IObject>(MapManager.inst.currentMap.objectGrid);
         copyWallGrid = new Dictionary<Vector2, Wall>(MapManager.inst.currentMap.wallGrid);
@@ -205,17 +207,20 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     }
                 }
             }
-            //Debug.Log(i + "th Wall End");
+            Debug.Log(i + "th Wall End");
             float range = i + 0.5f * side;
             float minMap = -1 * MapManager.inst.currentMap.maxMapSize / 2 - 1.5f;
             float maxMap = MapManager.inst.currentMap.maxMapSize / 2 + 1.5f;
-            for (float j = minMap; Mathf.Abs(j) < maxMap; j++)
+            //Debug.Log("value: " + minMap + ", " + maxMap);
+            for (float j = minMap; j < maxMap; j += 1)
             {
                 Vector2 point = dir ? new Vector2(j, range) : new Vector2(range, j);
                 if (IsInRay(parRay, PointToParRay(stPos, point, true)))
                 {
+                    Debug.Log("inside " + point);
                     // 사방의 바닥 카피, 그 위의 오브젝트도 카피
                     Floor floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.FloorToInt(point.x), Mathf.FloorToInt(point.y));
+                    Debug.Log(floor);
                     if (floor != null)
                     {
                         int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
@@ -226,6 +231,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         yield return null;
                     }
                     floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.FloorToInt(point.x), Mathf.CeilToInt(point.y));
+                    Debug.Log(floor);
                     if (floor != null)
                     {
                         int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
@@ -236,6 +242,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         yield return null;
                     }
                     floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.CeilToInt(point.x), Mathf.FloorToInt(point.y));
+                    Debug.Log(floor);
                     if (floor != null)
                     {
                         int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
@@ -246,6 +253,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         yield return null;
                     }
                     floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.CeilToInt(point.x), Mathf.CeilToInt(point.y));
+                    Debug.Log(floor);
                     if (floor != null)
                     {
                         int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
@@ -257,7 +265,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     }
                 }
             }
-            //Debug.Log(i + "th Floor End");
+            Debug.Log(i + "th Floor End");
             foreach (var ply in copyPlayers)
             {
                 Floor plyFloor = ply.GetComponent<Player>().currentFloor;
@@ -346,6 +354,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         bool output = false;
         foreach (Pair pair in _parRay)
         {
+            Debug.Log("IsinRay (" + pair.l + ", " + pair.r + ") " + _range.l + ", " + _range.r);
             if (pair.r <= _range.l || pair.l >= _range.r) continue;
             else
             {
@@ -360,7 +369,8 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
     {
         foreach (Pair pair in _parRay)
         {
-            if (pair.l < _obj && pair.r > _obj) return true;
+            Debug.Log("IsinRay (" + pair.l + ", " + pair.r + ") " + _obj);
+            if (pair.l <= _obj && pair.r >= _obj) return true;
         }
         return false;
     }
