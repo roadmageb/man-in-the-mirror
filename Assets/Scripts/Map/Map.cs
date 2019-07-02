@@ -242,6 +242,11 @@ public class Map : MonoBehaviour
         else
             Debug.Log("Object already exists at : (" + pos.x + ", " + pos.y + ")");
     }
+    public void CreateObject(Vector2Int pos, ObjType objType, BulletCode _dropBullet)
+    {
+        CreateObject(pos, objType);
+        GetObjectAtPos(pos).GetObject().GetComponent<Briefcase>().dropBullet = _dropBullet;
+    }
     /// <summary>
     /// Remove Object at position.
     /// </summary>

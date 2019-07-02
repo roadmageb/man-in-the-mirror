@@ -2,13 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum BulletCode
-{
-    True,
-    False,
-    Mirror
-}
-
 public class BulletFactory
 {
 	private GameObject truthBulletPrefab = null, fakeBulletPrefab = null, mirrorBulletPrefab = null;

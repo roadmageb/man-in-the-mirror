@@ -24,6 +24,14 @@ public enum WallType
     Mirror
 }
 
+public enum BulletCode
+{
+    True,
+    False,
+    Mirror,
+    None
+}
+
 public enum ObjType
 {
     NULL,

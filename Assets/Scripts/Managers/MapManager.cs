@@ -34,6 +34,7 @@ public class MapManager : SingletonBehaviour<MapManager>
         currentMap = Instantiate(currentMap, new Vector3(0, 0, 0), Quaternion.identity);
         currentMap.InitiateMap();
         currentMap.maxMapSize = (int)loadedMapData.objects[0].xPos;
+        int casesIndex = 0;
         for(int i = 1; i < loadedMapData.objects.Count; i++)
         {
             var temp = loadedMapData.objects[i];
@@ -52,7 +53,7 @@ public class MapManager : SingletonBehaviour<MapManager>
                     currentMap.startFloors.Add(currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)));
                     break;
                 case TileMode.Briefcase:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase);
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, loadedMapData.cases[casesIndex++]);
                     break;
                 case TileMode.Camera:
                     currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Camera);

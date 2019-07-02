@@ -6,7 +6,7 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 {
 	[SerializeField]
 	private Floor floor = null;
-    private BulletCode dropBullet;
+    public BulletCode dropBullet;
 	public Vector2Int Position { get { return floor != null ? floor.mapPos : throw new UnassignedReferenceException("Floor of Interactor is not assigned"); } }
 
     public GameObject GetObject()
@@ -35,9 +35,10 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 	public void Interact(Vector2Int position)
 	{
 		Debug.Log(Position + " " + position);
-        PlayerController.inst.AddBullet(dropBullet);
         if (Position == position)
-		{
+        {
+            if (dropBullet != BulletCode.None)
+                PlayerController.inst.AddBullet(dropBullet);
             if (GameManager.aCase >= 0)
                 MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone(1);
             if (GameManager.nCase >= 0)

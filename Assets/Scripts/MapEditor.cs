@@ -29,11 +29,13 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     {
         public List<objectData> objects;
         public List<clearData> clears;
+        public List<BulletCode> cases;
         public List<BulletCode> bullets;
         public MapSaveData()
         {
             objects = new List<objectData>();
             clears = new List<clearData>();
+            cases = new List<BulletCode>();
             bullets = new List<BulletCode>();
         }
         public void AddObject(TileMode _tag, Vector2 _pos)
@@ -101,7 +103,10 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             {
                 IObject temp = child.GetComponent<IObject>();
                 if (temp.GetType() == ObjType.Briefcase)
+                {
+                    mapSaveData.cases.Add(temp.GetObject().GetComponent<Briefcase>().dropBullet);
                     mapSaveData.AddObject(TileMode.Briefcase, temp.GetPos());
+                }
                 else if(temp.GetType() == ObjType.Camera)
                     mapSaveData.AddObject(TileMode.Camera, temp.GetPos());
                 else if (temp.GetType() == ObjType.Mannequin)
