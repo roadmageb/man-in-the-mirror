@@ -112,6 +112,11 @@ public class PlayerController : SingletonBehaviour<PlayerController>
         }
     }
 
+    public void AddBullet(BulletCode newBullet)
+    {
+        bulletList.Add(newBullet);
+    }
+
     //For test
     public string GetCurrentBullet()
     {

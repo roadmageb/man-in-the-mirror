@@ -26,9 +26,9 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 
     public void Interact(Vector2Int pos)
     {
-		if (Position.IsInAdjacentArea(pos, 1))
+		if (Position.IsInAdjacentArea(pos, 1) && MapManager.inst.currentMap.GetWallAtPos((Vector2)(Position + pos) / 2) == null)
 		{
-			Debug.Log(Position.x + " " + Position.y +" Stage Restart!");
+			Debug.Log(Position.x + " " + Position.y + " Stage Restart!");
             //TODO : Restart Level
         }
     }
