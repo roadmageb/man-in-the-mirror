@@ -106,6 +106,7 @@ public class Player : MonoBehaviour
         newBullet.transform.position = shootingFinger.transform.position;
         newBullet.transform.LookAt(shootingArm.transform.forward + newBullet.transform.position);
         newBullet.Init(shootingArm.transform.forward);
+        PlayerController.inst.bulletList.RemoveAt(0);
     }
 
     private void OnTriggerEnter(Collider other)

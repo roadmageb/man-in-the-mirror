@@ -9,7 +9,6 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     public Player currentPlayer;
     public bool isPlayerMoving, isPlayerShooting, isZooming;
     public List<BulletCode> bulletList = new List<BulletCode>();
-    private int bulletCount = 0;
     private Vector2Int prePos;
     public Vector2Int MapPos
     {
@@ -120,7 +119,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     //For test
     public string GetCurrentBullet()
     {
-        return bulletList.Count > 0 ? bulletList[bulletCount].ToString() : null;
+        return bulletList.Count > 0 ? bulletList[0].ToString() : null;
     }
 
     // Start is called before the first frame update
@@ -174,8 +173,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                 {
                     if (bulletList.Count > 0)
                     {
-                        currentPlayer.Shoot(bulletList[bulletCount]);
-                        bulletList.RemoveAt(bulletCount);
+                        currentPlayer.Shoot(bulletList[0]);
                     }
                 }
             }

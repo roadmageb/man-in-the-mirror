@@ -35,7 +35,7 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 	public void Interact(Vector2Int position)
 	{
 		Debug.Log(Position + " " + position);
-        PlayerController.inst.bulletList.Add(dropBullet);
+        PlayerController.inst.AddBullet(dropBullet);
         if (Position == position)
 		{
             if (GameManager.aCase >= 0)

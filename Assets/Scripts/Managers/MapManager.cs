@@ -81,7 +81,7 @@ public class MapManager : SingletonBehaviour<MapManager>
         for (int i = 0; i < currentMap.startFloors.Count; i++)
             PlayerController.inst.CreatePlayer(currentMap.startFloors[i]);
         for (int i = 0; i < loadedMapData.bullets.Count; i++)
-            PlayerController.inst.bulletList.Add(loadedMapData.bullets[i]);
+            PlayerController.inst.AddBullet(loadedMapData.bullets[i]);
     }
     public IEnumerator Rebaker()
     {
