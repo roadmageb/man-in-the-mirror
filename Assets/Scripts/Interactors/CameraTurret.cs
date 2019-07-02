@@ -23,6 +23,11 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
             MapManager.inst.currentMap.clearConditions[GameManager.nTurret].IsDone(1);
         Destroy(gameObject);
     }
+    
+    private void OnDestroy()
+    {
+        PlayerController.inst.OnPlayerMove -= Interact;
+    }
 
     public void Interact(Vector2Int pos)
     {

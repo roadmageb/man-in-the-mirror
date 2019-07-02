@@ -32,7 +32,12 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
         dropBullet = _dropBullet;
     }
 
-	public void Interact(Vector2Int position)
+    private void OnDestroy()
+    {
+        PlayerController.inst.OnPlayerMove -= Interact;
+    }
+
+    public void Interact(Vector2Int position)
 	{
 		Debug.Log(Position + " " + position);
         if (Position == position)

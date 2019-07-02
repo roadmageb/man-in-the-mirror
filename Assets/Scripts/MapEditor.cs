@@ -50,6 +50,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public Map currentMap;
     public MapEditorTile tile;
     TileMode currentMode;
+    BulletCode bulletMode;
     public Text modeSign;
     public GameObject startSign, goalSign, mapSizeSetter, mapEditorTiles;
     public Dictionary<Floor, GameObject> startSigns, goalSigns;
@@ -150,10 +151,15 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         mapSizeSetter.SetActive(true);
         isEditorStarted = false;
     }
-    public void SwitchMode(int mode)
+    public void SwitchMode(int _tileMode)
     {
-        currentMode = (TileMode)mode;
+        currentMode = (TileMode)_tileMode;
+        if (currentMode != TileMode.Briefcase) SwitchBulletMode(3);
         SetModeSign();
+    }
+    public void SwitchBulletMode(int _bulletMode)
+    {
+        bulletMode = (BulletCode)_bulletMode;
     }
     public void SetCreateMode(bool mode)
     {
@@ -188,6 +194,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     {
         StartMap(currentMap);
         SwitchMode(0);
+        SwitchBulletMode((int)BulletCode.None);
     }
 
     // Update is called once per frame
@@ -230,9 +237,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                     if (isCreateMode)
                     {
                         if(currentMap.startFloors.Contains(currentMap.GetFloorAtPos(clickedPos)))
-                        {
                             Debug.Log("Start floor already exists at : (" + clickedPos.x + ", " + clickedPos.y + ")");
-                        }
                         else
                         {
                             currentMap.startFloors.Add(currentMap.GetFloorAtPos(clickedPos));
@@ -243,9 +248,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                     else
                     {
                         if (!currentMap.startFloors.Contains(currentMap.GetFloorAtPos(clickedPos)))
-                        {
                             Debug.Log("Start floor doesn't exist at : (" + clickedPos.x + ", " + clickedPos.y + ")");
-                        }
                         else
                         {
                             currentMap.startFloors.Remove(currentMap.GetFloorAtPos(clickedPos));
@@ -287,6 +290,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         Debug.Log(wallPos);
                         if(currentMode == TileMode.BMannequin)
                             currentMap.CreateObject(clickedPos, ObjType.Mannequin, false);
+                        else if(currentMode == TileMode.Briefcase)
+                            currentMap.CreateObject(clickedPos, ObjType.Briefcase, bulletMode);
                         else
                             currentMap.CreateObject(clickedPos, (ObjType)((int)currentMode - 4));
                     }
