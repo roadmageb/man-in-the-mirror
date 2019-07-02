@@ -11,8 +11,6 @@ public class Floor : MonoBehaviour
     public bool isGoalFloor = false;
     public IObject objOnFloor = null;
 
-    public int copyCounter = 0; // count for mirror copy
-
     // Start is called before the first frame update
     void Start()
     {

@@ -66,57 +66,20 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         }
         
         Dictionary<Vector2Int, Floor> copyFloorGrid = new Dictionary<Vector2Int, Floor>(MapManager.inst.currentMap.floorGrid);
+        Dictionary<Vector2Int, int> floorCountGrid = new Dictionary<Vector2Int, int>();
+        foreach (var floor in copyFloorGrid)
+        {
+            floorCountGrid.Add(floor.Key, 0);
+        }
         Dictionary<Vector2Int, IObject> copyObjGrid = new Dictionary<Vector2Int, IObject>(MapManager.inst.currentMap.objectGrid);
         Dictionary<Vector2, Wall> copyWallGrid = new Dictionary<Vector2, Wall>(MapManager.inst.currentMap.wallGrid);
         List<GameObject> copyPlayers = new List<GameObject>(MapManager.inst.players);
+        List<Pair> copyParRay = new List<Pair>(parRay);
 
         // remove backside of mirror
         for (int j = iBack; Mathf.Abs(j) < MapManager.inst.currentMap.maxMapSize; j -= side)
         {
             //Debug.Log(j);
-            foreach (var obj in copyObjGrid)
-            {
-                if ((dir ? obj.Key.y : obj.Key.x) == j)
-                {
-                    if (IsInRay(parRay, PointToParRay(stPos, obj.Key, false)))
-                    {
-                        /*remove object*/
-                        MapManager.inst.currentMap.RemoveObject(obj.Key);
-                        yield return null;
-                    }
-                }
-            }
-            foreach (var ply in copyPlayers)
-            {
-                if (ply)
-                {
-                    Floor plyFloor = ply.GetComponent<Player>().currentFloor;
-                    if ((dir ? plyFloor.mapPos.y : plyFloor.mapPos.x) == j)
-                    {
-
-                        if (IsInRay(parRay, PointToParRay(stPos, plyFloor.mapPos, false)))
-                        {
-                            /*remove player*/
-                            PlayerController.inst.RemovePlayer(plyFloor.mapPos);
-                            yield return null;
-                        }
-                    }
-                }
-            }
-            //Debug.Log(i + "th Object End");
-            foreach (var floor in copyFloorGrid)
-            {
-                if ((dir ? floor.Key.y : floor.Key.x) == j)
-                {
-                    if (IsInRay(parRay, PointToParRay(stPos, floor.Key, false)))
-                    {
-                        /*remove floor*/
-                        MapManager.inst.currentMap.RemoveFloor(floor.Key);
-                        yield return null;
-                    }
-                }
-            }
-            //Debug.Log(i + "th Floor End");
             float rangeL = j - 0.25f * side;
             float rangeR = j + 0.25f * side;
             foreach (var wall in copyWallGrid)
@@ -124,12 +87,13 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 float wallPos = (dir ? wall.Key.y : wall.Key.x);
                 if (wall.Value.GetInstanceID() != GetInstanceID() && (side < 0 ? wallPos < rangeL && wallPos > rangeR : wallPos > rangeL && wallPos < rangeR))
                 {
-                    Pair  pair = new Pair (PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
+                    Pair pair = new Pair(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
                     if (pair.l > pair.r) pair.Swap();
-                    if (IsInRay(parRay, pair))
+                    if (IsInRay(copyParRay, pair))
                     {
                         /*remove wall*/
                         MapManager.inst.currentMap.RemoveWall(wall.Key);
+                        SubtractRay(copyParRay, pair);
                         yield return null;
                     }
                 }
@@ -141,22 +105,132 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 float wallPos = (dir ? wall.Key.y : wall.Key.x);
                 if (wall.Value.GetInstanceID() != GetInstanceID() && (side < 0 ? wallPos < rangeL && wallPos > rangeR : wallPos > rangeL && wallPos < rangeR))
                 {
-                    Pair pair = new Pair (PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
+                    Pair pair = new Pair(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
                     if (pair.l > pair.r) pair.Swap();
-                    if (IsInRay(parRay, pair))
+                    if (IsInRay(copyParRay, pair))
                     {
                         /*remove wall*/
                         MapManager.inst.currentMap.RemoveWall(wall.Key);
+                        SubtractRay(copyParRay, pair);
                         yield return null;
                     }
                 }
             }
             //Debug.Log(i + "th Wall End");
+            foreach (var ply in copyPlayers)
+            {
+                if (ply)
+                {
+                    Floor plyFloor = ply.GetComponent<Player>().currentFloor;
+                    if ((dir ? plyFloor.mapPos.y : plyFloor.mapPos.x) == j)
+                    {
+
+                        if (IsInRay(copyParRay, PointToParRay(stPos, plyFloor.mapPos, false)))
+                        {
+                            /*remove player*/
+                            PlayerController.inst.RemovePlayer(plyFloor.mapPos);
+                            yield return null;
+                        }
+                    }
+                }
+            }
+            //Debug.Log(i + "th Object End");
+            float range = j - 0.5f * side;
+            float minMap = -1 * MapManager.inst.currentMap.maxMapSize / 2 - 1.5f;
+            float maxMap = MapManager.inst.currentMap.maxMapSize / 2 + 1.5f;
+            //Debug.Log("value: " + minMap + ", " + maxMap);
+            for (float k = minMap; k < maxMap; k += 1)
+            {
+                Vector2 point = dir ? new Vector2(k, range) : new Vector2(range, k);
+                if (IsInRay(copyParRay, PointToParRay(stPos, point, false)))
+                {
+                    Debug.Log("inside " + point + ", ");
+                    // 사방의 바닥 카피, 그 위의 오브젝트도 카피
+                    Floor floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.FloorToInt(point.x), Mathf.FloorToInt(point.y));
+                    if (floor != null)
+                    {
+                        Debug.Log(floor.mapPos);
+                        if (IsInRay(copyParRay, PointToParRay(stPos, floor.mapPos, false)))
+                        {
+                            floorCountGrid[floor.mapPos] = 1;
+                        }
+                        if (floorCountGrid[floor.mapPos] == 1)
+                        {
+                            if (floor.objOnFloor != null)
+                                MapManager.inst.currentMap.RemoveObject(floor.mapPos);
+                            Debug.Log("remove " + floor.mapPos);
+                            MapManager.inst.currentMap.RemoveFloor(floor.mapPos);
+                            yield return null;
+                        }
+                        floorCountGrid[floor.mapPos]++;
+                    }
+                    floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.FloorToInt(point.x), Mathf.CeilToInt(point.y));
+                    if (floor != null)
+                    {
+                        Debug.Log(floor.mapPos);
+                        if (IsInRay(copyParRay, PointToParRay(stPos, floor.mapPos, false)))
+                        {
+                            floorCountGrid[floor.mapPos] = 1;
+                        }
+                        if (floorCountGrid[floor.mapPos] == 1)
+                        {
+                            if (floor.objOnFloor != null)
+                                MapManager.inst.currentMap.RemoveObject(floor.mapPos);
+                            Debug.Log("remove " + floor.mapPos);
+                            MapManager.inst.currentMap.RemoveFloor(floor.mapPos);
+                            yield return null;
+                        }
+                        floorCountGrid[floor.mapPos]++;
+                    }
+                    floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.CeilToInt(point.x), Mathf.FloorToInt(point.y));
+                    if (floor != null)
+                    {
+                        Debug.Log(floor.mapPos);
+                        if (IsInRay(copyParRay, PointToParRay(stPos, floor.mapPos, false)))
+                        {
+                            floorCountGrid[floor.mapPos] = 1;
+                        }
+                        if (floorCountGrid[floor.mapPos] == 1)
+                        {
+                            if (floor.objOnFloor != null)
+                                MapManager.inst.currentMap.RemoveObject(floor.mapPos);
+                            Debug.Log("remove " + floor.mapPos);
+                            MapManager.inst.currentMap.RemoveFloor(floor.mapPos);
+                            yield return null;
+                        }
+                        floorCountGrid[floor.mapPos]++;
+                    }
+                    floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.CeilToInt(point.x), Mathf.CeilToInt(point.y));
+                    if (floor != null)
+                    {
+                        Debug.Log(floor.mapPos);
+                        if (IsInRay(copyParRay, PointToParRay(stPos, floor.mapPos, false)))
+                        {
+                            floorCountGrid[floor.mapPos] = 1;
+                        }
+                        if (floorCountGrid[floor.mapPos] == 1)
+                        {
+                            if (floor.objOnFloor != null)
+                                MapManager.inst.currentMap.RemoveObject(floor.mapPos);
+                            Debug.Log("remove " + floor.mapPos);
+                            MapManager.inst.currentMap.RemoveFloor(floor.mapPos);
+                            yield return null;
+                        }
+                        floorCountGrid[floor.mapPos]++;
+                    }
+                }
+            }
+            //Debug.Log(i + "th Floor End");
         }
 
         yield return new WaitForSeconds(3f);
 
         copyFloorGrid = new Dictionary<Vector2Int, Floor>(MapManager.inst.currentMap.floorGrid);
+        floorCountGrid = new Dictionary<Vector2Int, int>();
+        foreach(var floor in copyFloorGrid)
+        {
+            floorCountGrid.Add(floor.Key, 0);
+        }
         copyObjGrid = new Dictionary<Vector2Int, IObject>(MapManager.inst.currentMap.objectGrid);
         copyWallGrid = new Dictionary<Vector2, Wall>(MapManager.inst.currentMap.wallGrid);
         copyPlayers = new List<GameObject>(MapManager.inst.players);
@@ -207,7 +281,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     }
                 }
             }
-            Debug.Log(i + "th Wall End");
+            //Debug.Log(i + "th Wall End");
             float range = i + 0.5f * side;
             float minMap = -1 * MapManager.inst.currentMap.maxMapSize / 2 - 1.5f;
             float maxMap = MapManager.inst.currentMap.maxMapSize / 2 + 1.5f;
@@ -217,55 +291,87 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 Vector2 point = dir ? new Vector2(j, range) : new Vector2(range, j);
                 if (IsInRay(parRay, PointToParRay(stPos, point, true)))
                 {
-                    Debug.Log("inside " + point);
+                    //Debug.Log("inside " + point);
                     // 사방의 바닥 카피, 그 위의 오브젝트도 카피
                     Floor floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.FloorToInt(point.x), Mathf.FloorToInt(point.y));
-                    Debug.Log(floor);
+                    //Debug.Log(floor);
                     if (floor != null)
                     {
-                        int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
-                        int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - floor.mapPos.y) : floor.mapPos.y;
-                        MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty), floor.isGoalFloor);
-                        if (floor.objOnFloor != null)
-                            MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
-                        yield return null;
+                        if (IsInRay(parRay, PointToParRay(stPos, floor.mapPos, true)))
+                        {
+                            floorCountGrid[floor.mapPos] = 1;
+                        }
+                        if (floorCountGrid[floor.mapPos] == 1)
+                        {
+                            int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
+                            int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - floor.mapPos.y) : floor.mapPos.y;
+                            MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty), floor.isGoalFloor);
+                            if (floor.objOnFloor != null)
+                                MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                            yield return null;
+                        }
+                        floorCountGrid[floor.mapPos]++;
                     }
                     floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.FloorToInt(point.x), Mathf.CeilToInt(point.y));
-                    Debug.Log(floor);
+                    //Debug.Log(floor);
                     if (floor != null)
                     {
-                        int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
-                        int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - floor.mapPos.y) : floor.mapPos.y;
-                        MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty), floor.isGoalFloor);
-                        if (floor.objOnFloor != null)
-                            MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
-                        yield return null;
+                        if (IsInRay(parRay, PointToParRay(stPos, floor.mapPos, true)))
+                        {
+                            floorCountGrid[floor.mapPos] = 1;
+                        }
+                        if (floorCountGrid[floor.mapPos] == 1)
+                        {
+                            int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
+                            int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - floor.mapPos.y) : floor.mapPos.y;
+                            MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty), floor.isGoalFloor);
+                            if (floor.objOnFloor != null)
+                                MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                            yield return null;
+                        }
+                        floorCountGrid[floor.mapPos]++;
                     }
                     floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.CeilToInt(point.x), Mathf.FloorToInt(point.y));
-                    Debug.Log(floor);
+                    //Debug.Log(floor);
                     if (floor != null)
                     {
-                        int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
-                        int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - floor.mapPos.y) : floor.mapPos.y;
-                        MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty), floor.isGoalFloor);
-                        if (floor.objOnFloor != null)
-                            MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
-                        yield return null;
+                        if (IsInRay(parRay, PointToParRay(stPos, floor.mapPos, true)))
+                        {
+                            floorCountGrid[floor.mapPos] = 1;
+                        }
+                        if (floorCountGrid[floor.mapPos] == 1)
+                        {
+                            int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
+                            int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - floor.mapPos.y) : floor.mapPos.y;
+                            MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty), floor.isGoalFloor);
+                            if (floor.objOnFloor != null)
+                                MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                            yield return null;
+                        }
+                        floorCountGrid[floor.mapPos]++;
                     }
                     floor = MapManager.inst.currentMap.GetFloorAtPos(Mathf.CeilToInt(point.x), Mathf.CeilToInt(point.y));
-                    Debug.Log(floor);
+                    //Debug.Log(floor);
                     if (floor != null)
                     {
-                        int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
-                        int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - floor.mapPos.y) : floor.mapPos.y;
-                        MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty), floor.isGoalFloor);
-                        if (floor.objOnFloor != null)
-                            MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
-                        yield return null;
+                        if (IsInRay(parRay, PointToParRay(stPos, floor.mapPos, true)))
+                        {
+                            floorCountGrid[floor.mapPos] = 1;
+                        }
+                        if (floorCountGrid[floor.mapPos] == 1)
+                        {
+                            int nextx = dir ? floor.mapPos.x : Mathf.RoundToInt(2 * ldPos.x - floor.mapPos.x);
+                            int nexty = dir ? Mathf.RoundToInt(2 * ldPos.y - floor.mapPos.y) : floor.mapPos.y;
+                            MapManager.inst.currentMap.CreateFloor(new Vector2Int(nextx, nexty), floor.isGoalFloor);
+                            if (floor.objOnFloor != null)
+                                MapManager.inst.currentMap.CreateObject(new Vector2Int(nextx, nexty), floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                            yield return null;
+                        }
+                        floorCountGrid[floor.mapPos]++;
                     }
                 }
             }
-            Debug.Log(i + "th Floor End");
+            //Debug.Log(i + "th Floor End");
             foreach (var ply in copyPlayers)
             {
                 Floor plyFloor = ply.GetComponent<Player>().currentFloor;
@@ -354,7 +460,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         bool output = false;
         foreach (Pair pair in _parRay)
         {
-            Debug.Log("IsinRay (" + pair.l + ", " + pair.r + ") " + _range.l + ", " + _range.r);
+            //Debug.Log("IsinRay (" + pair.l + ", " + pair.r + ") " + _range.l + ", " + _range.r);
             if (pair.r <= _range.l || pair.l >= _range.r) continue;
             else
             {
@@ -369,7 +475,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
     {
         foreach (Pair pair in _parRay)
         {
-            Debug.Log("IsinRay (" + pair.l + ", " + pair.r + ") " + _obj);
+            //Debug.Log("IsinRay (" + pair.l + ", " + pair.r + ") " + _obj);
             if (pair.l <= _obj && pair.r >= _obj) return true;
         }
         return false;
