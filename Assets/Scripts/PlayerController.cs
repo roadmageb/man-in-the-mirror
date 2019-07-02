@@ -33,7 +33,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
         {
             if (obj.GetComponent<Player>().currentFloor == floor)
             {
-                Debug.Log("there are player on that floor.");
+                Debug.Log("Player already exists on that floor.");
                 return;
             }
         }
@@ -50,13 +50,9 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     public void CreatePlayer(Vector2Int floorPos)
     {
         if (MapManager.inst.currentMap.floorGrid.TryGetValue(floorPos, out Floor floor))
-        {
             CreatePlayer(floor);
-        }
         else
-        {
             Debug.Log("there are no floor");
-        }
     }
 
     public void RemovePlayer(Floor floor)

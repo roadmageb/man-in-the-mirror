@@ -45,7 +45,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMapEditingOn: 0
   surface: {fileID: 0}
-  currentMap: {fileID: 0}
+  currentMap: {fileID: 630498074781569474, guid: 759f352c81f1b5a40b2d8d241cdf273b,
+    type: 3}
   floor: {fileID: 19711883686801522, guid: 71931eea896a59a4683986cfd369b8ee, type: 3}
   normalWall: {fileID: 2953616027608884528, guid: a4dcd71ec9f819f4e88c7b5ac24f4b0d,
     type: 3}
@@ -66,7 +67,7 @@ MonoBehaviour:
   - {fileID: 6840018466224391531, guid: d7070c786deaa3a4082f9339da091b46, type: 3}
   - {fileID: 6169104080419908266, guid: 420a4f921e52a4141b80a3eefcd511e6, type: 3}
   - {fileID: 87051754405567689, guid: 2a2831d520acdd3408d8a04673423e2a, type: 3}
-  players: []
   player: {fileID: 494213313239918027, guid: 449b2ca4d925da541bb45c84b63aab98, type: 3}
+  players: []
   stage:
-  - {fileID: 2496973653136699540, guid: dbb2e09c19fe5ad49b11a6b95e5ac9e8, type: 3}
+  - {fileID: 4900000, guid: 801379ac94c79b24cb6c73e213b0854d, type: 3}

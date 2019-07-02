@@ -1,29 +1,64 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using UnityEngine.UI;
+using Newtonsoft.Json;
+using System.IO;
 
 public class MapEditor : SingletonBehaviour<MapEditor>
 {
+    public class objectData
+    {
+        public TileMode tag;
+        public float xPos, yPos;
+        public objectData(TileMode _tag, Vector2 _pos)
+        {
+            tag = _tag; xPos = _pos.x; yPos = _pos.y;
+        }
+    }
+    public class clearData
+    {
+        public ClearType type;
+        public int goal;
+        public clearData(ClearType _type, int _goal)
+        {
+            type = _type; goal = _goal;
+        }
+    }
+    public class MapSaveData
+    {
+        public List<objectData> objects;
+        public List<clearData> clears;
+        public List<BulletCode> bullets;
+        public MapSaveData()
+        {
+            objects = new List<objectData>();
+            clears = new List<clearData>();
+            bullets = new List<BulletCode>();
+        }
+        public void AddObject(TileMode _tag, Vector2 _pos)
+        {
+            objects.Add(new objectData(_tag, _pos));
+        }
+        public void AddClears(ClearType _type, int _goal)
+        {
+            clears.Add(new clearData(_type, _goal));
+        }
+    }
     public Map currentMap;
-    public Map[] stage;
     public MapEditorTile tile;
-    public enum TileMode { None, Floor, Normal, Mirror, StartFloor, Briefcase, Camera, WMannequin, BMannequin, goalFloor };
     TileMode currentMode;
     public Text modeSign;
     public GameObject startSign, goalSign, mapSizeSetter, mapEditorTiles;
     public Dictionary<Floor, GameObject> startSigns, goalSigns;
 
-    public Material editNormalMat, realNormalMat;
+    public Material editNormalMat;
     
     bool isEditorStarted;
     bool isCreateMode;
 
     public void StartMap(Map _newMap)
     {
-        if (currentMap != null)
-            Destroy(currentMap.gameObject);
         currentMap = Instantiate(_newMap);
         currentMap.transform.position = new Vector3(0, 0, 0);
         currentMap.InitiateMap();
@@ -35,22 +70,54 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public void SaveMap(Map _newMap)
     {
         System.DateTime time = System.DateTime.Now;
-        string localPath = "Assets/SavedMap_" + time.ToShortDateString() + "-" + time.Hour + "-" + time.Minute + "-" + time.Second + ".prefab";
-        if (AssetDatabase.LoadAssetAtPath(localPath, typeof(GameObject)))
-            Debug.Log("Object with same name already exists.");
-        else if(currentMap.startFloors.Count == 0)
+        string localPath = "Assets/" + time.ToShortDateString() + "-" + time.Hour + "-" + time.Minute + "-" + time.Second + ".json";
+        if(currentMap.startFloors.Count == 0)
             Debug.Log("There is no start floor.");
         else
         {
-            foreach (Transform child in currentMap.walls.transform)
-                if (child.GetComponent<Wall>() is NormalWall)
-                    child.gameObject.GetComponent<MeshRenderer>().material = realNormalMat;
-            PrefabUtility.SaveAsPrefabAsset(_newMap.gameObject, localPath);
-            Debug.Log("Map saved at " + localPath);
-            foreach (Transform child in currentMap.walls.transform)
-                if (child.GetComponent<Wall>() is NormalWall)
-                    child.gameObject.GetComponent<MeshRenderer>().material = editNormalMat;
-        }
+            MapSaveData mapSaveData = new MapSaveData();
+            mapSaveData.AddObject(TileMode.None, new Vector2(currentMap.maxMapSize, 0));
+            foreach(Transform child in currentMap.walls.transform)
+            {
+                Wall temp = child.GetComponent<Wall>();
+                if (temp is NormalWall)
+                    mapSaveData.AddObject(TileMode.Normal, temp.mapPos);
+                else
+                    mapSaveData.AddObject(TileMode.Mirror, temp.mapPos);
+            }
+            foreach(Transform child in currentMap.floors.transform)
+            {
+                Floor temp = child.GetComponent<Floor>();
+                mapSaveData.AddObject(TileMode.Floor, temp.mapPos);
+                if (child.GetComponent<Floor>().isGoalFloor)
+                    mapSaveData.AddObject(TileMode.goalFloor, temp.mapPos);
+            }
+            foreach(Floor child in currentMap.startFloors)
+            {
+                Floor temp = child.GetComponent<Floor>();
+                mapSaveData.AddObject(TileMode.StartFloor, temp.mapPos);
+            }
+            foreach (Transform child in currentMap.objects.transform)
+            {
+                IObject temp = child.GetComponent<IObject>();
+                if (temp.GetType() == ObjType.Briefcase)
+                    mapSaveData.AddObject(TileMode.Briefcase, temp.GetPos());
+                else if(temp.GetType() == ObjType.Camera)
+                    mapSaveData.AddObject(TileMode.Camera, temp.GetPos());
+                else if (temp.GetType() == ObjType.Mannequin)
+                {
+                    if (temp.GetObject().GetComponent<Mannequin>().isWhite)
+                        mapSaveData.AddObject(TileMode.WMannequin, temp.GetPos());
+                    else
+                        mapSaveData.AddObject(TileMode.BMannequin, temp.GetPos());
+                }
+            }
+            for(int i = 0; i < currentMap.clearConditions.Count; i++)
+                mapSaveData.AddClears(currentMap.clearConditions[i].type, currentMap.clearConditions[i].goal);
+            for (int i = 0; i < currentMap.initialBullets.Count; i++)
+                mapSaveData.bullets.Add(currentMap.initialBullets[i]);
+            File.WriteAllText(localPath, JsonConvert.SerializeObject(mapSaveData));
+            Debug.Log("Map saved at " + localPath);}
     }
     public void SaveCurrentMap()
     {
@@ -114,7 +181,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     // Start is called before the first frame update
     void Start()
     {
-        StartMap(stage[0]);
+        StartMap(currentMap);
         SwitchMode(0);
     }
 

@@ -1290,7 +1290,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1549724121}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 125, y: 995, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1444571408780882984}
@@ -2668,9 +2668,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ad2f39c48d82964f86cd2d6e1e94641, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMap: {fileID: 0}
-  stage:
-  - {fileID: 630498074781569474, guid: 759f352c81f1b5a40b2d8d241cdf273b, type: 3}
+  currentMap: {fileID: 630498074781569474, guid: 759f352c81f1b5a40b2d8d241cdf273b,
+    type: 3}
   tile: {fileID: 7449840556337937162, guid: 90d0ab9f40a0ddc4c871130319d86cd5, type: 3}
   modeSign: {fileID: 153720729}
   startSign: {fileID: 1215997560627761150, guid: 106914c4661964b47ad09efcc4bfba69,
@@ -2679,7 +2678,6 @@ MonoBehaviour:
   mapSizeSetter: {fileID: 8774990006778924709}
   mapEditorTiles: {fileID: 1549724121}
   editNormalMat: {fileID: 2100000, guid: c741ce421701e7c43b7a48c4045a116b, type: 2}
-  realNormalMat: {fileID: 2100000, guid: 9274dfd686c38aa4f91d973c6de1c8e9, type: 2}
 --- !u!1 &1444571408998523813
 GameObject:
   m_ObjectHideFlags: 0

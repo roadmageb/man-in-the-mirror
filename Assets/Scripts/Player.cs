@@ -108,6 +108,14 @@ public class Player : MonoBehaviour
         newBullet.Init(shootingArm.transform.forward);
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<IPlayerInteractor>() != null)
+        {
+            other.GetComponent<IPlayerInteractor>().Interact(currentFloor.mapPos);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {

@@ -2,14 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ObjType
-{
-    NULL,
-    Briefcase,
-    Camera,
-    Mannequin
-}
-
 public interface IObject
 {
     void Init(Floor floor);

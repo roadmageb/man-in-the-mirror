@@ -269,39 +269,12 @@ public class Map : MonoBehaviour
             Debug.Log("Object doesn't exists between : " + pos);
     }
 
-    private void LoadObjects()
-    {
-        floorGrid = new Dictionary<Vector2Int, Floor>();
-        wallGrid = new Dictionary<Vector2, Wall>();
-        objectGrid = new Dictionary<Vector2Int, IObject>();
-        for (int i = 0; i < floors.transform.childCount; i++)
-        {
-            Floor floor = floors.transform.GetChild(i).GetComponent<Floor>();
-            floorGrid.Add(floor.mapPos, floor);
-        }
-        for (int i = 0; i < walls.transform.childCount; i++)
-        {
-            Wall wall = walls.transform.GetChild(i).GetComponent<Wall>();
-            wallGrid.Add(wall.mapPos, wall);
-        }
-        for (int i = 0; i < objects.transform.childCount; i++)
-        {
-            IObject iObject = objects.transform.GetChild(i).GetComponent<IObject>();
-            objectGrid.Add(iObject.GetPos(), iObject);
-        }
-    }
-
     public void InitiateMap()
     {
         floorGrid = new Dictionary<Vector2Int, Floor>();
         wallGrid = new Dictionary<Vector2, Wall>();
         objectGrid = new Dictionary<Vector2Int, IObject>();
         startFloors = new List<Floor>();
-    }
-
-    private void Awake()
-    {
-        LoadObjects();
     }
 
     // Start is called before the first frame update

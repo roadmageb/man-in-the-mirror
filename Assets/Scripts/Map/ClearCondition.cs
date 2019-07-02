@@ -2,18 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ClearType
-{
-    NFloor,
-    NTurret,
-    NCase,
-    NPlayer,
-    AllFloor,
-    AllTurret,
-    AllCase,
-    White,
-    Black
-}
 
 [System.Serializable]
 public class ClearCondition
@@ -24,12 +12,12 @@ public class ClearCondition
     public bool isDone = false;
     public ClearStatusUI assignedClearUI;
 
-    /*public ClearCondition(ClearType _type, int _goal)
+    public ClearCondition(ClearType _type, int _goal)
     {
         type = _type;
         goal = _goal;
         count = 0;
-    }*/
+    }
 
     public void IsDone(int _count = 0, int _goal = 0)
     {
