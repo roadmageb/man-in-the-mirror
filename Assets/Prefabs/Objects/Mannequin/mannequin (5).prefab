@@ -743,6 +743,7 @@ GameObject:
   - component: {fileID: 87051754405658857}
   - component: {fileID: 2798309523397132260}
   - component: {fileID: 4743889867940665203}
+  - component: {fileID: 2365346650318820832}
   m_Layer: 0
   m_Name: mannequin (5)
   m_TagString: Untagged
@@ -786,6 +787,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 36f9d35b500106b42b6a47c516bf7b38, type: 2}
   - {fileID: 2100000, guid: af605edc8af008346a3f42f355847da6, type: 2}
   floor: {fileID: 0}
+  isWhite: 0
 --- !u!65 &4743889867940665203
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -799,6 +801,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.81, y: 1.6, z: 0.3}
   m_Center: {x: 0, y: 0.8, z: 0}
+--- !u!208 &2365346650318820832
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87051754405567689}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.25, y: 1, z: 0.25}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.9, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &87051754405567691
 GameObject:
   m_ObjectHideFlags: 0

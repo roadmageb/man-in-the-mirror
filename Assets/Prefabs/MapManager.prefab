@@ -70,4 +70,4 @@ MonoBehaviour:
   player: {fileID: 494213313239918027, guid: 449b2ca4d925da541bb45c84b63aab98, type: 3}
   players: []
   stage:
-  - {fileID: 4900000, guid: 801379ac94c79b24cb6c73e213b0854d, type: 3}
+  - {fileID: 4900000, guid: e4921fa87e2b8fe44b2246f2b275c88a, type: 3}
