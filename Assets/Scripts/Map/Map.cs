@@ -222,7 +222,7 @@ public class Map : MonoBehaviour
             switch (objType)
             {
                 case ObjType.Briefcase:
-                    objectGrid.Add(pos, Instantiate(MapManager.inst.briefCase, new Vector3(pos.x, 0.35f, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+                    objectGrid.Add(pos, Instantiate(MapManager.inst.briefCase, new Vector3(pos.x, 0.5f, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
                     if (GameManager.aCase >= 0)
                         clearConditions[GameManager.aCase].IsDone(0, 1);
                     break;
@@ -245,7 +245,7 @@ public class Map : MonoBehaviour
     public void CreateObject(Vector2Int pos, ObjType objType, BulletCode _dropBullet)
     {
         CreateObject(pos, objType);
-        GetObjectAtPos(pos).GetObject().GetComponent<Briefcase>().dropBullet = _dropBullet;
+        GetObjectAtPos(pos).GetObject().GetComponent<Briefcase>().SetBullet(_dropBullet);
     }
     /// <summary>
     /// Remove Object at position.
@@ -266,6 +266,8 @@ public class Map : MonoBehaviour
                 else if (!objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.black >= 0)
                     clearConditions[GameManager.black].IsDone(0, -1);
             }
+            if(objectGrid[pos].GetType() != ObjType.Mannequin)
+                PlayerController.inst.OnPlayerMove -= objectGrid[pos].GetObject().GetComponent<IPlayerInteractor>().Interact;
             Destroy(objectGrid[pos].GetObject());
             objectGrid.Remove(pos);
             StartCoroutine(MapManager.inst.Rebaker());

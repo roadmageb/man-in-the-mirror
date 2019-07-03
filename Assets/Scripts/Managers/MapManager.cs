@@ -34,6 +34,9 @@ public class MapManager : SingletonBehaviour<MapManager>
         var loadedMapData = JsonConvert.DeserializeObject<MapEditor.MapSaveData>(_newMap.ToString());
         currentMap = Instantiate(emptyMap, new Vector3(0, 0, 0), Quaternion.identity);
         currentMap.InitiateMap();
+        GameManager.inst.ResetClearIndex();
+        PlayerController.inst.bulletList.Clear();
+        players.Clear();
         currentMap.maxMapSize = (int)loadedMapData.objects[0].xPos;
         int casesIndex = 0;
         for(int i = 1; i < loadedMapData.objects.Count; i++)
@@ -93,7 +96,6 @@ public class MapManager : SingletonBehaviour<MapManager>
 
     private void Awake()
     {
-        players = new List<GameObject>();
         bulletFactory = new BulletFactory(truthBullet, fakeBullet, mirrorBullet);
     }
 

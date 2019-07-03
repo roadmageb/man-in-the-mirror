@@ -33,7 +33,7 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
     {
 		if (Position.IsInAdjacentArea(pos, 1) && MapManager.inst.currentMap.GetWallAtPos((Vector2)(Position + pos) / 2) == null)
 		{
-            StartCoroutine(GameManager.inst.GameOver());
+            StartCoroutine(GameManager.inst.RestartStage());
             
             //TODO : Restart Level
         }

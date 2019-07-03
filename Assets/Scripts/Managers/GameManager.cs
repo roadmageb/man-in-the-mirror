@@ -12,6 +12,18 @@ public class GameManager : SingletonBehaviour<GameManager>
     public int clearCounter = 0;
     public static int nFloor, nTurret, nCase, nPlayer, aFloor, aTurret, aCase, white, black;
 
+    /// <summary>
+    /// The index of the current stage.
+    /// </summary>
+    public int currentStage;
+
+    public void ResetClearIndex()
+    {
+        //Reset clear index to -1.
+        for (int i = 0; i < clearIndex.Length; i++) clearIndex[i] = -1;
+        nFloor = nTurret = nCase = nPlayer = aFloor = aTurret = aCase = white = black = -1;
+    }
+
     //Find and set the index of clear conditions of the map to clear type.
     public void SetClearIndex(Map map)
     {
@@ -36,35 +48,38 @@ public class GameManager : SingletonBehaviour<GameManager>
         Debug.Log("Stage Clear!");
     }
 
-    public IEnumerator GameOver()
+    public void GameOver()
     {
         Debug.Log("Game Over!");
         StopAllCoroutines();
-        yield return new WaitForSeconds(1);
         foreach (GameObject child in MapManager.inst.players)
             Destroy(child);
         Destroy(MapManager.inst.currentMap.gameObject);
     }
 
-    public void StageRestart()
+    public IEnumerator RestartStage()
     {
         Debug.Log("Game Restart!");
+        yield return new WaitForSeconds(0.5f);
         GameOver();
-        MapManager.inst.LoadMap(MapManager.inst.stage[0]);
+        MapManager.inst.LoadMap(MapManager.inst.stage[currentStage]);
 
     }
 
     void Awake()
     {
-        //Reset clear index to -1.
-        for (int i = 0; i < clearIndex.Length; i++) clearIndex[i] = -1;
-        nFloor = nTurret = nCase = nPlayer = aFloor = aTurret = aCase = white = black = -1;
+
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        if (!MapManager.inst.isMapEditingOn)
-            MapManager.inst.LoadMap(MapManager.inst.stage[0]);
+        currentStage = 0;
+        MapManager.inst.LoadMap(MapManager.inst.stage[currentStage]);
+        if (MapManager.inst.isMapEditingOn)
+        {
+            //Reset clear index to -1.
+            ResetClearIndex();
+        }
     }
 }
