@@ -21,7 +21,7 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
             MapManager.inst.currentMap.clearConditions[GameManager.aTurret].IsDone(1);
         if (GameManager.nTurret >= 0)
             MapManager.inst.currentMap.clearConditions[GameManager.nTurret].IsDone(1);
-        Destroy(gameObject);
+        MapManager.inst.currentMap.RemoveObject(Position);
     }
     
     private void OnDestroy()
