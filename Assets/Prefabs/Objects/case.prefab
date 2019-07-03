@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6644778239092870404}
   - component: {fileID: 6376510568108478465}
   - component: {fileID: 4433976770430682297}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Cylinder
   m_TagString: floor
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: -2850530927027858165}
   - component: {fileID: -4559840392902712278}
   - component: {fileID: -954323813722370706}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: case
   m_TagString: floor
   m_Icon: {fileID: 0}

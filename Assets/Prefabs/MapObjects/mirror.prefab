@@ -213,7 +213,7 @@ PrefabInstance:
     - target: {fileID: 5956712601794644638, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
       propertyPath: ReflectLayers.m_Bits
-      value: 5943
+      value: 14135
       objectReference: {fileID: 0}
     - target: {fileID: 5956712601804180398, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
@@ -313,7 +313,7 @@ PrefabInstance:
     - target: {fileID: 5956712601794644638, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
       propertyPath: ReflectLayers.m_Bits
-      value: 5943
+      value: 14135
       objectReference: {fileID: 0}
     - target: {fileID: 5956712601804180398, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
