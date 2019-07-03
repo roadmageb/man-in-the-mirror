@@ -157,7 +157,12 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                             MapManager.inst.currentMap.CreateFloor(oppFloorPos, floor.isGoalFloor);
                             MapManager.inst.currentMap.RemoveObject(oppFloorPos);
                             if (floor.objOnFloor != null)
-                                MapManager.inst.currentMap.CreateObject(oppFloorPos, floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                            {
+                                if (floor.objOnFloor.GetType() == ObjType.Briefcase)
+                                    MapManager.inst.currentMap.CreateObject(oppFloorPos, ObjType.Briefcase, ((Briefcase)floor.objOnFloor).dropBullet);
+                                else
+                                    MapManager.inst.currentMap.CreateObject(oppFloorPos, floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                            }
                             if (floor.isPlayerOn)
                                 PlayerController.inst.CreatePlayer(oppFloorPos);
                         }
@@ -186,7 +191,12 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                             MapManager.inst.currentMap.CreateFloor(oppFloorPos, floor.isGoalFloor);
                             MapManager.inst.currentMap.RemoveObject(oppFloorPos);
                             if (floor.objOnFloor != null)
-                                MapManager.inst.currentMap.CreateObject(oppFloorPos, floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                            {
+                                if (floor.objOnFloor.GetType() == ObjType.Briefcase)
+                                    MapManager.inst.currentMap.CreateObject(oppFloorPos, ObjType.Briefcase, ((Briefcase)floor.objOnFloor).dropBullet);
+                                else
+                                    MapManager.inst.currentMap.CreateObject(oppFloorPos, floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                            }
                             if (floor.isPlayerOn)
                                 PlayerController.inst.CreatePlayer(oppFloorPos);
                         }
@@ -215,7 +225,12 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                             MapManager.inst.currentMap.CreateFloor(oppFloorPos, floor.isGoalFloor);
                             MapManager.inst.currentMap.RemoveObject(oppFloorPos);
                             if (floor.objOnFloor != null)
-                                MapManager.inst.currentMap.CreateObject(oppFloorPos, floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                            {
+                                if (floor.objOnFloor.GetType() == ObjType.Briefcase)
+                                    MapManager.inst.currentMap.CreateObject(oppFloorPos, ObjType.Briefcase, ((Briefcase)floor.objOnFloor).dropBullet);
+                                else
+                                    MapManager.inst.currentMap.CreateObject(oppFloorPos, floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                            }
                             if (floor.isPlayerOn)
                                 PlayerController.inst.CreatePlayer(oppFloorPos);
                         }
@@ -244,7 +259,12 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                             MapManager.inst.currentMap.CreateFloor(oppFloorPos, floor.isGoalFloor);
                             MapManager.inst.currentMap.RemoveObject(oppFloorPos);
                             if (floor.objOnFloor != null)
-                                MapManager.inst.currentMap.CreateObject(oppFloorPos, floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                            {
+                                if (floor.objOnFloor.GetType() == ObjType.Briefcase)
+                                    MapManager.inst.currentMap.CreateObject(oppFloorPos, ObjType.Briefcase, ((Briefcase)floor.objOnFloor).dropBullet);
+                                else
+                                    MapManager.inst.currentMap.CreateObject(oppFloorPos, floor.objOnFloor.GetType(), (floor.objOnFloor.GetType() != ObjType.Mannequin ? true : ((Mannequin)floor.objOnFloor).isWhite));
+                            }
                             if (floor.isPlayerOn)
                                 PlayerController.inst.CreatePlayer(oppFloorPos);
                         }
