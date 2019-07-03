@@ -270,6 +270,7 @@ public class Map : MonoBehaviour
                 PlayerController.inst.OnPlayerMove -= objectGrid[pos].GetObject().GetComponent<IPlayerInteractor>().Interact;
             Destroy(objectGrid[pos].GetObject());
             objectGrid.Remove(pos);
+            floorGrid[pos].objOnFloor = null;
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else

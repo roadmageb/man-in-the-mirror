@@ -66,7 +66,7 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
             if (GameManager.nCase >= 0)
                 MapManager.inst.currentMap.clearConditions[GameManager.nCase].IsDone(1);
             floor.objOnFloor = null;
-			Destroy(gameObject);
+            MapManager.inst.currentMap.RemoveObject(Position);
 		}
 	}
 

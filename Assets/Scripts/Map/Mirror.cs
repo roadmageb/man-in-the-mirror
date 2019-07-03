@@ -7,7 +7,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
 {
     public void Break()
     {
-        Destroy(gameObject);
+        MapManager.inst.currentMap.RemoveWall(this.mapPos);
     }
 
     public void Interact(Bullet bullet)
