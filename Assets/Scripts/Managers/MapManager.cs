@@ -9,6 +9,7 @@ public class MapManager : SingletonBehaviour<MapManager>
     public bool isMapEditingOn;
     public NavMeshSurface surface;
     public Map currentMap;
+    public Map emptyMap;
     [Header("Instances")]
     public Floor floor;
     public NormalWall normalWall;
@@ -31,7 +32,7 @@ public class MapManager : SingletonBehaviour<MapManager>
     public void LoadMap(TextAsset _newMap)
     {
         var loadedMapData = JsonConvert.DeserializeObject<MapEditor.MapSaveData>(_newMap.ToString());
-        currentMap = Instantiate(currentMap, new Vector3(0, 0, 0), Quaternion.identity);
+        currentMap = Instantiate(emptyMap, new Vector3(0, 0, 0), Quaternion.identity);
         currentMap.InitiateMap();
         currentMap.maxMapSize = (int)loadedMapData.objects[0].xPos;
         int casesIndex = 0;

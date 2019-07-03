@@ -45,8 +45,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMapEditingOn: 0
   surface: {fileID: 0}
-  currentMap: {fileID: 630498074781569474, guid: 759f352c81f1b5a40b2d8d241cdf273b,
-    type: 3}
+  currentMap: {fileID: 0}
+  emptyMap: {fileID: 630498074781569474, guid: 759f352c81f1b5a40b2d8d241cdf273b, type: 3}
   floor: {fileID: 19711883686801522, guid: 71931eea896a59a4683986cfd369b8ee, type: 3}
   normalWall: {fileID: 2953616027608884528, guid: a4dcd71ec9f819f4e88c7b5ac24f4b0d,
     type: 3}

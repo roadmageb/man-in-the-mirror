@@ -36,6 +36,24 @@ public class GameManager : SingletonBehaviour<GameManager>
         Debug.Log("Stage Clear!");
     }
 
+    public IEnumerator GameOver()
+    {
+        Debug.Log("Game Over!");
+        StopAllCoroutines();
+        yield return new WaitForSeconds(1);
+        foreach (GameObject child in MapManager.inst.players)
+            Destroy(child);
+        Destroy(MapManager.inst.currentMap.gameObject);
+    }
+
+    public void StageRestart()
+    {
+        Debug.Log("Game Restart!");
+        GameOver();
+        MapManager.inst.LoadMap(MapManager.inst.stage[0]);
+
+    }
+
     void Awake()
     {
         //Reset clear index to -1.
