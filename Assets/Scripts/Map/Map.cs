@@ -245,7 +245,7 @@ public class Map : MonoBehaviour
     public void CreateObject(Vector2Int pos, ObjType objType, BulletCode _dropBullet)
     {
         CreateObject(pos, objType);
-        GetObjectAtPos(pos).GetObject().GetComponent<Briefcase>().dropBullet = _dropBullet;
+        GetObjectAtPos(pos).GetObject().GetComponent<Briefcase>().SetBullet(_dropBullet);
     }
     /// <summary>
     /// Remove Object at position.
