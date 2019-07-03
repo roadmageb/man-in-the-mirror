@@ -69,7 +69,3 @@ MonoBehaviour:
   - {fileID: 87051754405567689, guid: 2a2831d520acdd3408d8a04673423e2a, type: 3}
   player: {fileID: 494213313239918027, guid: 449b2ca4d925da541bb45c84b63aab98, type: 3}
   players: []
-  stage:
-  - {fileID: 4900000, guid: e4921fa87e2b8fe44b2246f2b275c88a, type: 3}
-  - {fileID: 4900000, guid: e4921fa87e2b8fe44b2246f2b275c88a, type: 3}
-  - {fileID: 4900000, guid: e4921fa87e2b8fe44b2246f2b275c88a, type: 3}

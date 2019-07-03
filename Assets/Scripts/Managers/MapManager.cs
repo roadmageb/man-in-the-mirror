@@ -21,8 +21,6 @@ public class MapManager : SingletonBehaviour<MapManager>
     public GameObject player;
     [Header("All players")]
     public List<GameObject> players;
-    [Header("All stages")]
-    public TextAsset[] stage;
     public BulletFactory bulletFactory;
 
     /// <summary>

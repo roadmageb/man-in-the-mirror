@@ -46,5 +46,4 @@ MonoBehaviour:
   uiGenerator: {fileID: 0}
   clearIndex: 000000000000000000000000000000000000000000000000000000000000000000000000
   clearCounter: 0
-  currentStage: 0
-  totalStageCount: 3
+  currentStage: {fileID: 0}

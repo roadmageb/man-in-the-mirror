@@ -69,4 +69,9 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
     {
         return ObjType.Briefcase;
     }
+
+    private void OnDestroy()
+    {
+        if (PlayerController.inst != null) PlayerController.inst.OnPlayerMove -= Interact;
+    }
 }

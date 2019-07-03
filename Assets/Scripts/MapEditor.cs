@@ -192,6 +192,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     // Start is called before the first frame update
     void Start()
     {
+        GameManager.inst.ResetClearIndex();
         StartMap(currentMap);
         SwitchMode(0);
         SwitchBulletMode((int)BulletCode.None);
