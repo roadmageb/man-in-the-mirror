@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonBehaviour<GameManager>
 {
-    public Material mirrorMaterial;
     public ClearUIGenerator uiGenerator;
 
     public int[] clearIndex = new int[9];
@@ -16,6 +15,10 @@ public class GameManager : SingletonBehaviour<GameManager>
     /// The index of the current stage.
     /// </summary>
     public int currentStage;
+    /// <summary>
+    /// Max number of stages.
+    /// </summary>
+    public int totalStageCount;
 
     public void ResetClearIndex()
     {
@@ -43,6 +46,13 @@ public class GameManager : SingletonBehaviour<GameManager>
         black = clearIndex[(int)ClearType.Black];
     }
 
+    public void StartStage(int _stageIndex)
+    {
+        currentStage = _stageIndex;
+        SceneManager.LoadScene("PlayStage");
+        MapManager.inst.LoadMap(MapManager.inst.stage[currentStage]);
+    }
+
     public void ClearStage()
     {
         Debug.Log("Stage Clear!");
@@ -63,7 +73,6 @@ public class GameManager : SingletonBehaviour<GameManager>
         yield return new WaitForSeconds(0.5f);
         GameOver();
         MapManager.inst.LoadMap(MapManager.inst.stage[currentStage]);
-
     }
 
     void Awake()
@@ -74,12 +83,11 @@ public class GameManager : SingletonBehaviour<GameManager>
     // Start is called before the first frame update
     void Start()
     {
-        currentStage = 0;
-        MapManager.inst.LoadMap(MapManager.inst.stage[currentStage]);
-        if (MapManager.inst.isMapEditingOn)
+        SetStatic();
+        /*if (MapManager.inst.isMapEditingOn)
         {
             //Reset clear index to -1.
             ResetClearIndex();
-        }
+        }*/
     }
 }

@@ -43,6 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f94477ce50cfef746baa12d77bb9d4eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mirrorMaterial: {fileID: 0}
+  uiGenerator: {fileID: 0}
   clearIndex: 000000000000000000000000000000000000000000000000000000000000000000000000
   clearCounter: 0
+  currentStage: 0
+  totalStageCount: 3
