@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     public GameObject head;
     public Transform shootingArm;
     public GameObject shootingFinger;
+    public GameObject laser;
     public Quaternion armRotation;
     public Animator anim;
 
@@ -128,7 +129,7 @@ public class Player : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-
+    { 
+        laser.transform.position = shootingFinger.transform.position;
     }
 }
