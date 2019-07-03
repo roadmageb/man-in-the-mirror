@@ -7,6 +7,7 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 	[SerializeField]
 	private Floor floor = null;
     public BulletCode dropBullet;
+    public GameObject table;
 	public Vector2Int Position { get { return floor != null ? floor.mapPos : throw new UnassignedReferenceException("Floor of Interactor is not assigned"); } }
 
     public GameObject GetObject()
@@ -30,6 +31,22 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
     public void SetBullet(BulletCode _dropBullet)
     {
         dropBullet = _dropBullet;
+        if (dropBullet == BulletCode.False)
+        {
+            table.GetComponent<MeshRenderer>().material.color = Color.red;
+        }
+        else if (dropBullet == BulletCode.Mirror)
+        {
+            table.GetComponent<MeshRenderer>().material.color = Color.gray;
+        }
+        else if (dropBullet == BulletCode.True)
+        {
+            table.GetComponent<MeshRenderer>().material.color = Color.green;
+        }
+        else
+        {
+            table.SetActive(false);
+        }
     }
 
     private void OnDestroy()

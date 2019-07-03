@@ -77,6 +77,7 @@ public class CameraController : MonoBehaviour
         rotationX = transform.eulerAngles.y;
         rotationY = transform.eulerAngles.x;
         PlayerController.inst.isZooming = false;
+        player.laser.SetActive(true);
         player.anim.SetBool("isShooting", true);
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Head");
 
@@ -93,6 +94,7 @@ public class CameraController : MonoBehaviour
         float startTime = Time.time;
         Vector3 posDiff = (previousPos - transform.position) / 40;
         float fovDiff = (mapFov - shootingFov) / 40f;
+        player.laser.SetActive(false);
         PlayerController.inst.isZooming = true;
         player.anim.SetBool("isShooting", false);
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Player");
