@@ -51,6 +51,6 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 
     private void OnDestroy()
     {
-        if(PlayerController.inst != null) PlayerController.inst.OnPlayerMove -= Interact;
+        if(FindObjectOfType<PlayerController>() != null) PlayerController.inst.OnPlayerMove -= Interact;
     }
 }

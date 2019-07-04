@@ -69,6 +69,12 @@ public class GameManager : SingletonBehaviour<GameManager>
         StartStage();
     }
 
+    public void BackToStageSelect()
+    {
+        GameOver();
+        SceneManager.LoadScene("SelectStage");
+    }
+
     // Start is called before the first frame update
     void Start()
     {

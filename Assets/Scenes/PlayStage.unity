@@ -529,6 +529,18 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &1994486390 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2122327709, guid: 42247a938bb6e554eb00dc08303a72d6,
+    type: 3}
+  m_PrefabInstance: {fileID: 52444460451182912}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f94477ce50cfef746baa12d77bb9d4eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2102809461 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7277015661519863741, guid: 20dee07e28273f049a9093ae4453912f,
@@ -752,6 +764,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1466596364, guid: 0b18400fb62a12d4e9cb5fbb8ecbb53f, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1994486390}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b18400fb62a12d4e9cb5fbb8ecbb53f, type: 3}
 --- !u!1001 &5089720519379341084
