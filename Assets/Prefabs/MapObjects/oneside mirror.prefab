@@ -52,7 +52,7 @@ MonoBehaviour:
   FarClipPlane: 100
   ReflectLayers:
     serializedVersion: 2
-    m_Bits: 1847
+    m_Bits: 10039
   AddFlareLayer: 0
   NormalIsForward: 1
   AspectRatio: 1.5
