@@ -5,8 +5,12 @@ using UnityEngine.AI;
 
 public class Mirror : Wall, IBulletInteractor, IBreakable
 {
+    [Space(15)]
+    public GameObject scatteredMirror;
+
     public void Break()
     {
+        Instantiate(scatteredMirror, transform.position, transform.rotation);
         MapManager.inst.currentMap.RemoveWall(this.mapPos);
     }
 
@@ -279,7 +283,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 }
             }
         }
-        MapManager.inst.currentMap.RemoveWall(mapPos);
+        Break();
     }
 
     /// <summary>
