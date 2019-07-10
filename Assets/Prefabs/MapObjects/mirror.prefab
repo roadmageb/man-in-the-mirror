@@ -128,6 +128,8 @@ MonoBehaviour:
   mapPos: {x: 0, y: 0}
   len: 1
   type: 2
+  scatteredMirror: {fileID: 5067960725721402673, guid: 05802e44cda3ff549a5ed7f4291ea9b8,
+    type: 3}
 --- !u!1001 &243436096608247296
 PrefabInstance:
   m_ObjectHideFlags: 0
