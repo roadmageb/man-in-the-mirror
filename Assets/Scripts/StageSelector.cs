@@ -20,6 +20,7 @@ public class StageSelector : MonoBehaviour
 
     public void StartSelectedStage()
     {
+        gameObject.GetComponent<Canvas>().enabled = false;
         SceneManager.LoadScene("PlayStage");
     }
 

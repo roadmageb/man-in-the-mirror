@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 [System.Serializable]
 public class ClearCondition
 {
@@ -32,7 +31,7 @@ public class ClearCondition
                 Debug.Log(GameManager.inst.clearCounter);
                 assignedClearUI.RefreshClearCondition();
                 if (GameManager.inst.clearCounter == 0)
-                    GameManager.inst.ClearStage();
+                    GameManager.inst.StartCoroutine(GameManager.inst.ClearStage());
             }
             else if (goal > count && isDone)
             {

@@ -133,56 +133,59 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     // Update is called once per frame
     void Update()
     {
-        if (prePos != MapPos)
+        if(!GameManager.inst.isGameOver)
         {
-			//Debug.Log(MapPos);
-			OnPlayerMove?.Invoke(MapPos);
-			prePos = MapPos;
-		}
-
-        //Control player only if camera is not zooming in to or out from the current player
-        if (!isZooming)
-        {
-            if (Input.GetMouseButtonDown(0))
+            if (prePos != MapPos)
             {
-                //Move the current player.
-                if(!isPlayerMoving && !isPlayerShooting)
-                {
-                    Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    RaycastHit hit;
-                    if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("Player"))
-                    {
-                        if (currentPlayer != null)
-                            currentPlayer.ResetCurrentPlayer();
-                        currentPlayer = hit.transform.gameObject.GetComponent<Player>();
-                        StartCoroutine(currentPlayer.SetCurrentPlayer());
-                        StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
-                        //Debug.Log(hit.collider.gameObject.tag);
-                    }
-                    else if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("floor"))
-                    {
-                        if (currentPlayer != null)
-                            currentPlayer.MovePlayer(hit.collider.gameObject.transform.position);
-                        //Debug.Log(hit.collider.gameObject.tag);
-                    }
-                    else if (hit.collider == null)
-                    {
-                        if (currentPlayer != null)
-                            currentPlayer.ResetCurrentPlayer();
-                    }
-                }
-                else if (isPlayerShooting)
-                {
-                    if (bulletList.Count > 0)
-                    {
-                        currentPlayer.Shoot(bulletList[0]);
-                    }
-                }
+                //Debug.Log(MapPos);
+                OnPlayerMove?.Invoke(MapPos);
+                prePos = MapPos;
             }
-            else if (Input.GetMouseButtonDown(1) && isPlayerShooting)
+
+            //Control player only if camera is not zooming in to or out from the current player
+            if (!isZooming)
             {
-                StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomOutFromPlayer(currentPlayer));
-                currentPlayer.shootingArm.rotation = currentPlayer.armRotation;
+                if (Input.GetMouseButtonDown(0))
+                {
+                    //Move the current player.
+                    if (!isPlayerMoving && !isPlayerShooting)
+                    {
+                        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                        RaycastHit hit;
+                        if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("Player"))
+                        {
+                            if (currentPlayer != null)
+                                currentPlayer.ResetCurrentPlayer();
+                            currentPlayer = hit.transform.gameObject.GetComponent<Player>();
+                            StartCoroutine(currentPlayer.SetCurrentPlayer());
+                            StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
+                            //Debug.Log(hit.collider.gameObject.tag);
+                        }
+                        else if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("floor"))
+                        {
+                            if (currentPlayer != null)
+                                currentPlayer.MovePlayer(hit.collider.gameObject.transform.position);
+                            //Debug.Log(hit.collider.gameObject.tag);
+                        }
+                        else if (hit.collider == null)
+                        {
+                            if (currentPlayer != null)
+                                currentPlayer.ResetCurrentPlayer();
+                        }
+                    }
+                    else if (isPlayerShooting)
+                    {
+                        if (bulletList.Count > 0)
+                        {
+                            currentPlayer.Shoot(bulletList[0]);
+                        }
+                    }
+                }
+                else if (Input.GetMouseButtonDown(1) && isPlayerShooting)
+                {
+                    StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomOutFromPlayer(currentPlayer));
+                    currentPlayer.shootingArm.rotation = currentPlayer.armRotation;
+                }
             }
         }
     }

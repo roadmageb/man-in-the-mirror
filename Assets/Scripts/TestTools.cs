@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class TestTools : MonoBehaviour
 {
-    public Text currentBullet;
+    public Text currentBullet, clear;
     public InputField xInput, yInput;
 
     public void AddFloor()
