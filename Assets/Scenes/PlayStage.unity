@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clearUI: {fileID: 4890012631615838995, guid: 874af447cef689e478ca96b4d1d197c2, type: 3}
+  uiList: []
 --- !u!114 &158856769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -305,7 +306,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0.03125, y: 0.109375, z: 0.03125, w: -0.03125}
+  m_BoundingSphereOverride: {x: -Infinity, y: 2.8421708e-14, z: 0, w: 2.69e-43}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0

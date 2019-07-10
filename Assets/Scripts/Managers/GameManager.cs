@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : SingletonBehaviour<GameManager>
 {
     public ClearUIGenerator uiGenerator;
+    public bool isGameOver = false;
 
     public int[] clearIndex = new int[9];
     public int clearCounter = 0;
@@ -47,39 +48,43 @@ public class GameManager : SingletonBehaviour<GameManager>
         MapManager.inst.LoadMap(currentStage);
     }
     
-    public void ClearStage()
+    public IEnumerator ClearStage()
     {
+        GameObject.Find("TestTools").GetComponent<TestTools>().clear.gameObject.SetActive(true);
         Debug.Log("Stage Clear!");
+        yield return new WaitForSeconds(3);
+        BackToStageSelect();
     }
 
     public void GameOver()
     {
         Debug.Log("Game Over!");
         StopAllCoroutines();
-        foreach (GameObject child in MapManager.inst.players)
-            Destroy(child);
-        Destroy(MapManager.inst.currentMap.gameObject);
     }
 
     public IEnumerator RestartStage()
     {
+
         Debug.Log("Game Restart!");
         yield return new WaitForSeconds(0.5f);
-        GameOver();
-        StartStage();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void BackToStageSelect()
     {
-        GameOver();
+        Destroy(FindObjectOfType<StageSelector>().gameObject);
         SceneManager.LoadScene("SelectStage");
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        currentStage = Resources.Load<TextAsset>("Stages/" + "stage" + (StageSelector.selectedStage + 1));
-        StartStage();
-        Destroy(FindObjectOfType<StageSelector>().gameObject);
+        if (!MapManager.inst.isMapEditingOn)
+        {
+            isGameOver = false;
+            currentStage = Resources.Load<TextAsset>("Stages/" + "stage" + (StageSelector.selectedStage + 1));
+            StartStage();
+            //Destroy(FindObjectOfType<StageSelector>().gameObject);
+        }
     }
 }

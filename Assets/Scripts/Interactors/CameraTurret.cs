@@ -13,7 +13,8 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 		this.floor = floor;
         floor.objOnFloor = this;
 		PlayerController.inst.OnPlayerMove += Interact;
-	}
+        if (GameManager.aTurret >= 0) MapManager.inst.currentMap.clearConditions[GameManager.aTurret].IsDone(0, 1);
+    }
 
     public void Break()
     {
@@ -26,11 +27,16 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 
     public void Interact(Vector2Int pos)
     {
-		if (Position.IsInAdjacentArea(pos, 1) && MapManager.inst.currentMap.GetWallAtPos((Vector2)(Position + pos) / 2) == null)
-		{
-            StartCoroutine(GameManager.inst.RestartStage());
-            
-            //TODO : Restart Level
+        if(!GameManager.inst.isGameOver)
+        {
+            if (Position.IsInAdjacentArea(pos, 1) && MapManager.inst.currentMap.GetWallAtPos((Vector2)(Position + pos) / 2) == null)
+            {
+                GameManager.inst.isGameOver = true;
+                StartCoroutine(GameManager.inst.RestartStage());
+                GameManager.inst.uiGenerator.ResetAllClearUIs();
+
+                //TODO : Restart Level
+            }
         }
     }
 

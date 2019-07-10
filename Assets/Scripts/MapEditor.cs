@@ -72,6 +72,9 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     /// <param name="_newMap"></param>
     public void SaveMap(Map _newMap)
     {
+        /* 맵 저장 시 반드시 승리 조건 작성할 것
+         * 목표가 '모든'일 경우 승리 목표는 초기 맵 기준으로 작성
+         */
         System.DateTime time = System.DateTime.Now;
         string localPath = "Assets/" + time.ToShortDateString() + "-" + time.Hour + "-" + time.Minute + "-" + time.Second + ".json";
         if(currentMap.startFloors.Count == 0)

@@ -112,14 +112,6 @@ public class Player : MonoBehaviour
         PlayerController.inst.bulletList.RemoveAt(0);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.GetComponent<IPlayerInteractor>() != null)
-        {
-            other.GetComponent<IPlayerInteractor>().Interact(currentFloor.mapPos);
-        }
-    }
-
     // Start is called before the first frame update
     void Start()
     {

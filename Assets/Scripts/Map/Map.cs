@@ -223,13 +223,9 @@ public class Map : MonoBehaviour
             {
                 case ObjType.Briefcase:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.briefCase, new Vector3(pos.x, 0.5f, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
-                    if (GameManager.aCase >= 0)
-                        clearConditions[GameManager.aCase].IsDone(0, 1);
                     break;
                 case ObjType.Camera:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.cameraTurret, new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
-                    if (GameManager.aTurret >= 0)
-                        clearConditions[GameManager.aTurret].IsDone(0, 1);
                     break;
                 case ObjType.Mannequin:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.mannequins[Random.Range(0, 5)], new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
@@ -251,11 +247,11 @@ public class Map : MonoBehaviour
     /// Remove Object at position.
     /// </summary>
     /// <param name="pos">Position of object.</param>
-    public void RemoveObject(Vector2Int pos)
+    public void RemoveObject(Vector2Int pos, bool isCaseInteracted = false)
     {
         if (objectGrid.ContainsKey(pos))
         {
-            if(objectGrid[pos].GetType() == ObjType.Briefcase && GameManager.aCase >= 0)
+            if(objectGrid[pos].GetType() == ObjType.Briefcase && GameManager.aCase >= 0 && !isCaseInteracted)
                 clearConditions[GameManager.aCase].IsDone(0, -1);
             else if (objectGrid[pos].GetType() == ObjType.Camera && GameManager.aTurret >= 0)
                 clearConditions[GameManager.aTurret].IsDone(0, -1);

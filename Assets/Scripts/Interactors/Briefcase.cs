@@ -51,18 +51,22 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 
     public void Interact(Vector2Int position)
 	{
-		Debug.Log(Position + " " + position);
-        if (Position == position)
+        if(!GameManager.inst.isGameOver)
         {
-            if (dropBullet != BulletCode.None)
-                PlayerController.inst.AddBullet(dropBullet);
-            if (GameManager.aCase >= 0)
-                MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone(1);
-            if (GameManager.nCase >= 0)
-                MapManager.inst.currentMap.clearConditions[GameManager.nCase].IsDone(1);
-            floor.objOnFloor = null;
-            MapManager.inst.currentMap.RemoveObject(Position);
-		}
+            Debug.Log(Position + " " + position);
+            if (Position == position)
+            {
+                if (dropBullet != BulletCode.None)
+                    PlayerController.inst.AddBullet(dropBullet);
+                if (GameManager.aCase >= 0)
+                    MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone(1);
+                if (GameManager.nCase >= 0)
+                    MapManager.inst.currentMap.clearConditions[GameManager.nCase].IsDone(1);
+                floor.objOnFloor = null;
+                MapManager.inst.currentMap.RemoveObject(Position, true);
+            }
+        }
+
 	}
 
     ObjType IObject.GetType()
