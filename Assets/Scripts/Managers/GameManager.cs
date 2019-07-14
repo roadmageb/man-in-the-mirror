@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : SingletonBehaviour<GameManager>
 {
+    [Space(10)]
     public ClearUIGenerator uiGenerator;
+    public Image whiteout;
+
+    [Space(10)]
     public bool isGameOver = false;
 
     public int[] clearIndex = new int[9];
@@ -46,12 +51,40 @@ public class GameManager : SingletonBehaviour<GameManager>
     public void StartStage()
     {
         MapManager.inst.LoadMap(currentStage);
+        StartCoroutine(Whiteout(false));
+    }
+
+    IEnumerator Whiteout(bool goToWhite)
+    {
+        float setTime = 0.2f;
+        float resetTime = 1.5f;
+        if (goToWhite)
+        {
+            for (float i = 0; i < setTime; i += Time.deltaTime)
+            {
+                whiteout.color = new Color(1, 1, 1, Mathf.Sin((i / setTime) * (Mathf.PI / 2)));
+                yield return null;
+            }
+            whiteout.color = new Color(1, 1, 1, 1);
+        }
+        else
+        {
+            for (float i = resetTime; i > 0; i -= Time.deltaTime)
+            {
+                whiteout.color = new Color(1, 1, 1, i / resetTime);
+                yield return null;
+            }
+            whiteout.color = new Color(1, 1, 1, 0);
+        }
     }
     
     public IEnumerator ClearStage()
     {
         GameObject.Find("TestTools").GetComponent<TestTools>().clear.gameObject.SetActive(true);
         Debug.Log("Stage Clear!");
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
         yield return new WaitForSeconds(3);
         BackToStageSelect();
     }
@@ -64,8 +97,8 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     public IEnumerator RestartStage()
     {
-
         Debug.Log("Game Restart!");
+        StartCoroutine(Whiteout(true));
         yield return new WaitForSeconds(0.5f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
