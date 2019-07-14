@@ -20,6 +20,8 @@ public class Player : MonoBehaviour
 
     public Floor currentFloor;
 
+    public GameObject selectPointer;
+
     /// <summary>
     /// Set this player as the current player.
     /// </summary>
@@ -27,6 +29,7 @@ public class Player : MonoBehaviour
     public IEnumerator SetCurrentPlayer()
     {
         GetComponent<NavMeshObstacle>().enabled = false;
+        selectPointer.SetActive(true);
         yield return null;
         GetComponent<NavMeshAgent>().enabled = true;
         StartCoroutine(MapManager.inst.Rebaker());
@@ -39,6 +42,7 @@ public class Player : MonoBehaviour
     {
         GetComponent<NavMeshAgent>().enabled = false;
         GetComponent<NavMeshObstacle>().enabled = true;
+        selectPointer.SetActive(false);
         StartCoroutine(MapManager.inst.Rebaker());
         PlayerController.inst.currentPlayer = null;
     }
