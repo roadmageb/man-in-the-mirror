@@ -5,6 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     Vector3 dragOrigin;
+    Vector3 moveOrigin;
     public float dragSpeed;
     Vector3 previousPos;
     Vector3 previousAngle;
@@ -14,16 +15,35 @@ public class CameraController : MonoBehaviour
     float rotationY = 0;
     float sensitivity = 30;
 
+    [SerializeField]
     Vector3 centerPos = new Vector3(0, 0, 0);
-
+    Vector3 distance = new Vector3(0, 0, 0);
     /// <summary>
     /// Move camera.
     /// </summary>
     void CameraMove()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-        transform.position += new Vector3(verticalInput + horizontalInput, 0, verticalInput - horizontalInput);
+        if (Input.GetMouseButtonDown(2))
+        {
+            moveOrigin = Input.mousePosition;
+            return;
+        }
+        if (!Input.GetMouseButton(2))
+        {
+            Vector3 tempVec = centerPos;
+            centerPos = new Vector3(Mathf.Clamp(Mathf.Round(centerPos.x * 2) / 2, MapManager.inst.currentMap.minBorder.x, MapManager.inst.currentMap.maxBorder.x),
+                0, Mathf.Clamp(Mathf.Round(centerPos.z * 2) / 2, MapManager.inst.currentMap.minBorder.y, MapManager.inst.currentMap.maxBorder.y));
+            transform.Translate(centerPos - tempVec, Space.World);
+            return;
+        }
+        float previousY = transform.position.y;
+        Vector3 centerDiff = transform.position;
+        Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition - moveOrigin);
+        moveOrigin = Input.mousePosition;
+        transform.Translate(new Vector3(pos.x * -8, pos.y * -8, 0), Space.Self);
+        transform.position = new Vector3(transform.position.x, previousY, transform.position.z);
+        centerPos += transform.position - centerDiff;
+        centerPos.y = 0;
     }
 
     /// <summary>
@@ -127,6 +147,7 @@ public class CameraController : MonoBehaviour
     {
         Camera.main.fieldOfView = mapFov;
         transform.eulerAngles = new Vector3(30, transform.eulerAngles.y, transform.eulerAngles.z);
+        distance = transform.position - centerPos;
     }
 
     // Update is called once per frame
@@ -136,7 +157,19 @@ public class CameraController : MonoBehaviour
         {
             if (!PlayerController.inst.isPlayerShooting)
             {
-                //CameraMove();
+
+
+
+
+
+
+
+
+
+
+
+
+                CameraMove();
                 CameraDrag();
             }
             else
