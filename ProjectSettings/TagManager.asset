@@ -8,6 +8,7 @@ TagManager:
   - floor
   - wallSign
   - briefcase
+  - CameraLight
   layers:
   - Default
   - TransparentFX
