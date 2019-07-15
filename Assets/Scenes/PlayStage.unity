@@ -702,6 +702,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2122327709, guid: 42247a938bb6e554eb00dc08303a72d6, type: 3}
+      propertyPath: uiGenerator
+      value: 
+      objectReference: {fileID: 158856768}
+    - target: {fileID: 2122327709, guid: 42247a938bb6e554eb00dc08303a72d6, type: 3}
+      propertyPath: whiteout
+      value: 
+      objectReference: {fileID: 1839944657}
+    - target: {fileID: 2122327709, guid: 42247a938bb6e554eb00dc08303a72d6, type: 3}
+      propertyPath: limeLight
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 52444459818764334, guid: 42247a938bb6e554eb00dc08303a72d6,
         type: 3}
       propertyPath: m_Name
@@ -712,14 +724,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 2122327709, guid: 42247a938bb6e554eb00dc08303a72d6, type: 3}
-      propertyPath: uiGenerator
-      value: 
-      objectReference: {fileID: 158856768}
-    - target: {fileID: 2122327709, guid: 42247a938bb6e554eb00dc08303a72d6, type: 3}
-      propertyPath: whiteout
-      value: 
-      objectReference: {fileID: 1839944657}
     - target: {fileID: 52444459818764335, guid: 42247a938bb6e554eb00dc08303a72d6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -857,6 +861,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SortingOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1444571407667829093, guid: 0b18400fb62a12d4e9cb5fbb8ecbb53f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b18400fb62a12d4e9cb5fbb8ecbb53f, type: 3}

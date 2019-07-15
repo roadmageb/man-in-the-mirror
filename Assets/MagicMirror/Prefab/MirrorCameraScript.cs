@@ -111,6 +111,30 @@ public class MirrorCameraScript : MonoBehaviour
 		dest.renderingPath = src.renderingPath;
     }
 
+
+
+    private void OnPreCull()
+    {
+        foreach(GameObject child in GameObject.FindGameObjectsWithTag("CameraLight"))
+        {
+            child.GetComponent<Light>().enabled = false;
+        }
+    }
+    private void OnPreRender()
+    {
+        foreach (GameObject child in GameObject.FindGameObjectsWithTag("CameraLight"))
+        {
+            child.GetComponent<Light>().enabled = false;
+        }
+    }
+    private void OnPostRender()
+    {
+        foreach (GameObject child in GameObject.FindGameObjectsWithTag("CameraLight"))
+        {
+            child.GetComponent<Light>().enabled = true;
+        }
+    }
+
     internal void RenderMirror()
     {
         Camera cameraLookingAtThisMirror;
