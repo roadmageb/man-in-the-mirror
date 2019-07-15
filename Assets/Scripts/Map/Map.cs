@@ -7,6 +7,7 @@ public class Map : MonoBehaviour
 {
     [Header("Map Data")]
     public int maxMapSize;
+    public Vector2Int maxBorder, minBorder;
     public Dictionary<Vector2Int, Floor> floorGrid;
     public Dictionary<Vector2, Wall> wallGrid;
     public Dictionary<Vector2Int, IObject> objectGrid;
@@ -65,6 +66,10 @@ public class Map : MonoBehaviour
             floorGrid.Add(pos, Instantiate(MapManager.inst.floor, new Vector3(pos.x, 0, pos.y), Quaternion.identity, floors.transform).GetComponent<Floor>());
             floorGrid[pos].mapPos = pos;
             floorGrid[pos].isGoalFloor = isGoal;
+            if (pos.x > maxBorder.x) maxBorder.x = pos.x;
+            else if (pos.x < minBorder.x) minBorder.x = pos.x;
+            if (pos.y > maxBorder.y) maxBorder.y = pos.y;
+            else if (pos.y < minBorder.y) minBorder.y = pos.y;
             if (GameManager.aFloor >= 0 && isGoal)
                 clearConditions[GameManager.aFloor].IsDone(0, 1);
             StartCoroutine(MapManager.inst.Rebaker());
@@ -223,16 +228,18 @@ public class Map : MonoBehaviour
             {
                 case ObjType.Briefcase:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.briefCase, new Vector3(pos.x, 0.5f, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+                    objectGrid[pos].Init(GetFloorAtPos(pos));
                     break;
                 case ObjType.Camera:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.cameraTurret, new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+                    objectGrid[pos].Init(GetFloorAtPos(pos));
                     break;
                 case ObjType.Mannequin:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.mannequins[Random.Range(0, 5)], new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+                    objectGrid[pos].Init(GetFloorAtPos(pos));
                     objectGrid[pos].GetObject().GetComponent<Mannequin>().SetColor(isWhite);
                     break;
             }
-            objectGrid[pos].Init(GetFloorAtPos(pos));
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
