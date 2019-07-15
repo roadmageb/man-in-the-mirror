@@ -24,20 +24,18 @@ public class ClearCondition
         {
             count += _count;
             goal += _goal;
-            if (goal <= count)
+            assignedClearUI.RefreshClearCondition();
+            if (goal <= count && !isDone)
             {
                 GameManager.inst.clearCounter--;
                 isDone = true;
-                Debug.Log(GameManager.inst.clearCounter);
-                assignedClearUI.RefreshClearCondition();
                 if (GameManager.inst.clearCounter == 0)
                     GameManager.inst.StartCoroutine(GameManager.inst.ClearStage());
             }
-            else if (goal > count && isDone)
+            else if (goal > count)
             {
                 GameManager.inst.clearCounter++;
                 isDone = false;
-                assignedClearUI.RefreshClearCondition();
             }
         }
     }

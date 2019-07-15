@@ -81,6 +81,19 @@ public class MapManager : SingletonBehaviour<MapManager>
         GameManager.inst.SetClearIndex(currentMap);
         surface.BuildNavMesh();
         GameManager.inst.uiGenerator.GenerateAllClearUI();
+        foreach(Transform child in currentMap.objects.transform)
+        {
+            if (child.GetComponent<IObject>() is Mannequin)
+            {
+                if(child.GetComponent<Mannequin>().isWhite && GameManager.white >= 0)
+                    currentMap.clearConditions[GameManager.white].IsDone(1);
+                if (!child.GetComponent<Mannequin>().isWhite && GameManager.black >= 0)
+                    currentMap.clearConditions[GameManager.black].IsDone(1);
+            }
+
+        }
+
+
         for (int i = 0; i < currentMap.startFloors.Count; i++)
             PlayerController.inst.CreatePlayer(currentMap.startFloors[i]);
         for (int i = 0; i < loadedMapData.bullets.Count; i++)
