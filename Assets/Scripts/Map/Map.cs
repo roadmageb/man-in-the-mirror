@@ -223,16 +223,18 @@ public class Map : MonoBehaviour
             {
                 case ObjType.Briefcase:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.briefCase, new Vector3(pos.x, 0.5f, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+                    objectGrid[pos].Init(GetFloorAtPos(pos));
                     break;
                 case ObjType.Camera:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.cameraTurret, new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+                    objectGrid[pos].Init(GetFloorAtPos(pos));
                     break;
                 case ObjType.Mannequin:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.mannequins[Random.Range(0, 5)], new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+                    objectGrid[pos].Init(GetFloorAtPos(pos));
                     objectGrid[pos].GetObject().GetComponent<Mannequin>().SetColor(isWhite);
                     break;
             }
-            objectGrid[pos].Init(GetFloorAtPos(pos));
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
