@@ -12,6 +12,7 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     [Space(10)]
     public bool isGameOver = false;
+    public bool isPlayerMoving, isPlayerShooting, isZooming, isBulletFlying;
 
     public int[] clearIndex = new int[9];
     public int clearCounter = 0;
