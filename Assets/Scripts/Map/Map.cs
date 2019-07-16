@@ -265,9 +265,9 @@ public class Map : MonoBehaviour
             else if(objectGrid[pos].GetType() == ObjType.Mannequin)
             {
                 if(objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.white >= 0)
-                    clearConditions[GameManager.white].IsDone(0, -1);
+                    clearConditions[GameManager.white].IsDone(-1);
                 else if (!objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.black >= 0)
-                    clearConditions[GameManager.black].IsDone(0, -1);
+                    clearConditions[GameManager.black].IsDone(-1);
             }
             if(objectGrid[pos].GetType() != ObjType.Mannequin)
                 PlayerController.inst.OnPlayerMove -= objectGrid[pos].GetObject().GetComponent<IPlayerInteractor>().Interact;
