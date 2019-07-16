@@ -43,7 +43,7 @@ Light:
   m_Type: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 50
-  m_Range: 1.3
+  m_Range: 1.2
   m_SpotAngle: 40
   m_InnerSpotAngle: 4
   m_CookieSize: 10
@@ -134,7 +134,7 @@ Light:
   m_Type: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 50
-  m_Range: 1.3
+  m_Range: 1.2
   m_SpotAngle: 40
   m_InnerSpotAngle: 4
   m_CookieSize: 10
@@ -484,7 +484,7 @@ Light:
   m_Type: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 50
-  m_Range: 1.3
+  m_Range: 1.2
   m_SpotAngle: 40
   m_InnerSpotAngle: 4
   m_CookieSize: 10
@@ -575,7 +575,7 @@ Light:
   m_Type: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 50
-  m_Range: 1.3
+  m_Range: 1.2
   m_SpotAngle: 40
   m_InnerSpotAngle: 4
   m_CookieSize: 10
