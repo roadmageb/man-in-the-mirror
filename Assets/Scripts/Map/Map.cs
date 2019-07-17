@@ -66,6 +66,7 @@ public class Map : MonoBehaviour
             floorGrid.Add(pos, Instantiate(MapManager.inst.floor, new Vector3(pos.x, 0, pos.y), Quaternion.identity, floors.transform).GetComponent<Floor>());
             floorGrid[pos].mapPos = pos;
             floorGrid[pos].isGoalFloor = isGoal;
+            floorGrid[pos].RefreshGoal();
             if (pos.x > maxBorder.x) maxBorder.x = pos.x;
             else if (pos.x < minBorder.x) minBorder.x = pos.x;
             if (pos.y > maxBorder.y) maxBorder.y = pos.y;

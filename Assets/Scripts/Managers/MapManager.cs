@@ -68,6 +68,7 @@ public class MapManager : SingletonBehaviour<MapManager>
                     break;
                 case TileMode.goalFloor:
                     currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)).isGoalFloor = true;
+                    currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)).RefreshGoal();
                     break;
                 default:
                     break;
