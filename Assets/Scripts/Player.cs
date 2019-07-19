@@ -114,6 +114,7 @@ public class Player : MonoBehaviour
         newBullet.transform.LookAt(shootingArm.transform.forward + newBullet.transform.position);
         newBullet.Init(shootingArm.transform.forward);
         PlayerController.inst.bulletList.RemoveAt(0);
+        GameManager.inst.bulletUIGenerator.RemoveBulletUI();
     }
 
     // Start is called before the first frame update
