@@ -255,9 +255,11 @@ MonoBehaviour:
     count: 0
     goal: 0
     isDone: 0
+    assignedClearUI: {fileID: 0}
   emptyBox: {fileID: 21300000, guid: 66bb74902851e6f45b1dd366762222ac, type: 3}
   fullBox: {fileID: 21300000, guid: 05626d4bcfb37c74c927e1ee78806026, type: 3}
   tooltipText: {fileID: 361559068607976195}
+  slashText: {fileID: 6462260514077688296}
   goalText: {fileID: 6816787038235562072}
   statusText: {fileID: 8133949305956932585}
   doneImage: {fileID: 6431706617031002862}

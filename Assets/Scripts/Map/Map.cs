@@ -255,23 +255,34 @@ public class Map : MonoBehaviour
     /// Remove Object at position.
     /// </summary>
     /// <param name="pos">Position of object.</param>
-    public void RemoveObject(Vector2Int pos, bool isCaseInteracted = false)
+    public void RemoveObject(Vector2Int pos)
     {
         if (objectGrid.ContainsKey(pos))
         {
-            if(objectGrid[pos].GetType() == ObjType.Briefcase && GameManager.aCase >= 0 && !isCaseInteracted)
-                clearConditions[GameManager.aCase].IsDone(0, -1);
-            else if (objectGrid[pos].GetType() == ObjType.Camera && GameManager.aTurret >= 0)
-                clearConditions[GameManager.aTurret].IsDone(0, -1);
-            else if(objectGrid[pos].GetType() == ObjType.Mannequin)
+            switch(objectGrid[pos].GetType())
             {
-                if(objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.white >= 0)
-                    clearConditions[GameManager.white].IsDone(-1);
-                else if (!objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.black >= 0)
-                    clearConditions[GameManager.black].IsDone(-1);
+                case ObjType.Camera:
+                    if (GameManager.aTurret >= 0)
+                        clearConditions[GameManager.aTurret].IsDone(0, -1);
+                    if (GameManager.nTurret >= 0)
+                        clearConditions[GameManager.nTurret].IsDone(1);
+                    PlayerController.inst.OnPlayerMove -= objectGrid[pos].GetObject().GetComponent<IPlayerInteractor>().Interact;
+                    break;
+                case ObjType.Mannequin:
+                    if (objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.white >= 0)
+                        clearConditions[GameManager.white].IsDone(-1);
+                    else if (!objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.black >= 0)
+                        clearConditions[GameManager.black].IsDone(-1);
+                    break;
+                case ObjType.Briefcase:
+                    if (GameManager.aCase >= 0)
+                        clearConditions[GameManager.aCase].IsDone(0, -1);
+                    PlayerController.inst.OnPlayerMove -= objectGrid[pos].GetObject().GetComponent<IPlayerInteractor>().Interact;
+                    break;
+                default:
+                    Debug.Log("[ERR] 병신아");
+                    break;
             }
-            if(objectGrid[pos].GetType() != ObjType.Mannequin)
-                PlayerController.inst.OnPlayerMove -= objectGrid[pos].GetObject().GetComponent<IPlayerInteractor>().Interact;
             Destroy(objectGrid[pos].GetObject());
             objectGrid.Remove(pos);
             floorGrid[pos].objOnFloor = null;

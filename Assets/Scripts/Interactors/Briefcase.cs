@@ -22,7 +22,11 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 
     public void Init(Floor floor)
 	{
-        if (GameManager.aCase >= 0) MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone(0, 1);
+        if (GameManager.aCase >= 0)
+        {
+            MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone(0, 1);
+            Debug.Log("init brief");
+        }
         this.floor = floor;
         floor.objOnFloor = this;
 		PlayerController.inst.OnPlayerMove += Interact;
@@ -58,12 +62,10 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
             {
                 if (dropBullet != BulletCode.None)
                     PlayerController.inst.AddBullet(dropBullet);
-                if (GameManager.aCase >= 0)
-                    MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone(1);
                 if (GameManager.nCase >= 0)
                     MapManager.inst.currentMap.clearConditions[GameManager.nCase].IsDone(1);
                 floor.objOnFloor = null;
-                MapManager.inst.currentMap.RemoveObject(Position, true);
+                MapManager.inst.currentMap.RemoveObject(Position);
             }
         }
 

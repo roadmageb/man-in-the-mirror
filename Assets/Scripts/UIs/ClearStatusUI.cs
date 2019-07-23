@@ -11,6 +11,7 @@ public class ClearStatusUI : MonoBehaviour
     public Sprite fullBox;
     [Header("inside")]
     public Text tooltipText;
+    public Text slashText;
     public Text goalText;
     public Text statusText;
     public Image doneImage;
@@ -19,16 +20,34 @@ public class ClearStatusUI : MonoBehaviour
     {
         assignedCondition = condition;
         tooltipText.text = tooltip;
-        goalText.text = assignedCondition.goal.ToString();
-        statusText.text = assignedCondition.count.ToString();
+        if (condition.type == ClearType.AllCase || condition.type == ClearType.AllFloor || condition.type == ClearType.AllTurret)
+        {
+            goalText.text = "";
+            statusText.text = "";
+            slashText.text = (assignedCondition.goal - assignedCondition.count).ToString();
+        }
+        else
+        {
+            goalText.text = assignedCondition.goal.ToString();
+            statusText.text = assignedCondition.count.ToString();
+        }
         if (assignedCondition.isDone) doneImage.sprite = fullBox;
         else doneImage.sprite = emptyBox;
     }
 
     public void RefreshClearCondition()
     {
-        goalText.text = assignedCondition.goal.ToString();
-        statusText.text = assignedCondition.count.ToString();
+        if (assignedCondition.type == ClearType.AllCase || assignedCondition.type == ClearType.AllFloor || assignedCondition.type == ClearType.AllTurret)
+        {
+            goalText.text = "";
+            statusText.text = "";
+            slashText.text = (assignedCondition.goal - assignedCondition.count).ToString();
+        }
+        else
+        {
+            goalText.text = assignedCondition.goal.ToString();
+            statusText.text = assignedCondition.count.ToString();
+        }
         if (assignedCondition.isDone) doneImage.sprite = fullBox;
         else doneImage.sprite = emptyBox;
     }

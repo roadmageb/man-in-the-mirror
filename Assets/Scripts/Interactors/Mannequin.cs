@@ -77,8 +77,8 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     {
         Color = isWhite ? Color.white : Color.black;
         this.isWhite = isWhite;
-        if (GameManager.black >= 0 && !isWhite) MapManager.inst.currentMap.clearConditions[GameManager.black].count++;
-        if (GameManager.white >= 0 && isWhite) MapManager.inst.currentMap.clearConditions[GameManager.white].count++;
+        if (GameManager.black >= 0 && !isWhite) MapManager.inst.currentMap.clearConditions[GameManager.black].IsDone(1);
+        else if (GameManager.white >= 0 && isWhite) MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(1);
     }
 
     #region IObject Override
