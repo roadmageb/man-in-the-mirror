@@ -12,8 +12,14 @@ public abstract class Bullet : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    private void OnDestroy()
+    {
+        GameManager.inst.isBulletFlying = false;
+    }
+
     public void Init(Vector3 velocity)
     {
+        GameManager.inst.isBulletFlying = true;
         GetComponent<Rigidbody>().velocity = velocity;
         Destroy(gameObject, MapManager.inst.currentMap.maxMapSize / velocity.magnitude);
     }    

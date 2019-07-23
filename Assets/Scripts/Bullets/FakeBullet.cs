@@ -10,6 +10,6 @@ public class FakeBullet : Bullet
         {
             other.GetComponent<IBulletInteractor>().Interact(this);
         }
-		Destroy(gameObject);
+        Destroy(gameObject);
 	}
 }

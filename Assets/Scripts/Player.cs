@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
 		agent.CalculatePath(destination, path);
         if(path.status == NavMeshPathStatus.PathComplete)
         {
-		    PlayerController.inst.isPlayerMoving = true;
+            GameManager.inst.isPlayerMoving = true;
             playerArrivalCheck = StartCoroutine(CheckIfPlayerArrived(destination));
             GetComponent<NavMeshAgent>().SetDestination(destination);
         }
@@ -82,7 +82,7 @@ public class Player : MonoBehaviour
         currentFloor.isPlayerOn = true;
         PlayerController.inst.CheckCurrentFloors();
         anim.SetBool("isWalking", false);
-        PlayerController.inst.isPlayerMoving = false;
+        GameManager.inst.isPlayerMoving = false;
     }
     /// <summary>
     /// Count 2 second to make player in shooting mode.
@@ -102,7 +102,7 @@ public class Player : MonoBehaviour
         }
         if (time > endTime)
         {
-            PlayerController.inst.isPlayerShooting = true;
+            GameManager.inst.isPlayerShooting = true;
             StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomInAtPlayer(this));
         }
     }

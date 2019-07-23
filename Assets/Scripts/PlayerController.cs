@@ -7,7 +7,6 @@ using UnityEngine.AI;
 public class PlayerController : SingletonBehaviour<PlayerController>
 {
     public Player currentPlayer;
-    public bool isPlayerMoving, isPlayerShooting, isZooming;
     public List<BulletCode> bulletList = new List<BulletCode>();
     private Vector2Int prePos;
     public Vector2Int MapPos
@@ -144,12 +143,12 @@ public class PlayerController : SingletonBehaviour<PlayerController>
             }
 
             //Control player only if camera is not zooming in to or out from the current player
-            if (!isZooming)
+            if (!GameManager.inst.isZooming && !GameManager.inst.isBulletFlying)
             {
                 if (Input.GetMouseButtonDown(0))
                 {
                     //Move the current player.
-                    if (!isPlayerMoving && !isPlayerShooting)
+                    if (!GameManager.inst.isPlayerMoving && !GameManager.inst.isPlayerShooting)
                     {
                         Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
                         RaycastHit hit;
@@ -174,7 +173,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                                 currentPlayer.ResetCurrentPlayer();
                         }
                     }
-                    else if (isPlayerShooting)
+                    else if (GameManager.inst.isPlayerShooting)
                     {
                         if (bulletList.Count > 0)
                         {
@@ -182,7 +181,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                         }
                     }
                 }
-                else if (Input.GetMouseButtonDown(1) && isPlayerShooting)
+                else if (Input.GetMouseButtonDown(1) && GameManager.inst.isPlayerShooting)
                 {
                     StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomOutFromPlayer(currentPlayer));
                     currentPlayer.shootingArm.rotation = currentPlayer.armRotation;
@@ -197,7 +196,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
         {
             if (currentPlayer.GetComponent<NavMeshAgent>().velocity.magnitude > 0)
                 transform.rotation = Quaternion.LookRotation(currentPlayer.GetComponent<NavMeshAgent>().velocity.normalized);
-            if (isPlayerShooting)
+            if (GameManager.inst.isPlayerShooting)
             {
                 Quaternion destinationRotation = Quaternion.Euler(new Vector3(transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, currentPlayer.transform.eulerAngles.z));
                 currentPlayer.transform.rotation = Quaternion.Lerp(currentPlayer.transform.rotation, destinationRotation, Time.deltaTime * 10);

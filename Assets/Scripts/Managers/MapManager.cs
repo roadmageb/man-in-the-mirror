@@ -91,15 +91,13 @@ public class MapManager : SingletonBehaviour<MapManager>
                 if (!child.GetComponent<Mannequin>().isWhite && GameManager.black >= 0)
                     currentMap.clearConditions[GameManager.black].IsDone(1);
             }
-
         }
-
-
         for (int i = 0; i < currentMap.startFloors.Count; i++)
             PlayerController.inst.CreatePlayer(currentMap.startFloors[i]);
         for (int i = 0; i < loadedMapData.bullets.Count; i++)
             PlayerController.inst.AddBullet(loadedMapData.bullets[i]);
     }
+
     public IEnumerator Rebaker()
     {
         yield return null;

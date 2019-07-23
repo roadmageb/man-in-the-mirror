@@ -80,23 +80,32 @@ public class CameraController : MonoBehaviour
         Vector3 posDiff = (player.head.transform.position - transform.position) / 40;
         float fovDiff = (shootingFov - mapFov) / 40f;
         float angleDiff = -30f / 40f;
-        PlayerController.inst.isZooming = true;
+        GameManager.inst.isZooming = true;
         previousPos = transform.position;
         previousAngle = new Vector3(transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x,
             transform.eulerAngles.y > 180 ? transform.eulerAngles.y - 360 : transform.eulerAngles.y,
             transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z);
-        for (int i = 0; i < 40; i++)
+        int i;
+        for (i = 0; i < 40; i++)
         {
             yield return null;
+            if (Input.GetMouseButtonDown(0))
+                break;
             transform.position += posDiff;
             transform.eulerAngles += new Vector3(angleDiff, 0, 0);
             Camera.main.fieldOfView += fovDiff;
+        }
+        if(i < 40)
+        {
+            transform.position += posDiff * (40 - i);
+            transform.eulerAngles += new Vector3(angleDiff * (40 - i), 0, 0);
+            Camera.main.fieldOfView += fovDiff * (40 - i);
         }
         player.transform.eulerAngles = new Vector3(player.transform.eulerAngles.x, transform.eulerAngles.y, player.transform.eulerAngles.z);
         transform.position = player.head.transform.position;
         rotationX = transform.eulerAngles.y;
         rotationY = transform.eulerAngles.x;
-        PlayerController.inst.isZooming = false;
+        GameManager.inst.isZooming = false;
         player.laser.SetActive(true);
         player.anim.SetBool("isShooting", true);
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Head");
@@ -115,7 +124,7 @@ public class CameraController : MonoBehaviour
         Vector3 posDiff = (previousPos - transform.position) / 40;
         float fovDiff = (mapFov - shootingFov) / 40f;
         player.laser.SetActive(false);
-        PlayerController.inst.isZooming = true;
+        GameManager.inst.isZooming = true;
         player.anim.SetBool("isShooting", false);
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Player");
         player.head.SetActive(true);
@@ -126,16 +135,25 @@ public class CameraController : MonoBehaviour
         angleDiff = new Vector3(angleDiff.x > 180 ? 360 - angleDiff.x : angleDiff.x,
             angleDiff.y > 180 ? 360 - angleDiff.y : angleDiff.y,
             angleDiff.z > 180 ? 360 - angleDiff.z : angleDiff.z);
-        for (int i = 0; i < 40; i++)
+        int i;
+        for (i = 0; i < 40; i++)
         {
             yield return null;
+            if (Input.GetMouseButtonDown(0))
+                break;
             transform.position += posDiff;
             transform.eulerAngles += angleDiff;
             Camera.main.fieldOfView += fovDiff;
         }
+        if (i < 40)
+        {
+            transform.position += posDiff * (40 - i);
+            transform.eulerAngles += angleDiff * (40 - i);
+            Camera.main.fieldOfView += fovDiff * (40 - i);
+        }
         transform.position = previousPos;
-        PlayerController.inst.isPlayerShooting = false;
-        PlayerController.inst.isZooming = false;
+        GameManager.inst.isPlayerShooting = false;
+        GameManager.inst.isZooming = false;
 
         // Visible mouse cursor
         Cursor.visible = true;
@@ -153,22 +171,10 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!PlayerController.inst.isZooming)
+        if (!GameManager.inst.isZooming)
         {
-            if (!PlayerController.inst.isPlayerShooting)
+            if (!GameManager.inst.isPlayerShooting)
             {
-
-
-
-
-
-
-
-
-
-
-
-
                 CameraMove();
                 CameraDrag();
             }

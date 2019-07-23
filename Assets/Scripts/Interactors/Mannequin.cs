@@ -70,18 +70,15 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
         transform.Rotate(new Vector3(0, Random.Range(0, 4) * 90, 0));
         isWhite = true;
         Color = Color.white;
-        if (GameManager.white >= 0) MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(1);
+        //if (GameManager.white >= 0) MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(1);
     }
 
     public void SetColor(bool isWhite)
     {
         Color = isWhite ? Color.white : Color.black;
         this.isWhite = isWhite;
-        if (GameManager.black >= 0 && !isWhite)
-        {
-            MapManager.inst.currentMap.clearConditions[GameManager.black].count++;
-            if (GameManager.white >= 0) MapManager.inst.currentMap.clearConditions[GameManager.white].count--;
-        }
+        if (GameManager.black >= 0 && !isWhite) MapManager.inst.currentMap.clearConditions[GameManager.black].count++;
+        if (GameManager.white >= 0 && isWhite) MapManager.inst.currentMap.clearConditions[GameManager.white].count++;
     }
 
     #region IObject Override
