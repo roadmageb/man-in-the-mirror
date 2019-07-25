@@ -97,9 +97,9 @@ public class Player : MonoBehaviour
         aimLight.gameObject.SetActive(true);
         while (time <= endTime)
         {
-            aimLight.intensity += 1;
-            aimLight.spotAngle -= ((2 * Time.deltaTime) / 60);
             yield return null;
+            aimLight.intensity += 15 * Time.deltaTime;
+            aimLight.spotAngle -= 30 * Time.deltaTime;
             time = Time.time;
             if (!Input.GetMouseButton(0))
             {
@@ -111,6 +111,9 @@ public class Player : MonoBehaviour
         }
         if (time > endTime)
         {
+            aimLight.intensity = 0;
+            aimLight.spotAngle = 60;
+            aimLight.gameObject.SetActive(false);
             GameManager.inst.isPlayerShooting = true;
             StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomInAtPlayer(this));
         }
