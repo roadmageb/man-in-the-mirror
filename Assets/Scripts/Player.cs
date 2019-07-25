@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
     public Floor currentFloor;
 
     public GameObject selectPointer;
-    public Light aimLight;
+    public VLight aimLight;
 
     /// <summary>
     /// Set this player as the current player.
@@ -98,12 +98,12 @@ public class Player : MonoBehaviour
         while (time <= endTime)
         {
             yield return null;
-            aimLight.intensity += 15 * Time.deltaTime;
+            aimLight.lightMultiplier += 3 * Time.deltaTime;
             aimLight.spotAngle -= 30 * Time.deltaTime;
             time = Time.time;
             if (!Input.GetMouseButton(0))
             {
-                aimLight.intensity = 0;
+                aimLight.lightMultiplier = 0;
                 aimLight.spotAngle = 60;
                 aimLight.gameObject.SetActive(false);
                 break;
@@ -111,7 +111,7 @@ public class Player : MonoBehaviour
         }
         if (time > endTime)
         {
-            aimLight.intensity = 0;
+            aimLight.lightMultiplier = 0;
             aimLight.spotAngle = 60;
             aimLight.gameObject.SetActive(false);
             GameManager.inst.isPlayerShooting = true;
