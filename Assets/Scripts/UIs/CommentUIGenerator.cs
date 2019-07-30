@@ -10,12 +10,20 @@ public class CommentUIGenerator : MonoBehaviour
     public string commentString = "";
 
     public bool isViewed = false;
+    private Coroutine currentFadeOut;
 
     public void SetComment(string commentStr)
     {
         commentString = commentStr;
         comment.text = commentString;
         commentUI.SetActive(true);
+        currentFadeOut = StartCoroutine(FadeOut());
+    }
+
+    public void ViewComment()
+    {
+        StopCoroutine(currentFadeOut);
+        isViewed = true;
     }
 
     IEnumerator FadeOut()
@@ -26,5 +34,7 @@ public class CommentUIGenerator : MonoBehaviour
         {
             yield return null;
         }
+        commentUI.SetActive(false);
+        isViewed = true;
     }
 }

@@ -477,5 +477,25 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6319119020849879011, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6319119020849879011, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6319119020849879011, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6319119020849879011, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Stage : 1'
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8115fd4d1a1025b4fb05e45fc5fa6578, type: 3}
