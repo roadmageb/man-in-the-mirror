@@ -15,7 +15,7 @@ public class StageSelector : MonoBehaviour
     {
         if(i < 0 && selectedStage == 0) selectedStage = totalStageCount - 1;
         else selectedStage = (selectedStage + i) % totalStageCount;
-        stageIndex.text = "Stage : " + selectedStage;
+        stageIndex.text = "Stage : " + (selectedStage + 1);
     }
 
     public void StartSelectedStage()

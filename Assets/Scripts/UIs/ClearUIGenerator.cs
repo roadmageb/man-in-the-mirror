@@ -5,6 +5,7 @@ using UnityEngine;
 public class ClearUIGenerator : MonoBehaviour
 {
     public GameObject clearUI;
+    public Transform clearUIParent;
     public List<GameObject> uiList;
 
     private int nextx = -175;
@@ -15,7 +16,7 @@ public class ClearUIGenerator : MonoBehaviour
     {
         foreach (ClearCondition cond in MapManager.inst.currentMap.clearConditions)
         {
-            GameObject uiObject = Instantiate(clearUI, transform);
+            GameObject uiObject = Instantiate(clearUI, clearUIParent);
             uiList.Add(uiObject);
             ClearStatusUI ui = uiObject.GetComponent<ClearStatusUI>();
             ui.GetComponent<RectTransform>().anchoredPosition = new Vector2(nextx, nexty);

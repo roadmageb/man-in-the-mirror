@@ -9,6 +9,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     [Space(10)]
     public ClearUIGenerator uiGenerator;
     public BulletUIGenerator bulletUIGenerator;
+    public CommentUIGenerator commentUIGenerator;
     public Image whiteout;
 
     [Space(10)]

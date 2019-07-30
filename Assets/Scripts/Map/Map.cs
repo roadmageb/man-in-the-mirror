@@ -14,9 +14,11 @@ public class Map : MonoBehaviour
     public GameObject floors;
     public GameObject walls;
     public GameObject objects;
+
+    [Header("Stage Data")]
     public List<Floor> startFloors;
     public List<BulletCode> initialBullets;
-
+    public string comments;
     public List<ClearCondition> clearConditions;
 
     /// <summary>

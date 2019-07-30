@@ -31,6 +31,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         public List<clearData> clears;
         public List<BulletCode> cases;
         public List<BulletCode> bullets;
+        public string comments = null;
         public MapSaveData()
         {
             objects = new List<objectData>();

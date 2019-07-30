@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class BulletUIGenerator : MonoBehaviour
 {
     public GameObject bulletUI;
+    public Transform bulletUIParent;
     public GameObject targetBulletUI;
     public List<GameObject> uiList;
 
@@ -17,7 +18,7 @@ public class BulletUIGenerator : MonoBehaviour
 
     public void GenerateBulletUI(BulletCode code)
     {
-        GameObject bulletUIInst = Instantiate(bulletUI, transform);
+        GameObject bulletUIInst = Instantiate(bulletUI, bulletUIParent);
         bulletUIInst.transform.localPosition = new Vector3(posX, posY);
         posX -= 60;
 

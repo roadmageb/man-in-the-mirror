@@ -86,6 +86,11 @@ public class MapManager : SingletonBehaviour<MapManager>
             PlayerController.inst.CreatePlayer(currentMap.startFloors[i]);
         for (int i = 0; i < loadedMapData.bullets.Count; i++)
             PlayerController.inst.AddBullet(loadedMapData.bullets[i]);
+        if (loadedMapData.comments != null)
+        {
+            currentMap.comments = loadedMapData.comments;
+            GameManager.inst.commentUIGenerator.SetComment(currentMap.comments);
+        }
     }
 
     public IEnumerator Rebaker()
