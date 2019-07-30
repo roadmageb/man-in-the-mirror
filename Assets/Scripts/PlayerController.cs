@@ -173,7 +173,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                                 currentPlayer.ResetCurrentPlayer();
                         }
                     }
-                    else if (GameManager.inst.isPlayerShooting)
+                    else if (GameManager.inst.isPlayerShooting && currentPlayer.laser.activeSelf)
                     {
                         if (bulletList.Count > 0)
                         {

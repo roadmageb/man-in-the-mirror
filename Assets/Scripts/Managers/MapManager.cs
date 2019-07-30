@@ -17,7 +17,7 @@ public class MapManager : SingletonBehaviour<MapManager>
     public GameObject truthBullet, fakeBullet, mirrorBullet;
     public GameObject briefCase;
     public GameObject cameraTurret;
-    public GameObject[] mannequins;
+    public GameObject mannequin;
     public GameObject player;
     [Header("All players")]
     public List<GameObject> players;

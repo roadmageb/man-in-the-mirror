@@ -23,6 +23,9 @@ public class Player : MonoBehaviour
     public GameObject selectPointer;
     public VLight aimLight;
 
+    private GameObject currentBullet;
+    private float lastShoot;
+
     /// <summary>
     /// Set this player as the current player.
     /// </summary>
@@ -125,10 +128,13 @@ public class Player : MonoBehaviour
         newBullet.transform.position = shootingFinger.transform.position;
         newBullet.transform.LookAt(shootingArm.transform.forward + newBullet.transform.position);
         newBullet.Init(shootingArm.transform.forward * 3);
+        currentBullet = newBullet.gameObject;
         PlayerController.inst.bulletList.RemoveAt(0);
         GameManager.inst.bulletUIGenerator.RemoveBulletUI();
+        laser.SetActive(false);
+        lastShoot = Time.time;
+        anim.SetTrigger("shoot");
     }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -138,7 +144,12 @@ public class Player : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    { 
-        laser.transform.position = shootingFinger.transform.position;
+    {
+        if (GameManager.inst.isPlayerShooting && !GameManager.inst.isZooming)
+        {
+            laser.transform.position = shootingFinger.transform.position;
+            if (currentBullet == null && lastShoot + 1f < Time.time) laser.SetActive(true);
+        }
+        else if (laser.activeSelf) laser.SetActive(false);
     }
 }
