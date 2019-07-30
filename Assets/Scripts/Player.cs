@@ -124,7 +124,7 @@ public class Player : MonoBehaviour
         Bullet newBullet = MapManager.inst.bulletFactory.MakeBullet(bulletCode);
         newBullet.transform.position = shootingFinger.transform.position;
         newBullet.transform.LookAt(shootingArm.transform.forward + newBullet.transform.position);
-        newBullet.Init(shootingArm.transform.forward);
+        newBullet.Init(shootingArm.transform.forward * 3);
         PlayerController.inst.bulletList.RemoveAt(0);
         GameManager.inst.bulletUIGenerator.RemoveBulletUI();
     }
