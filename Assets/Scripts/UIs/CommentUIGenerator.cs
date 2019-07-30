@@ -30,8 +30,14 @@ public class CommentUIGenerator : MonoBehaviour
     {
         yield return new WaitForSeconds(5f);
         float currentTime = Time.time;
-        for (; currentTime + 5000 >= Time.time;)
+        float backAlpha = 200;
+        float textAlpha = 255;
+        for (; currentTime + 4000 >= Time.time;)
         {
+            backAlpha -= 50f * Time.deltaTime;
+            textAlpha -= (255 / 4) * Time.deltaTime;
+            commentUI.GetComponent<Image>().color = new Color(0.2358491f, 0.2358491f, 0.2358491f, backAlpha / 255);
+            comment.color = new Color(1, 1, 1, textAlpha / 255);
             yield return null;
         }
         commentUI.SetActive(false);
