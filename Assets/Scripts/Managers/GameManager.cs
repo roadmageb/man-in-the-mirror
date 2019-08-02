@@ -1,29 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Newtonsoft.Json;
 
 public class GameManager : SingletonBehaviour<GameManager>
 {
-    [Space(10)]
+    [Header("Saved Data")]
+    public ClearData playerData;
+    /// <summary>
+    /// The index of the current stage.
+    /// </summary>
+    public TextAsset currentStage;
+    public int stageIdx;
+
+    [Header("UIs in Scene")]
     public ClearUIGenerator uiGenerator;
     public BulletUIGenerator bulletUIGenerator;
     public CommentUIGenerator commentUIGenerator;
     public Image whiteout;
 
-    [Space(10)]
+    [Header("Stage Data")]
     public bool isGameOver = false;
     public bool isPlayerMoving, isPlayerShooting, isZooming, isBulletFlying;
 
     public int[] clearIndex = new int[9];
     public int clearCounter = 0;
     public static int nFloor, nTurret, nCase, nPlayer, aFloor, aTurret, aCase, white, black;
-
-    /// <summary>
-    /// The index of the current stage.
-    /// </summary>
-    public TextAsset currentStage;
 
     public void ResetClearIndex()
     {
@@ -89,6 +94,7 @@ public class GameManager : SingletonBehaviour<GameManager>
         Debug.Log("Stage Clear!");
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        SaveClearData(stageIdx, true);
 
         yield return new WaitForSeconds(3);
         BackToStageSelect();
@@ -97,6 +103,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     public void GameOver()
     {
         Debug.Log("Game Over!");
+        SaveClearData(stageIdx, false);
         isGameOver = true;
         StopAllCoroutines();
         StartCoroutine(RestartStage());
@@ -117,14 +124,52 @@ public class GameManager : SingletonBehaviour<GameManager>
         SceneManager.LoadScene("SelectStage");
     }
 
+    public void SaveClearData(int stage = -1, bool isClear = false)
+    {
+        if (stage != -1)
+        {
+            if (playerData.isCleared.ContainsKey(stage))
+            {
+                playerData.isCleared[stage] = isClear;
+            }
+            else playerData.isCleared.Add(stage, isClear);
+        }
+
+        string jsonData = JsonConvert.SerializeObject(playerData);
+        File.WriteAllText("./saveData.json", jsonData);
+    }
+
+    public void LoadClearData()
+    {
+        if (File.Exists("./saveData.json"))
+        {
+            Debug.Log("data Load");
+            string strData = File.ReadAllText("./saveData.json");
+            playerData = JsonConvert.DeserializeObject<ClearData>(strData);
+        }
+        else
+        {
+            Debug.Log("generate New Data");
+            playerData = new ClearData();
+            SaveClearData();
+        }
+    }
+
+    public class ClearData
+    {
+        public Dictionary<int, bool> isCleared = new Dictionary<int, bool>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        GameManager.inst.LoadClearData();
         if (!MapManager.inst.isMapEditingOn)
         {
             isGameOver = false;
+            stageIdx = StageSelector.selectedStage + 1;
             currentStage = Resources.Load<TextAsset>("Stages/" + "stage" + (StageSelector.selectedStage + 1));
-            StartStage();
+            if (MapManager.inst.emptyMap != null) StartStage();
             //Destroy(FindObjectOfType<StageSelector>().gameObject);
         }
     }

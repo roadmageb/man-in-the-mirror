@@ -33,6 +33,7 @@ public class StageSelector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameManager.inst.LoadClearData();
         selectedStage = 0;
         totalStageCount = stage.Length;
     }
