@@ -25,7 +25,7 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
         if (GameManager.aCase >= 0)
         {
             MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone(0, 1);
-            Debug.Log("init brief");
+            //Debug.Log("init brief");
         }
         this.floor = floor;
         floor.objOnFloor = this;

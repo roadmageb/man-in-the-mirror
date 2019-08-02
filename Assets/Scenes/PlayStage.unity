@@ -257,6 +257,9 @@ MonoBehaviour:
   bulletUIParent: {fileID: 1015578411}
   targetBulletUI: {fileID: 783815343}
   uiList: []
+  truthBullet: {fileID: 21300000, guid: da1238d2a4e94964ebf1342f4d6e0566, type: 3}
+  falseBullet: {fileID: 21300000, guid: 5b8abae75960dba45b4ce321789ff176, type: 3}
+  mirrBullet: {fileID: 21300000, guid: 8265bee63b2be3c478c2f9fc665742a7, type: 3}
 --- !u!114 &158856774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -688,7 +691,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 6c676be9b1e6f1041b24ce89d8900da9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3d300eeb42485db4e846acd13764b365, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -721,8 +724,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 895, y: -330}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 895, y: -490}
+  m_SizeDelta: {x: 100, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1015578410
 GameObject:

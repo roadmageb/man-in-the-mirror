@@ -10,28 +10,37 @@ public class BulletUIGenerator : MonoBehaviour
     public GameObject targetBulletUI;
     public List<GameObject> uiList;
 
-    Color truthBulletColor = Color.green;
-    Color falseBulletColor = Color.red;
-    Color mirrBulletColor = Color.gray;
+    [Header("Bullet Images")]
+    public Sprite truthBullet;
+    public Sprite falseBullet;
+    public Sprite mirrBullet;
 
-    int posX = 895, posY = -430; // -60씩
+    int shootPosX = 895, shootPosY = -390;
+    int posX = 822, posY = -430; // -55씩
 
     public void GenerateBulletUI(BulletCode code)
     {
         GameObject bulletUIInst = Instantiate(bulletUI, bulletUIParent);
-        bulletUIInst.transform.localPosition = new Vector3(posX, posY);
-        posX -= 60;
+        if (uiList.Count == 0)
+        {
+            bulletUIInst.transform.localPosition = new Vector3(shootPosX, shootPosY);
+        }
+        else
+        {
+            bulletUIInst.transform.localPosition = new Vector3(posX, posY);
+            posX -= 55;
+        }
 
         switch(code)
         {
         case BulletCode.True:
-            bulletUIInst.GetComponent<Image>().color = truthBulletColor;
+            bulletUIInst.GetComponent<Image>().sprite = truthBullet;
             break;
         case BulletCode.False:
-            bulletUIInst.GetComponent<Image>().color = falseBulletColor;
+            bulletUIInst.GetComponent<Image>().sprite = falseBullet;
             break;
         case BulletCode.Mirror:
-            bulletUIInst.GetComponent<Image>().color = mirrBulletColor;
+            bulletUIInst.GetComponent<Image>().sprite = mirrBullet;
             break;
         default:
             Debug.Log("이상한 불릿 코드임");
@@ -48,16 +57,23 @@ public class BulletUIGenerator : MonoBehaviour
         GameObject shootedBullet = uiList[0];
         Destroy(shootedBullet);
         uiList.RemoveAt(0);
-        posX += 60;
+        posX += 55;
 
         if (uiList.Count == 0)
         {
             targetBulletUI.SetActive(false);
         }
 
-        foreach (var ui in uiList)
+        for (int i = 0; i < uiList.Count; i++)
         {
-            ui.transform.localPosition += new Vector3(60, 0);
+            if (i == 0)
+            {
+                uiList[i].transform.localPosition = new Vector3(shootPosX, shootPosY);
+            }
+            else
+            {
+                uiList[i].transform.localPosition += new Vector3(55, 0);
+            }
         }
     }
 }
