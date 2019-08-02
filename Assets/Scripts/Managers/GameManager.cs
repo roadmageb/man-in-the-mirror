@@ -59,6 +59,7 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     IEnumerator Whiteout(bool goToWhite)
     {
+        whiteout.gameObject.SetActive(true);
         float setTime = 0.2f;
         float resetTime = 1.5f;
         if (goToWhite)
@@ -78,6 +79,7 @@ public class GameManager : SingletonBehaviour<GameManager>
                 yield return null;
             }
             whiteout.color = new Color(1, 1, 1, 0);
+            whiteout.gameObject.SetActive(false);
         }
     }
     
@@ -95,7 +97,10 @@ public class GameManager : SingletonBehaviour<GameManager>
     public void GameOver()
     {
         Debug.Log("Game Over!");
+        isGameOver = true;
         StopAllCoroutines();
+        StartCoroutine(RestartStage());
+        uiGenerator.ResetAllClearUIs();
     }
 
     public IEnumerator RestartStage()

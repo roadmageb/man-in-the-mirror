@@ -27,9 +27,7 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
         {
             if (Position.IsInAdjacentArea(pos, 1) && MapManager.inst.currentMap.GetWallAtPos((Vector2)(Position + pos) / 2) == null)
             {
-                GameManager.inst.isGameOver = true;
-                StartCoroutine(GameManager.inst.RestartStage());
-                GameManager.inst.uiGenerator.ResetAllClearUIs();
+                GameManager.inst.GameOver();
                 //TODO : Restart Level
             }
         }
