@@ -105,7 +105,7 @@ public class StageSelector : SingletonBehaviour<StageSelector>
         {
             if (playerData.isCleared.ContainsKey(stage))
             {
-                playerData.isCleared[stage] = isClear;
+                if (isClear) playerData.isCleared[stage] = isClear;
             }
             else playerData.isCleared.Add(stage, isClear);
         }
