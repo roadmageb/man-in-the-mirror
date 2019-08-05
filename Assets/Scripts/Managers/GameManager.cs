@@ -91,6 +91,7 @@ public class GameManager : SingletonBehaviour<GameManager>
         Debug.Log("Stage Clear!");
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        isGameOver = true;
         StageSelector.inst.SaveClearData(stageIdx, true);
 
         yield return new WaitForSeconds(3);
