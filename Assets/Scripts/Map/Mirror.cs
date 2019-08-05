@@ -96,26 +96,24 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 Wall wallAtPos = MapManager.inst.currentMap.GetWallAtPos(wallPos);
                 if (wallAtPos != null) // have wall at wallpos
                 {
-                    if (MapManager.inst.currentMap.wallGrid.ContainsKey(oppWallPos) && wallAtPos.type == WallType.Mirror) // change to Mirror
-                    {
-                        MapManager.inst.currentMap.ChangeToMirror(oppWallPos);
-                    }
-                    else // create wall
-                    {
-                        Pair wallPair = new Pair(PointToParRay(stPos, wallAtPos.ldPos, true), PointToParRay(stPos, wallAtPos.rdPos, true));
-                        if (wallPair.l > wallPair.r) wallPair = wallPair.Swap();
+                    Pair wallPair = new Pair(PointToParRay(stPos, wallAtPos.ldPos, true), PointToParRay(stPos, wallAtPos.rdPos, true));
+                    if (wallPair.l > wallPair.r) wallPair = wallPair.Swap();
 
-                        if (IsInRay(parRay, wallPair))
+                    if (IsInRay(parRay, wallPair))
+                    {
+                        MapManager.inst.currentMap.CreateWall(oppWallPos, wallAtPos.type);
+                        SubtractRay(parRay, wallPair);
+
+                        if (wallAtPos.type == WallType.Mirror) // change to Mirror
                         {
-                            MapManager.inst.currentMap.CreateWall(oppWallPos, wallAtPos.type);
-                            SubtractRay(parRay, wallPair);
+                            MapManager.inst.currentMap.ChangeToMirror(oppWallPos);
                         }
                     }
                 }
                 else if (MapManager.inst.currentMap.GetWallAtPos(oppWallPos) != null) // no wall at wallPos but have at opposite
                 {
-                    // remove wall
-                    MapManager.inst.currentMap.RemoveWall(oppWallPos);
+                    Pair tempPair = new Pair(PointToParRay(stPos, wallPos + (dir ? new Vector2(-0.5f, 0) : new Vector2(0, -0.5f)), true), PointToParRay(stPos, wallPos + (dir ? new Vector2(0.5f, 0) : new Vector2(0, 0.5f)), true));
+                    if (IsInRay(parRay, tempPair)) MapManager.inst.currentMap.RemoveWall(oppWallPos);
                 }
             }
             float iMid = i + 0.5f * side;
@@ -130,26 +128,24 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 Wall wallAtPos = MapManager.inst.currentMap.GetWallAtPos(wallPos);
                 if (wallAtPos != null) // have wall at wallpos
                 {
-                    if (MapManager.inst.currentMap.wallGrid.ContainsKey(oppWallPos) && wallAtPos.type == WallType.Mirror) // change to Mirror
-                    {
-                        MapManager.inst.currentMap.ChangeToMirror(oppWallPos);
-                    }
-                    else // create wall
-                    {
-                        Pair wallPair = new Pair(PointToParRay(stPos, wallAtPos.ldPos, true), PointToParRay(stPos, wallAtPos.rdPos, true));
-                        if (wallPair.l > wallPair.r) wallPair = wallPair.Swap();
+                    Pair wallPair = new Pair(PointToParRay(stPos, wallAtPos.ldPos, true), PointToParRay(stPos, wallAtPos.rdPos, true));
+                    if (wallPair.l > wallPair.r) wallPair = wallPair.Swap();
 
-                        if (IsInRay(parRay, wallPair))
+                    if (IsInRay(parRay, wallPair))
+                    {
+                        MapManager.inst.currentMap.CreateWall(oppWallPos, wallAtPos.type);
+                        SubtractRay(parRay, wallPair);
+
+                        if (wallAtPos.type == WallType.Mirror) // change to Mirror
                         {
-                            MapManager.inst.currentMap.CreateWall(oppWallPos, wallAtPos.type);
-                            SubtractRay(parRay, wallPair);
+                            MapManager.inst.currentMap.ChangeToMirror(oppWallPos);
                         }
                     }
                 }
                 else if (MapManager.inst.currentMap.GetWallAtPos(oppWallPos) != null) // no wall at wallPos but have at opposite
                 {
-                    // remove wall
-                    MapManager.inst.currentMap.RemoveWall(oppWallPos);
+                    Pair tempPair = new Pair(PointToParRay(stPos, wallPos + (dir ? new Vector2(-0.5f, 0) : new Vector2(0, -0.5f)), true), PointToParRay(stPos, wallPos + (dir ? new Vector2(0.5f, 0) : new Vector2(0, 0.5f)), true));
+                    if (IsInRay(parRay, tempPair)) MapManager.inst.currentMap.RemoveWall(oppWallPos);
                 }
                 // copy / remove floor and object
                 Vector2 pointPos = dir ? new Vector2(j, iMid) : new Vector2(iMid, j);
@@ -384,6 +380,22 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             if (pair.l <= _obj && pair.r >= _obj) return true;
         }
         return false;
+    }
+
+    bool IsInRayWeak(List<Pair> _parRay, Pair _range)
+    {
+        bool output = false;
+        foreach (Pair pair in _parRay)
+        {
+            //Debug.Log("IsinRay (" + pair.l + ", " + pair.r + ") " + _range.l + ", " + _range.r);
+            if (pair.r < _range.l || pair.l > _range.r) continue;
+            else
+            {
+                output = true;
+                break;
+            }
+        }
+        return output;
     }
 
     /// <summary>

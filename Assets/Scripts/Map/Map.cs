@@ -78,7 +78,11 @@ public class Map : MonoBehaviour
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
+        {
             Debug.Log("Floor already exists at : (" + pos.x + ", " + pos.y + ")");
+            floorGrid[pos].isGoalFloor = isGoal;
+            floorGrid[pos].RefreshGoal();   
+        }
     }
     /// <summary>
     /// Create floor in rectangular area between pos1 and pos2. 
