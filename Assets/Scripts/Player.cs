@@ -86,6 +86,8 @@ public class Player : MonoBehaviour
         currentFloor.isPlayerOn = true;
         PlayerController.inst.CheckCurrentFloors();
         anim.SetBool("isWalking", false);
+        anim.speed = 1;
+        GetComponent<NavMeshAgent>().speed = 1.5f;
         GameManager.inst.isPlayerMoving = false;
     }
     /// <summary>

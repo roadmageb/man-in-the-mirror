@@ -180,6 +180,11 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                             currentPlayer.Shoot(bulletList[0]);
                         }
                     }
+                    else if (GameManager.inst.isPlayerMoving)
+                    {
+                        currentPlayer.GetComponent<NavMeshAgent>().speed *= 5;
+                        currentPlayer.anim.speed *= 5;
+                    }
                 }
                 else if (Input.GetMouseButtonDown(1) && GameManager.inst.isPlayerShooting)
                 {
