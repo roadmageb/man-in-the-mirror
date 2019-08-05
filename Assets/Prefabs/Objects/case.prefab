@@ -90,7 +90,6 @@ GameObject:
   - component: {fileID: 2534561534464242193}
   - component: {fileID: 2534561534463275217}
   - component: {fileID: -4559840392902712278}
-  - component: {fileID: -954323813722370706}
   m_Layer: 13
   m_Name: case
   m_TagString: floor
@@ -176,19 +175,3 @@ MonoBehaviour:
   floor: {fileID: 0}
   dropBullet: 3
   table: {fileID: 256812563257164782}
---- !u!208 &-954323813722370706
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2534561534465535505}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.26000002, y: 0.185, z: 0.063}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0, z: 0}
-  m_TimeToStationary: 0.5
