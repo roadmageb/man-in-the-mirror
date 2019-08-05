@@ -261,7 +261,8 @@ public class Map : MonoBehaviour
     {
         if (objectGrid.ContainsKey(pos))
         {
-            switch(objectGrid[pos].GetType())
+            //Debug.Log(pos + " Remove Obj, " + objectGrid[pos].GetType());
+            switch (objectGrid[pos].GetType())
             {
                 case ObjType.Camera:
                     if (GameManager.aTurret >= 0)

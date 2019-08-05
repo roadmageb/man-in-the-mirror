@@ -96,14 +96,20 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 Wall wallAtPos = MapManager.inst.currentMap.GetWallAtPos(wallPos);
                 if (wallAtPos != null) // have wall at wallpos
                 {
-                    // create wall
-                    Pair wallPair = new Pair(PointToParRay(stPos, wallAtPos.ldPos, true), PointToParRay(stPos, wallAtPos.rdPos, true));
-                    if (wallPair.l > wallPair.r) wallPair = wallPair.Swap();
-
-                    if (IsInRay(parRay, wallPair))
+                    if (MapManager.inst.currentMap.wallGrid.ContainsKey(oppWallPos) && wallAtPos.type == WallType.Mirror) // change to Mirror
                     {
-                        MapManager.inst.currentMap.CreateWall(oppWallPos, wallAtPos.type);
-                        SubtractRay(parRay, wallPair);
+                        MapManager.inst.currentMap.ChangeToMirror(oppWallPos);
+                    }
+                    else // create wall
+                    {
+                        Pair wallPair = new Pair(PointToParRay(stPos, wallAtPos.ldPos, true), PointToParRay(stPos, wallAtPos.rdPos, true));
+                        if (wallPair.l > wallPair.r) wallPair = wallPair.Swap();
+
+                        if (IsInRay(parRay, wallPair))
+                        {
+                            MapManager.inst.currentMap.CreateWall(oppWallPos, wallAtPos.type);
+                            SubtractRay(parRay, wallPair);
+                        }
                     }
                 }
                 else if (MapManager.inst.currentMap.GetWallAtPos(oppWallPos) != null) // no wall at wallPos but have at opposite
@@ -124,14 +130,20 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 Wall wallAtPos = MapManager.inst.currentMap.GetWallAtPos(wallPos);
                 if (wallAtPos != null) // have wall at wallpos
                 {
-                    // create wall
-                    Pair wallPair = new Pair(PointToParRay(stPos, wallAtPos.ldPos, true), PointToParRay(stPos, wallAtPos.rdPos, true));
-                    if (wallPair.l > wallPair.r) wallPair = wallPair.Swap();
-
-                    if (IsInRay(parRay, wallPair))
+                    if (MapManager.inst.currentMap.wallGrid.ContainsKey(oppWallPos) && wallAtPos.type == WallType.Mirror) // change to Mirror
                     {
-                        MapManager.inst.currentMap.CreateWall(oppWallPos, wallAtPos.type);
-                        SubtractRay(parRay, wallPair);
+                        MapManager.inst.currentMap.ChangeToMirror(oppWallPos);
+                    }
+                    else // create wall
+                    {
+                        Pair wallPair = new Pair(PointToParRay(stPos, wallAtPos.ldPos, true), PointToParRay(stPos, wallAtPos.rdPos, true));
+                        if (wallPair.l > wallPair.r) wallPair = wallPair.Swap();
+
+                        if (IsInRay(parRay, wallPair))
+                        {
+                            MapManager.inst.currentMap.CreateWall(oppWallPos, wallAtPos.type);
+                            SubtractRay(parRay, wallPair);
+                        }
                     }
                 }
                 else if (MapManager.inst.currentMap.GetWallAtPos(oppWallPos) != null) // no wall at wallPos but have at opposite
@@ -152,7 +164,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     if (floor != null)
                     {
                         //Debug.Log(oppFloorPos);
-                        if (IsInRay(parRay, PointToParRay(stPos, floor.mapPos, true)))
+                        if (floorCountGrid[floor.mapPos] == 0 && IsInRay(parRay, PointToParRay(stPos, floor.mapPos, true)))
                         {
                             floorCountGrid[floor.mapPos] = 1;
                         }
@@ -186,7 +198,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     if (floor != null)
                     {
                         //Debug.Log(oppFloorPos);
-                        if (IsInRay(parRay, PointToParRay(stPos, floor.mapPos, true)))
+                        if (floorCountGrid[floor.mapPos] == 0 && IsInRay(parRay, PointToParRay(stPos, floor.mapPos, true)))
                         {
                             floorCountGrid[floor.mapPos] = 1;
                         }
@@ -220,7 +232,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     if (floor != null)
                     {
                         //Debug.Log(oppFloorPos);
-                        if (IsInRay(parRay, PointToParRay(stPos, floor.mapPos, true)))
+                        if (floorCountGrid[floor.mapPos] == 0 && IsInRay(parRay, PointToParRay(stPos, floor.mapPos, true)))
                         {
                             floorCountGrid[floor.mapPos] = 1;
                         }
@@ -254,7 +266,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     if (floor != null)
                     {
                         //Debug.Log(oppFloorPos);
-                        if (IsInRay(parRay, PointToParRay(stPos, floor.mapPos, true)))
+                        if (floorCountGrid[floor.mapPos] == 0 && IsInRay(parRay, PointToParRay(stPos, floor.mapPos, true)))
                         {
                             floorCountGrid[floor.mapPos] = 1;
                         }
