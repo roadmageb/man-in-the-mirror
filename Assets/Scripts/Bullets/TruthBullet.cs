@@ -6,14 +6,17 @@ public class TruthBullet : Bullet
 {
     protected override void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<IBreakable>() != null)
+        if (other.gameObject.layer != LayerMask.NameToLayer("Scattered"))
         {
-            other.GetComponent<IBreakable>().Break();
+            if (other.GetComponent<IBreakable>() != null)
+            {
+                other.GetComponent<IBreakable>().Break();
+            }
+            else if (other.GetComponent<IBulletInteractor>() != null)
+            {
+                other.GetComponent<IBulletInteractor>().Interact(this);
+            }
+            Destroy(gameObject);
         }
-        else if (other.GetComponent<IBulletInteractor>() != null)
-        {
-            other.GetComponent<IBulletInteractor>().Interact(this);
-        }
-        Destroy(gameObject);
     }
 }

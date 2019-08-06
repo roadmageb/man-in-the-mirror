@@ -140,7 +140,7 @@ public class Map : MonoBehaviour
         }
         if (!wallGrid.ContainsKey(pos))
         {
-            if(wallType == WallType.Normal)
+            if (wallType == WallType.Normal)
                 wallGrid.Add(pos, Instantiate(MapManager.inst.normalWall, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
             else if (wallType == WallType.Mirror)
                 wallGrid.Add(pos, Instantiate(MapManager.inst.mirror, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
@@ -153,7 +153,13 @@ public class Map : MonoBehaviour
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
+        {
             Debug.Log("Wall already exists at : " + pos);
+            if (wallGrid[pos].type == WallType.Normal && wallType == WallType.Mirror) // change to Mirror
+            {
+                MapManager.inst.currentMap.ChangeToMirror(pos);
+            }
+        }
     }
     /// <summary>
     /// Create walls from two floors, toward dir's direction. 

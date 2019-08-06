@@ -98,16 +98,11 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 {
                     Pair wallPair = new Pair(PointToParRay(stPos, wallAtPos.ldPos, true), PointToParRay(stPos, wallAtPos.rdPos, true));
                     if (wallPair.l > wallPair.r) wallPair = wallPair.Swap();
-
+                    
                     if (IsInRay(parRay, wallPair))
                     {
                         MapManager.inst.currentMap.CreateWall(oppWallPos, wallAtPos.type);
                         SubtractRay(parRay, wallPair);
-
-                        if (wallAtPos.type == WallType.Mirror) // change to Mirror
-                        {
-                            MapManager.inst.currentMap.ChangeToMirror(oppWallPos);
-                        }
                     }
                 }
                 else if (MapManager.inst.currentMap.GetWallAtPos(oppWallPos) != null) // no wall at wallPos but have at opposite
@@ -135,11 +130,6 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     {
                         MapManager.inst.currentMap.CreateWall(oppWallPos, wallAtPos.type);
                         SubtractRay(parRay, wallPair);
-
-                        if (wallAtPos.type == WallType.Mirror) // change to Mirror
-                        {
-                            MapManager.inst.currentMap.ChangeToMirror(oppWallPos);
-                        }
                     }
                 }
                 else if (MapManager.inst.currentMap.GetWallAtPos(oppWallPos) != null) // no wall at wallPos but have at opposite

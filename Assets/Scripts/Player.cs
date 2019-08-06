@@ -98,13 +98,13 @@ public class Player : MonoBehaviour
     public IEnumerator CountPlayerClick(float startTime)
     {
         float time = Time.time;
-        float endTime = startTime + 2;
+        float endTime = startTime + 1.5f;
         aimLight.gameObject.SetActive(true);
         while (time <= endTime)
         {
             yield return null;
             aimLight.lightMultiplier += 3 * Time.deltaTime;
-            aimLight.spotAngle -= 30 * Time.deltaTime;
+            aimLight.spotAngle -= 40 * Time.deltaTime;
             time = Time.time;
             if (!Input.GetMouseButton(0))
             {
