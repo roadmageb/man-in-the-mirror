@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScatteredMirror : MonoBehaviour
+public class Scattered : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -16,7 +16,7 @@ public class ScatteredMirror : MonoBehaviour
         for (int i = 100; i > 0; i--)
         {
             Vector3 scale = new Vector3(i,i,i);
-            for (int j = 0; j < 100; j++) transform.GetChild(j).transform.localScale = scale;
+            for (int j = 0; j < transform.childCount; j++) transform.GetChild(j).transform.localScale = scale;
             yield return new WaitForSeconds(0.03f);
         }
         Destroy(gameObject);

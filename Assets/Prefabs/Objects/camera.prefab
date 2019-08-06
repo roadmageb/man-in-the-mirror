@@ -807,6 +807,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floor: {fileID: 0}
+  scatteredTurret: {fileID: 4194399530101458971, guid: d6c0cb697ea7bd341a7e3b0968a8a273,
+    type: 3}
 --- !u!208 &7514060783340336889
 NavMeshObstacle:
   m_ObjectHideFlags: 0

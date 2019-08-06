@@ -554,7 +554,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 12087
+    m_Bits: 28471
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1344,6 +1344,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 52444459818764334, guid: 42247a938bb6e554eb00dc08303a72d6,
+        type: 3}
+      propertyPath: m_Name
+      value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 52444459818764334, guid: 42247a938bb6e554eb00dc08303a72d6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2122327709, guid: 42247a938bb6e554eb00dc08303a72d6, type: 3}
       propertyPath: uiGenerator
       value: 
@@ -1367,16 +1377,6 @@ PrefabInstance:
     - target: {fileID: 2122327709, guid: 42247a938bb6e554eb00dc08303a72d6, type: 3}
       propertyPath: currentStage
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 52444459818764334, guid: 42247a938bb6e554eb00dc08303a72d6,
-        type: 3}
-      propertyPath: m_Name
-      value: GameManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 52444459818764334, guid: 42247a938bb6e554eb00dc08303a72d6,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 52444459818764335, guid: 42247a938bb6e554eb00dc08303a72d6,
         type: 3}

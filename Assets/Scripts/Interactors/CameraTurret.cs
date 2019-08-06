@@ -8,7 +8,9 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 	private Floor floor = null;
 	public Vector2Int Position { get { return floor != null ? floor.mapPos : throw new UnassignedReferenceException("Floor of Interactor is not assigned"); } }
 
-	public void Init(Floor floor)
+    [Space(15)]
+    public GameObject scatteredTurret;
+    public void Init(Floor floor)
     {
 		this.floor = floor;
         floor.objOnFloor = this;
@@ -18,6 +20,7 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 
     public void Break()
     {
+        Instantiate(scatteredTurret, transform.position + new Vector3(0, 0.3f), transform.rotation);
         MapManager.inst.currentMap.RemoveObject(Position);
     }
 

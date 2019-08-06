@@ -151,8 +151,9 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                     if (!GameManager.inst.isPlayerMoving && !GameManager.inst.isPlayerShooting)
                     {
                         Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                        int layerMask = (-1) - (1 << LayerMask.NameToLayer("Scattered"));
                         RaycastHit hit;
-                        if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("Player"))
+                        if (Physics.Raycast(mouseRay, out hit, float.MaxValue, layerMask) && hit.collider.gameObject.tag.Equals("Player"))
                         {
                             if (currentPlayer != null)
                                 currentPlayer.ResetCurrentPlayer();
@@ -161,7 +162,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                             StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
                             //Debug.Log(hit.collider.gameObject.tag);
                         }
-                        else if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("floor"))
+                        else if (Physics.Raycast(mouseRay, out hit, float.MaxValue, layerMask) && hit.collider.gameObject.tag.Equals("floor"))
                         {
                             if (currentPlayer != null)
                                 currentPlayer.MovePlayer(hit.collider.gameObject.transform.position);
