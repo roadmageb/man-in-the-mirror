@@ -13,7 +13,7 @@ public class CameraController : MonoBehaviour
     float mapFov = 20f;
     float rotationX = 0;
     float rotationY = 0;
-    float sensitivity = 30;
+    float sensitivity = 45;
 
     [SerializeField]
     Vector3 centerPos = new Vector3(0, 0, 0);

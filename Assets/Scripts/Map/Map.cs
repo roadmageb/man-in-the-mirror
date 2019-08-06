@@ -189,6 +189,7 @@ public class Map : MonoBehaviour
         }
         if (wallGrid.ContainsKey(pos))
         {
+            (wallGrid[pos] as NormalWall).Break();
             RemoveWall(pos);
             wallGrid.Add(pos, Instantiate(MapManager.inst.mirror, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
             wallGrid[pos].mapPos = pos;
