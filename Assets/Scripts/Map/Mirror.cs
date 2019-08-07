@@ -120,7 +120,6 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     }
                 }
             }
-            yield return null;
             float iMid = i + 0.5f * side;
             // check walls and copy
             for (int j = minMapRange; j < maxMapRange; j++)
@@ -171,8 +170,8 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     }
                 }
             }
-            yield return null;
         }
+        yield return null;
         // copy floors
         foreach (var floorCount in floorCountGrid)
         {

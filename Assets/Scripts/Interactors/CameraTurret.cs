@@ -21,6 +21,7 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
     public void Break()
     {
         Instantiate(scatteredTurret, transform.position + new Vector3(0, 0.3f), transform.rotation);
+        if (GameManager.nTurret >= 0) MapManager.inst.currentMap.clearConditions[GameManager.nTurret].IsDone(1);
         MapManager.inst.currentMap.RemoveObject(Position);
     }
 
