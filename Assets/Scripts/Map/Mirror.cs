@@ -64,7 +64,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             {
                 Pair pair = new Pair(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
                 if (pair.l > pair.r) pair = pair.Swap();
-                SubtractRay(parRay, pair);
+                if (IsInRay(parRay, pair)) SubtractRay(parRay, pair);
                 yield return null;
             }
         }
@@ -86,6 +86,11 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         // check after reflect, if obj or floor, copy else if wall or mirror, Subtract
         for (; Mathf.Abs(i) < MapManager.inst.currentMap.maxMapSize; i += side)
         {
+            while (true)
+            {
+                yield return null;
+                if (Input.GetKeyUp(KeyCode.A)) break;
+            }
             for (float j = minMap; j < maxMap; j++)
             {
                 // copy / remove wall
@@ -111,12 +116,18 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     if (IsInRay(parRay, tempPair)) MapManager.inst.currentMap.RemoveWall(oppWallPos);
                 }
             }
+            while (true)
+            {
+                yield return null;
+                if (Input.GetKeyUp(KeyCode.A)) break;
+            }
             float iMid = i + 0.5f * side;
             for (float j = minMap; j < maxMap; j++)
             {
                 //Debug.Log("iMid:" + iMid + " j:" + j);
                 // copy / remove wall
                 Vector2 wallPos = dir ? new Vector2(j - 0.5f, iMid) : new Vector2(iMid, j - 0.5f);
+                //Debug.Log(wallPos);
                 float nextx = dir ? wallPos.x : 2 * mapPos.x - wallPos.x;
                 float nexty = dir ? 2 * mapPos.y - wallPos.y : wallPos.y;
                 Vector2 oppWallPos = new Vector2(nextx, nexty);
@@ -139,7 +150,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 }
                 // copy / remove floor and object
                 Vector2 pointPos = dir ? new Vector2(j, iMid) : new Vector2(iMid, j);
-                if (IsInRay(parRay, PointToParRay(stPos, pointPos, true)))
+                if (IsInRayWeak(parRay, PointToParRay(stPos, pointPos, true)))
                 {
                     //Debug.Log("inside " + pointPos);
                     Vector2Int floorPos = new Vector2Int(Mathf.FloorToInt(pointPos.x), Mathf.FloorToInt(pointPos.y));
@@ -280,6 +291,11 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     }
                 }
             }
+            while (true)
+            {
+                yield return null;
+                if (Input.GetKeyUp(KeyCode.A)) break;
+            }
         }
         Break();
     }
@@ -386,6 +402,16 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             }
         }
         return output;
+    }
+
+    bool IsInRayWeak(List<Pair> _parRay, float _obj)
+    {
+        foreach (Pair pair in _parRay)
+        {
+            //Debug.Log("IsinRay (" + pair.l + ", " + pair.r + ") " + _obj);
+            if (pair.l < _obj && pair.r > _obj) return true;
+        }
+        return false;
     }
 
     /// <summary>
