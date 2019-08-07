@@ -126,7 +126,7 @@ public class Map : MonoBehaviour
     /// </summary>
     /// <param name="pos">Position of wall.</param>
     /// <param name="wallType">Type of wall.</param>
-    public void CreateWall(Vector2 pos, WallType wallType)
+    public void CreateWall(Vector2 pos, WallType wallType, bool isBreak = true)
     {
         if (((int)pos.x >= 0 ? ((int)pos.x > maxMapSize / 2) : ((int)pos.x < -maxMapSize / 2)) || ((int)pos.y >= 0 ? ((int)pos.y > maxMapSize / 2) : ((int)pos.y < -maxMapSize / 2)))
         {
@@ -157,7 +157,12 @@ public class Map : MonoBehaviour
             Debug.Log("Wall already exists at : " + pos);
             if (wallGrid[pos].type == WallType.Normal && wallType == WallType.Mirror) // change to Mirror
             {
-                MapManager.inst.currentMap.ChangeToMirror(pos);
+                MapManager.inst.currentMap.ChangeToMirror(pos, isBreak);
+            }
+            else if (wallGrid[pos].type == WallType.Mirror && wallType == WallType.Normal)
+            {
+                RemoveWall(pos);
+                CreateWall(pos, WallType.Normal);
             }
         }
     }
@@ -181,7 +186,7 @@ public class Map : MonoBehaviour
     /// Change normal wall at position to mirror.
     /// </summary>
     /// <param name="pos">Position of wall.</param>
-    public void ChangeToMirror(Vector2 pos)
+    public void ChangeToMirror(Vector2 pos, bool isBreak = true)
     {
         if (((int)pos.x >= 0 ? ((int)pos.x > maxMapSize / 2) : ((int)pos.x < -maxMapSize / 2)) || ((int)pos.y >= 0 ? ((int)pos.y > maxMapSize / 2) : ((int)pos.y < -maxMapSize / 2)))
         {
@@ -195,7 +200,7 @@ public class Map : MonoBehaviour
         }
         if (wallGrid.ContainsKey(pos))
         {
-            (wallGrid[pos] as NormalWall).Break();
+            if (isBreak) (wallGrid[pos] as NormalWall).Break();
             RemoveWall(pos);
             wallGrid.Add(pos, Instantiate(MapManager.inst.mirror, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
             wallGrid[pos].mapPos = pos;
@@ -278,8 +283,6 @@ public class Map : MonoBehaviour
                 case ObjType.Camera:
                     if (GameManager.aTurret >= 0)
                         clearConditions[GameManager.aTurret].IsDone(0, -1);
-                    if (GameManager.nTurret >= 0)
-                        clearConditions[GameManager.nTurret].IsDone(1);
                     PlayerController.inst.OnPlayerMove -= objectGrid[pos].GetObject().GetComponent<IPlayerInteractor>().Interact;
                     break;
                 case ObjType.Mannequin:

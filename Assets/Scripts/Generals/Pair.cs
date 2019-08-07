@@ -11,11 +11,14 @@ public class Pair
     {
         this.l = _l;
         this.r = _r;
+        if (_l > _r) Swap();
     }
 
-    public Pair Swap()
+    public void Swap()
     {
-        return new Pair(r, l);
+        float temp = l;
+        l = r;
+        r = temp;
     }
 
     public Pair ApplyMargin(float margin)
