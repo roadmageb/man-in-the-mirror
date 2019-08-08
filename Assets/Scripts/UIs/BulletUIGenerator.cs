@@ -61,6 +61,7 @@ public class BulletUIGenerator : MonoBehaviour
 
         if (uiList.Count == 0)
         {
+            posX -= 55;
             targetBulletUI.SetActive(false);
         }
 

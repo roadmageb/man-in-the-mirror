@@ -186,11 +186,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     if (oppoFloor.isPlayerOn) PlayerController.inst.RemovePlayer(oppoFloor);
                     if (oppoFloor.objOnFloor != null) MapManager.inst.currentMap.RemoveObject(oppoPos);
                 }
-                else
-                {
-                    oppoFloor = MapManager.inst.currentMap.GetFloorAtPos(oppoPos);
-                }
-                if (originFloor.isPlayerOn && oppoFloor != null) PlayerController.inst.CreatePlayer(oppoFloor);
+                if (originFloor.isPlayerOn) PlayerController.inst.CreatePlayer(oppoPos, floorCount.Key, dir);
                 else if (originFloor.objOnFloor != null)
                 {
                     IObject obj = originFloor.objOnFloor;
@@ -198,6 +194,15 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     {
                         case ObjType.Mannequin:
                             MapManager.inst.currentMap.CreateObject(oppoPos, ObjType.Mannequin, (obj as Mannequin).isWhite);
+                            GameObject tempMann = MapManager.inst.currentMap.GetObjectAtPos(floorCount.Key).GetObject();
+                            GameObject oppoMann = MapManager.inst.currentMap.GetObjectAtPos(oppoPos).GetObject();
+                            Quaternion mirroredRotation = tempMann.transform.rotation;
+                            Vector3 mirroredScale = tempMann.transform.localScale;
+                            mirroredRotation.w *= -1;
+                            if (dir) { mirroredRotation.z *= -1; mirroredScale.z *= -1; }
+                            else { mirroredRotation.x *= -1; mirroredScale.x *= -1; }
+                            oppoMann.transform.rotation = mirroredRotation;
+                            oppoMann.transform.localScale = mirroredScale;
                             break;
                         case ObjType.Briefcase:
                             MapManager.inst.currentMap.CreateObject(oppoPos, ObjType.Briefcase, (obj as Briefcase).dropBullet);

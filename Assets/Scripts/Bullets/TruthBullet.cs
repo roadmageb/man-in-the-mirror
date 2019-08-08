@@ -6,7 +6,7 @@ public class TruthBullet : Bullet
 {
     protected override void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Scattered"))
+        if (other.gameObject.layer != LayerMask.NameToLayer("Scattered") && other.gameObject.layer != LayerMask.NameToLayer("Player"))
         {
             if (other.GetComponent<IBreakable>() != null)
             {

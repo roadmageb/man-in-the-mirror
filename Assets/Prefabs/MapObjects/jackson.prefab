@@ -1417,10 +1417,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.11
-  m_Height: 1.6
+  m_Radius: 0.2
+  m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 1.1, z: 0}
 --- !u!114 &6489731509539496108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2537,7 +2537,7 @@ GameObject:
   - component: {fileID: 3848187736642518088}
   - component: {fileID: 886384046876709786}
   - component: {fileID: 2401818891807728848}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: V-Light Spot 0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
