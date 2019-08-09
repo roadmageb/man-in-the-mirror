@@ -90,18 +90,22 @@ public class GameManager : SingletonBehaviour<GameManager>
     
     public IEnumerator ClearStage()
     {
-        if (isPlayerShooting) yield return StartCoroutine(Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer));
-        yield return null;
-        clearUINextText.text = StageSelector.nextStage.Replace("_", " - ");
-        clearUI.SetActive(true);
-        buttonUIs.SetActive(false);
-        Debug.Log("Stage Clear!");
+        yield return new WaitForSeconds(0.1f);
+        if (clearCounter == 0)
+        {
+            if (isPlayerShooting) yield return StartCoroutine(Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer));
+            yield return null;
+            clearUINextText.text = StageSelector.nextStage.Replace("_", " - ");
+            clearUI.SetActive(true);
+            buttonUIs.SetActive(false);
+            Debug.Log("Stage Clear!");
 
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
 
-        isGameOver = true;
-        StageSelector.inst.SaveClearData(stageStrIdx, true);
+            isGameOver = true;
+            StageSelector.inst.SaveClearData(stageStrIdx, true);
+        }
     }
 
     public void GameOver(bool onlyRestart = false)
