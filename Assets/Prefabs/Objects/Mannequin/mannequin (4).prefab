@@ -43,6 +43,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6169104080419485410}
   - component: {fileID: 6169104080406308834}
+  - component: {fileID: 3442017518488906420}
   m_Layer: 0
   m_Name: Head 10
   m_TagString: Untagged
@@ -168,6 +169,22 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0006027669, y: 0.73344266, z: -0.0011007041}
     m_Extent: {x: 0.12965965, y: 0.16143739, z: 0.15534574}
   m_DirtyAABB: 0
+--- !u!114 &3442017518488906420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6169104080419908226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf3575480402db40813e763382412fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 0
+  eraseRenderer: 0
+  originalLayer: 0
+  originalMaterials: []
 --- !u!1 &6169104080419908228
 GameObject:
   m_ObjectHideFlags: 0
@@ -673,6 +690,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6169104080419485316}
   - component: {fileID: 6169104080406308832}
+  - component: {fileID: 2912554426625779174}
   m_Layer: 0
   m_Name: MA Body 3
   m_TagString: Untagged
@@ -798,6 +816,22 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0001936853, y: -0.107884735, z: 0.009609431}
     m_Extent: {x: 0.4251765, y: 0.7837032, z: 0.17168963}
   m_DirtyAABB: 0
+--- !u!114 &2912554426625779174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6169104080419908260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf3575480402db40813e763382412fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: 0
+  eraseRenderer: 0
+  originalLayer: 0
+  originalMaterials: []
 --- !u!1 &6169104080419908262
 GameObject:
   m_ObjectHideFlags: 0
@@ -882,7 +916,7 @@ GameObject:
   - component: {fileID: 5008880329460952899}
   m_Layer: 0
   m_Name: mannequin (4)
-  m_TagString: Untagged
+  m_TagString: Mannequin
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

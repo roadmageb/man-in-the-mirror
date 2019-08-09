@@ -9,6 +9,9 @@ TagManager:
   - wallSign
   - briefcase
   - CameraLight
+  - CameraTurret
+  - Mannequin
+  - Mirror
   layers:
   - Default
   - TransparentFX
