@@ -19,6 +19,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     public CommentUIGenerator commentUIGenerator;
     public Image whiteout;
     public GameObject clearUI;
+    public GameObject buttonUIs;
     public Text clearUINextText;
 
     [Header("Stage Data")]
@@ -89,17 +90,22 @@ public class GameManager : SingletonBehaviour<GameManager>
     
     public IEnumerator ClearStage()
     {
-        if (isPlayerShooting) yield return StartCoroutine(Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer));
-        yield return null;
-        clearUINextText.text = StageSelector.nextStage.Replace("_", " - ");
-        clearUI.SetActive(true);
-        Debug.Log("Stage Clear!");
+        yield return new WaitForSeconds(0.1f);
+        if (clearCounter == 0)
+        {
+            if (isPlayerShooting) yield return StartCoroutine(Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer));
+            yield return null;
+            clearUINextText.text = StageSelector.nextStage.Replace("_", " - ");
+            clearUI.SetActive(true);
+            buttonUIs.SetActive(false);
+            Debug.Log("Stage Clear!");
 
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
 
-        isGameOver = true;
-        StageSelector.inst.SaveClearData(stageStrIdx, true);
+            isGameOver = true;
+            StageSelector.inst.SaveClearData(stageStrIdx, true);
+        }
     }
 
     public void GameOver(bool onlyRestart = false)
@@ -128,7 +134,16 @@ public class GameManager : SingletonBehaviour<GameManager>
     public void LoadNextStage()
     {
         StageSelector.selectedStage = StageSelector.nextStage;
-        StageSelector.nextStage = (StageSelector.inst.stageIdxs.Count > StageSelector.inst.stageIdx + 1) ? StageSelector.inst.stageIdxs[StageSelector.inst.stageIdx + 1] : "0-0" ;
+        if (StageSelector.inst.stageIdxs.Count > StageSelector.inst.stageIdx + 1)
+        {
+            StageSelector.nextStage = StageSelector.inst.stageIdxs[StageSelector.inst.stageIdx + 1];
+            StageSelector.inst.stageIdx++;
+        }
+        else
+        {
+            StageSelector.nextStage = "1_1";
+            StageSelector.inst.stageIdx = 0;
+        }
 
         StartCoroutine(RestartStage());
     }

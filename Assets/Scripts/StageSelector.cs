@@ -54,9 +54,9 @@ public class StageSelector : SingletonBehaviour<StageSelector>
                 var uiText = uiInst.GetComponentInChildren<Text>();
                 string uiStage = (i + 1) + "_" + (j + 1);
                 stageIdxs.Add(uiStage);
-                string nextStage = (j + 1 < categoryCounts[i]) ? ((i + 1) + "_" + (j + 2)) : ((i + 2) + "_0");
-                uiInst.GetComponent<Button>().onClick.AddListener(() => StartSelectedStage(uiStage, nextStage, stageIdxCounter));
-                stageIdxCounter++;
+                string nextStage = (j < categoryCounts[i]) ? ((i + 1) + "_" + (j + 2)) : ((i + 2) + "_0");
+                int _stageidx = stageIdxCounter++;
+                uiInst.GetComponent<Button>().onClick.AddListener(() => StartSelectedStage(uiStage, nextStage, _stageidx));
                 uiInst.transform.localPosition = generatePoint;
                 uiText.text = (j + 1).ToString();
                 if (playerData.isCleared.ContainsKey(uiStage) && playerData.isCleared[uiStage])

@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: -4559840392902712278}
   m_Layer: 13
   m_Name: case
-  m_TagString: floor
+  m_TagString: briefcase
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

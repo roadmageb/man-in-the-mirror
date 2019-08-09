@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using cakeslice;
 
 public class Player : MonoBehaviour
 {
@@ -23,8 +24,10 @@ public class Player : MonoBehaviour
     public GameObject selectPointer;
     public VLight aimLight;
 
+    public bool canShoot = false;
     private GameObject currentBullet;
     private float lastShoot;
+    private Collider beforeRay = null;
 
     /// <summary>
     /// Set this player as the current player.
@@ -47,6 +50,7 @@ public class Player : MonoBehaviour
         GetComponent<NavMeshAgent>().enabled = false;
         GetComponent<NavMeshObstacle>().enabled = true;
         selectPointer.SetActive(false);
+        OffAllOutline();
         StartCoroutine(MapManager.inst.Rebaker());
         PlayerController.inst.currentPlayer = null;
     }
@@ -127,6 +131,7 @@ public class Player : MonoBehaviour
 
     public void Shoot(BulletCode bulletCode)
     {
+        OffAllOutline();
         Bullet newBullet = MapManager.inst.bulletFactory.MakeBullet(bulletCode);
         newBullet.transform.position = shootingFinger.transform.position;
         newBullet.transform.LookAt(shootingArm.transform.forward + newBullet.transform.position);
@@ -138,6 +143,39 @@ public class Player : MonoBehaviour
         lastShoot = Time.time;
         anim.SetTrigger("shoot");
     }
+    public void OffAllOutline()
+    {
+        canShoot = false;
+        laser.GetComponent<LineRenderer>().startColor = Color.red;
+        laser.GetComponent<LineRenderer>().endColor = Color.red;
+        if (beforeRay != null)
+        {
+            if (beforeRay.tag.Equals("wall"))
+            {
+                beforeRay.GetComponent<Outline>().enabled = false;
+            }
+            else if (beforeRay.tag.Equals("Mirror"))
+            {
+                beforeRay.GetComponent<Outline>().enabled = false;
+            }
+            else if (beforeRay.tag.Equals("CameraTurret"))
+            {
+                foreach (var comp in beforeRay.GetComponentsInChildren<Outline>())
+                {
+                    comp.enabled = false;
+                }
+            }
+            else if (beforeRay.tag.Equals("Mannequin"))
+            {
+                foreach (var comp in beforeRay.GetComponentsInChildren<Outline>())
+                {
+                    comp.enabled = false;
+                }
+            }
+            beforeRay = null;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -152,7 +190,86 @@ public class Player : MonoBehaviour
         {
             laser.transform.position = shootingFinger.transform.position;
             if (currentBullet == null && lastShoot + 1f < Time.time) laser.SetActive(true);
+
+            Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            int layerMask = (-1) - (1 << LayerMask.NameToLayer("Scattered"));
+            RaycastHit hit;
+            bool isHit = Physics.Raycast(mouseRay, out hit, float.MaxValue, layerMask);
+            if (isHit && PlayerController.inst.bulletList.Count > 0 && beforeRay != hit.collider)
+            {
+                OffAllOutline();
+                beforeRay = hit.collider;
+                if (PlayerController.inst.bulletList[0] == BulletCode.True)
+                {
+                    if (beforeRay.tag.Equals("Mirror"))
+                    {
+                        beforeRay.GetComponent<Outline>().enabled = true;
+                        canShoot = true;
+                        laser.GetComponent<LineRenderer>().startColor = Color.green;
+                        laser.GetComponent<LineRenderer>().endColor = Color.green;
+                    }
+                    else if (beforeRay.tag.Equals("CameraTurret"))
+                    {
+                        foreach (var comp in beforeRay.GetComponentsInChildren<Outline>())
+                        {
+                            comp.enabled = true;
+                        }
+                        canShoot = true;
+                        laser.GetComponent<LineRenderer>().startColor = Color.green;
+                        laser.GetComponent<LineRenderer>().endColor = Color.green;
+                    }
+                    else if (beforeRay.tag.Equals("Mannequin") && beforeRay.GetComponent<Mannequin>().isWhite == false)
+                    {
+                        foreach (var comp in beforeRay.GetComponentsInChildren<Outline>())
+                        {
+                            comp.enabled = true;
+                        }
+                        canShoot = true;
+                        laser.GetComponent<LineRenderer>().startColor = Color.green;
+                        laser.GetComponent<LineRenderer>().endColor = Color.green;
+                    }
+                }
+                else if (PlayerController.inst.bulletList[0] == BulletCode.False)
+                {
+                    if (beforeRay.tag.Equals("Mirror"))
+                    {
+                        beforeRay.GetComponent<Outline>().enabled = true;
+                        canShoot = true;
+                        laser.GetComponent<LineRenderer>().startColor = Color.green;
+                        laser.GetComponent<LineRenderer>().endColor = Color.green;
+                    }
+                    else if (beforeRay.tag.Equals("Mannequin") && beforeRay.GetComponent<Mannequin>().isWhite == true)
+                    {
+                        foreach (var comp in beforeRay.GetComponentsInChildren<Outline>())
+                        {
+                            comp.enabled = true;
+                        }
+                        canShoot = true;
+                        laser.GetComponent<LineRenderer>().startColor = Color.green;
+                        laser.GetComponent<LineRenderer>().endColor = Color.green;
+                    }
+                }
+                else if (PlayerController.inst.bulletList[0] == BulletCode.Mirror)
+                {
+                    if (beforeRay.tag.Equals("wall"))
+                    {
+                        beforeRay.GetComponent<Outline>().enabled = true;
+                        canShoot = true;
+                        laser.GetComponent<LineRenderer>().startColor = Color.green;
+                        laser.GetComponent<LineRenderer>().endColor = Color.green;
+                    }
+                }
+            }
+            else if (!isHit)
+            {
+                OffAllOutline();
+                beforeRay = null;
+            }
         }
-        else if (laser.activeSelf) laser.SetActive(false);
+        else if (laser.activeSelf)
+        {
+            OffAllOutline();
+            laser.SetActive(false);
+        }
     }
 }
