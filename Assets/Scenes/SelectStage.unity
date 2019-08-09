@@ -477,5 +477,30 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: categoryCounts.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: categoryTitles.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: categoryCounts.Array.data[0]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: categoryCounts.Array.data[1]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: categoryCounts.Array.data[2]
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8115fd4d1a1025b4fb05e45fc5fa6578, type: 3}
