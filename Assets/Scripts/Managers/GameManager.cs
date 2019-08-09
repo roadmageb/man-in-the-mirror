@@ -11,7 +11,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     /// The index of the current stage.
     /// </summary>
     public TextAsset currentStage;
-    public int stageIdx;
+    public string stageStrIdx;
 
     [Header("UIs in Scene")]
     public ClearUIGenerator uiGenerator;
@@ -88,7 +88,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     
     public IEnumerator ClearStage()
     {
-        if (isPlayerShooting) Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer);
+        if (isPlayerShooting) yield return StartCoroutine(Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer));
         yield return null;
         clearUI.SetActive(true);
         Debug.Log("Stage Clear!");
@@ -97,13 +97,13 @@ public class GameManager : SingletonBehaviour<GameManager>
         Cursor.lockState = CursorLockMode.None;
 
         isGameOver = true;
-        StageSelector.inst.SaveClearData(stageIdx, true);
+        StageSelector.inst.SaveClearData(stageStrIdx, true);
     }
 
     public void GameOver(bool onlyRestart = false)
     {
         if (!onlyRestart) Debug.Log("Game Over!");
-        StageSelector.inst.SaveClearData(stageIdx, onlyRestart);
+        StageSelector.inst.SaveClearData(stageStrIdx, onlyRestart);
         isGameOver = true;
         StopAllCoroutines();
         uiGenerator.ResetAllClearUIs();
@@ -126,7 +126,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     public void LoadNextStage()
     {
         StageSelector.selectedStage = StageSelector.nextStage;
-        StageSelector.nextStage++;
+        StageSelector.nextStage = (StageSelector.inst.stageIdxs.Count > StageSelector.inst.stageIdx + 1) ? StageSelector.inst.stageIdxs[StageSelector.inst.stageIdx + 1] : "0-0" ;
 
         StartCoroutine(RestartStage());
     }
@@ -137,8 +137,8 @@ public class GameManager : SingletonBehaviour<GameManager>
         if (!MapManager.inst.isMapEditingOn)
         {
             isGameOver = false;
-            stageIdx = StageSelector.selectedStage + 1;
-            currentStage = Resources.Load<TextAsset>("Stages/" + "stage" + (StageSelector.selectedStage + 1));
+            stageStrIdx = StageSelector.selectedStage;
+            currentStage = Resources.Load<TextAsset>("Stages/" + "stage" + StageSelector.selectedStage);
             if (MapManager.inst.emptyMap != null) StartStage();
             //Destroy(FindObjectOfType<StageSelector>().gameObject);
         }
