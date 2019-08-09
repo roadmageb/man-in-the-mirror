@@ -88,6 +88,7 @@ public class Player : MonoBehaviour
         anim.SetBool("isWalking", false);
         anim.speed = 1;
         GetComponent<NavMeshAgent>().speed = 1.5f;
+        GameManager.inst.isFast = false;
         GameManager.inst.isPlayerMoving = false;
     }
     /// <summary>

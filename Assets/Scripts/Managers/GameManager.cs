@@ -22,7 +22,7 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     [Header("Stage Data")]
     public bool isGameOver = false;
-    public bool isPlayerMoving, isPlayerShooting, isZooming, isBulletFlying;
+    public bool isPlayerMoving, isPlayerShooting, isZooming, isBulletFlying, isFast;
 
     public int[] clearIndex = new int[9];
     public int clearCounter = 0;

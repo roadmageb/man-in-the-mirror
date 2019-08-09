@@ -200,10 +200,11 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                             currentPlayer.Shoot(bulletList[0]);
                         }
                     }
-                    else if (GameManager.inst.isPlayerMoving)
+                    else if (GameManager.inst.isPlayerMoving && !GameManager.inst.isFast)
                     {
                         currentPlayer.GetComponent<NavMeshAgent>().speed *= 5;
                         currentPlayer.anim.speed *= 5;
+                        GameManager.inst.isFast = true;
                     }
                 }
                 else if (Input.GetMouseButtonDown(1) && GameManager.inst.isPlayerShooting)

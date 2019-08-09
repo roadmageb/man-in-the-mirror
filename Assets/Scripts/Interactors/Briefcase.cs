@@ -57,7 +57,7 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 	{
         if(!GameManager.inst.isGameOver)
         {
-            Debug.Log(Position + " " + position);
+            //Debug.Log(Position + " " + position);
             if (Position == position)
             {
                 if (dropBullet != BulletCode.None)
