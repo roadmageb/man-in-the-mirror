@@ -32,8 +32,8 @@ public class StageSelector : SingletonBehaviour<StageSelector>
     public Sprite mainTrue;
     public Color mainTrueColor = new Color(0.1921569f, 1f, 0.3843138f);
     int maxRow = 8; // y-=155
-    private Vector3 generatePoint = new Vector3(-470, 265); // x+=160
-    private Vector3 titleGeneratePoint = new Vector3(-770, 265);
+    private Vector3 generatePoint = new Vector3(-470, 360); // x+=160
+    private Vector3 titleGeneratePoint = new Vector3(-770, 360);
 
     public void GenerateStageUI()
     {
@@ -52,13 +52,13 @@ public class StageSelector : SingletonBehaviour<StageSelector>
             {
                 var uiInst = Instantiate(buttonUI, transform);
                 var uiText = uiInst.GetComponentInChildren<Text>();
-                string uiStage = i + "_" + j;
+                string uiStage = (i + 1) + "_" + (j + 1);
                 stageIdxs.Add(uiStage);
-                string nextStage = (j + 1 < categoryCounts[i]) ? (i + "_" + (j + 1)) : ((i + 1) + "_0");
+                string nextStage = (j + 1 < categoryCounts[i]) ? ((i + 1) + "_" + (j + 2)) : ((i + 2) + "_0");
                 uiInst.GetComponent<Button>().onClick.AddListener(() => StartSelectedStage(uiStage, nextStage, stageIdxCounter));
                 stageIdxCounter++;
                 uiInst.transform.localPosition = generatePoint;
-                uiText.text = j.ToString();
+                uiText.text = (j + 1).ToString();
                 if (playerData.isCleared.ContainsKey(uiStage) && playerData.isCleared[uiStage])
                 {
                     if (isColorSel < 0)
