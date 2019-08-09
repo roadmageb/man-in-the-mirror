@@ -505,7 +505,7 @@ PrefabInstance:
     - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
         type: 3}
       propertyPath: categoryCounts.Array.data[3]
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
         type: 3}
