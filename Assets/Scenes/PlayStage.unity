@@ -386,7 +386,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &238561069
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1975,6 +1975,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 52444459818764334, guid: 42247a938bb6e554eb00dc08303a72d6,
+        type: 3}
+      propertyPath: m_Name
+      value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 52444459818764334, guid: 42247a938bb6e554eb00dc08303a72d6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2122327709, guid: 42247a938bb6e554eb00dc08303a72d6, type: 3}
       propertyPath: uiGenerator
       value: 
@@ -2007,16 +2017,6 @@ PrefabInstance:
       propertyPath: clearUINextText
       value: 
       objectReference: {fileID: 1463021450}
-    - target: {fileID: 52444459818764334, guid: 42247a938bb6e554eb00dc08303a72d6,
-        type: 3}
-      propertyPath: m_Name
-      value: GameManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 52444459818764334, guid: 42247a938bb6e554eb00dc08303a72d6,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 52444459818764335, guid: 42247a938bb6e554eb00dc08303a72d6,
         type: 3}
       propertyPath: m_LocalPosition.x

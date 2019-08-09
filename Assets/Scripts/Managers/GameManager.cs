@@ -128,7 +128,16 @@ public class GameManager : SingletonBehaviour<GameManager>
     public void LoadNextStage()
     {
         StageSelector.selectedStage = StageSelector.nextStage;
-        StageSelector.nextStage = (StageSelector.inst.stageIdxs.Count > StageSelector.inst.stageIdx + 1) ? StageSelector.inst.stageIdxs[StageSelector.inst.stageIdx + 1] : "0-0" ;
+        if (StageSelector.inst.stageIdxs.Count > StageSelector.inst.stageIdx + 1)
+        {
+            StageSelector.nextStage = StageSelector.inst.stageIdxs[StageSelector.inst.stageIdx + 1];
+            StageSelector.inst.stageIdx++;
+        }
+        else
+        {
+            StageSelector.nextStage = "1_1";
+            StageSelector.inst.stageIdx = 0;
+        }
 
         StartCoroutine(RestartStage());
     }
