@@ -19,6 +19,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     public CommentUIGenerator commentUIGenerator;
     public Image whiteout;
     public GameObject clearUI;
+    public GameObject buttonUIs;
     public Text clearUINextText;
 
     [Header("Stage Data")]
@@ -93,6 +94,7 @@ public class GameManager : SingletonBehaviour<GameManager>
         yield return null;
         clearUINextText.text = StageSelector.nextStage.Replace("_", " - ");
         clearUI.SetActive(true);
+        buttonUIs.SetActive(false);
         Debug.Log("Stage Clear!");
 
         Cursor.visible = true;
