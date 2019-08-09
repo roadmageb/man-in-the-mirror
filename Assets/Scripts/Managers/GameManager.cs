@@ -91,7 +91,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     {
         if (isPlayerShooting) yield return StartCoroutine(Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer));
         yield return null;
-        clearUINextText.text = StageSelector.nextStage.Replace("-", " - ");
+        clearUINextText.text = StageSelector.nextStage.Replace("_", " - ");
         clearUI.SetActive(true);
         Debug.Log("Stage Clear!");
 

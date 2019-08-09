@@ -52,9 +52,9 @@ public class StageSelector : SingletonBehaviour<StageSelector>
             {
                 var uiInst = Instantiate(buttonUI, transform);
                 var uiText = uiInst.GetComponentInChildren<Text>();
-                string uiStage = i + "-" + j;
+                string uiStage = i + "_" + j;
                 stageIdxs.Add(uiStage);
-                string nextStage = (j + 1 < categoryCounts[i]) ? (i + "-" + (j + 1)) : ((i + 1) + "-0");
+                string nextStage = (j + 1 < categoryCounts[i]) ? (i + "_" + (j + 1)) : ((i + 1) + "_0");
                 uiInst.GetComponent<Button>().onClick.AddListener(() => StartSelectedStage(uiStage, nextStage, stageIdxCounter));
                 stageIdxCounter++;
                 uiInst.transform.localPosition = generatePoint;
@@ -158,6 +158,6 @@ public class StageSelector : SingletonBehaviour<StageSelector>
     void Start()
     {
         GenerateStageUI();
-        selectedStage = "0-0";
+        selectedStage = "0_0";
     }
 }
