@@ -18,6 +18,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     public BulletUIGenerator bulletUIGenerator;
     public CommentUIGenerator commentUIGenerator;
     public Image whiteout;
+    public GameObject clearUI;
 
     [Header("Stage Data")]
     public bool isGameOver = false;
@@ -87,30 +88,30 @@ public class GameManager : SingletonBehaviour<GameManager>
     
     public IEnumerator ClearStage()
     {
-        GameObject.Find("TestTools").GetComponent<TestTools>().clear.gameObject.SetActive(true);
+        if (isPlayerShooting) Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer);
+        yield return null;
+        clearUI.SetActive(true);
         Debug.Log("Stage Clear!");
+
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+
         isGameOver = true;
         StageSelector.inst.SaveClearData(stageIdx, true);
-
-        yield return new WaitForSeconds(3);
-        BackToStageSelect();
     }
 
-    public void GameOver()
+    public void GameOver(bool onlyRestart = false)
     {
-        Debug.Log("Game Over!");
-        StageSelector.inst.SaveClearData(stageIdx, false);
+        if (!onlyRestart) Debug.Log("Game Over!");
+        StageSelector.inst.SaveClearData(stageIdx, onlyRestart);
         isGameOver = true;
         StopAllCoroutines();
-        StartCoroutine(RestartStage());
         uiGenerator.ResetAllClearUIs();
+        StartCoroutine(RestartStage());
     }
 
     public IEnumerator RestartStage()
     {
-        Debug.Log("Game Restart!");
         StartCoroutine(Whiteout(true));
         yield return new WaitForSeconds(0.5f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -120,6 +121,14 @@ public class GameManager : SingletonBehaviour<GameManager>
     {
         Destroy(FindObjectOfType<StageSelector>().gameObject);
         SceneManager.LoadScene("SelectStage");
+    }
+
+    public void LoadNextStage()
+    {
+        StageSelector.selectedStage = StageSelector.nextStage;
+        StageSelector.nextStage++;
+
+        StartCoroutine(RestartStage());
     }
 
     // Start is called before the first frame update

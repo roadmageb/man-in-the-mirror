@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 public class StageSelector : SingletonBehaviour<StageSelector>
 {
     public static int selectedStage;
+    public static int nextStage;
     public TextAsset[] stage;
 
     public ClearData playerData;
@@ -95,6 +96,7 @@ public class StageSelector : SingletonBehaviour<StageSelector>
     public void StartSelectedStage(int stageNum)
     {
         selectedStage = stageNum;
+        nextStage = stageNum + 1;
         gameObject.GetComponent<Canvas>().enabled = false;
         SceneManager.LoadScene("PlayStage");
     }
