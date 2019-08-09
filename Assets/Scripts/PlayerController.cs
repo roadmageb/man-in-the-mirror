@@ -7,7 +7,6 @@ using UnityEngine.AI;
 public class PlayerController : SingletonBehaviour<PlayerController>
 {
     public Player currentPlayer;
-    public bool isPlayerMoving, isPlayerShooting, isZooming;
     public List<BulletCode> bulletList = new List<BulletCode>();
     private Vector2Int prePos;
     public Vector2Int MapPos
@@ -26,14 +25,14 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 
 	public event Action<Vector2Int> OnPlayerMove;
 
-    public void CreatePlayer(Floor floor)
+    public GameObject CreatePlayer(Floor floor)
     {
         foreach (var obj in MapManager.inst.players)
         {
             if (obj.GetComponent<Player>().currentFloor == floor)
             {
                 Debug.Log("Player already exists on that floor.");
-                return;
+                return null;
             }
         }
         GameObject player = Instantiate(MapManager.inst.player, floor.transform.position + new Vector3(0, 0.1f, 0), Quaternion.identity);
@@ -46,11 +45,30 @@ public class PlayerController : SingletonBehaviour<PlayerController>
             MapManager.inst.currentMap.clearConditions[GameManager.nPlayer].IsDone();
         }
         CheckCurrentFloors();
+        return player;
     }
-    public void CreatePlayer(Vector2Int floorPos)
+    public void CreatePlayer(Vector2Int floorPos, Vector2Int originPos, bool dir)
     {
+        List<GameObject> copyPlayers = new List<GameObject>(MapManager.inst.players);
+        Floor originFloor = MapManager.inst.currentMap.GetFloorAtPos(originPos);
+        Quaternion mirroredRotation = Quaternion.identity;
+        foreach (var obj in copyPlayers)
+        {
+            if (obj.GetComponent<Player>().currentFloor == originFloor)
+            {
+                mirroredRotation = obj.transform.rotation;
+                break;
+            }
+        }
+        mirroredRotation.y *= -1;
+        if (dir) { mirroredRotation.x *= -1; mirroredRotation = Quaternion.Euler(mirroredRotation.eulerAngles + new Vector3(0, 180, 0)); }
+        else mirroredRotation.z *= -1;
+
         if (MapManager.inst.currentMap.floorGrid.TryGetValue(floorPos, out Floor floor))
-            CreatePlayer(floor);
+        {
+            GameObject player = CreatePlayer(floor);
+            player.transform.rotation = mirroredRotation;
+        }
         else
             Debug.Log("there are no floor");
     }
@@ -116,6 +134,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     public void AddBullet(BulletCode newBullet)
     {
         bulletList.Add(newBullet);
+        GameManager.inst.bulletUIGenerator.GenerateBulletUI(newBullet);
     }
 
     //For test
@@ -143,16 +162,17 @@ public class PlayerController : SingletonBehaviour<PlayerController>
             }
 
             //Control player only if camera is not zooming in to or out from the current player
-            if (!isZooming)
+            if (!GameManager.inst.isZooming && !GameManager.inst.isBulletFlying)
             {
                 if (Input.GetMouseButtonDown(0))
                 {
                     //Move the current player.
-                    if (!isPlayerMoving && !isPlayerShooting)
+                    if (!GameManager.inst.isPlayerMoving && !GameManager.inst.isPlayerShooting)
                     {
                         Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                        int layerMask = (-1) - (1 << LayerMask.NameToLayer("Scattered"));
                         RaycastHit hit;
-                        if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("Player"))
+                        if (Physics.Raycast(mouseRay, out hit, float.MaxValue, layerMask) && hit.collider.gameObject.tag.Equals("Player"))
                         {
                             if (currentPlayer != null)
                                 currentPlayer.ResetCurrentPlayer();
@@ -161,7 +181,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                             StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
                             //Debug.Log(hit.collider.gameObject.tag);
                         }
-                        else if (Physics.Raycast(mouseRay, out hit) && hit.collider.gameObject.tag.Equals("floor"))
+                        else if (Physics.Raycast(mouseRay, out hit, float.MaxValue, layerMask) && hit.collider.gameObject.tag.Equals("floor"))
                         {
                             if (currentPlayer != null)
                                 currentPlayer.MovePlayer(hit.collider.gameObject.transform.position);
@@ -173,15 +193,21 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                                 currentPlayer.ResetCurrentPlayer();
                         }
                     }
-                    else if (isPlayerShooting)
+                    else if (GameManager.inst.isPlayerShooting && currentPlayer.laser.activeSelf)
                     {
                         if (bulletList.Count > 0)
                         {
                             currentPlayer.Shoot(bulletList[0]);
                         }
                     }
+                    else if (GameManager.inst.isPlayerMoving && !GameManager.inst.isFast)
+                    {
+                        currentPlayer.GetComponent<NavMeshAgent>().speed *= 5;
+                        currentPlayer.anim.speed *= 5;
+                        GameManager.inst.isFast = true;
+                    }
                 }
-                else if (Input.GetMouseButtonDown(1) && isPlayerShooting)
+                else if (Input.GetMouseButtonDown(1) && GameManager.inst.isPlayerShooting)
                 {
                     StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomOutFromPlayer(currentPlayer));
                     currentPlayer.shootingArm.rotation = currentPlayer.armRotation;
@@ -196,7 +222,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
         {
             if (currentPlayer.GetComponent<NavMeshAgent>().velocity.magnitude > 0)
                 transform.rotation = Quaternion.LookRotation(currentPlayer.GetComponent<NavMeshAgent>().velocity.normalized);
-            if (isPlayerShooting)
+            if (GameManager.inst.isPlayerShooting)
             {
                 Quaternion destinationRotation = Quaternion.Euler(new Vector3(transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, currentPlayer.transform.eulerAngles.z));
                 currentPlayer.transform.rotation = Quaternion.Lerp(currentPlayer.transform.rotation, destinationRotation, Time.deltaTime * 10);

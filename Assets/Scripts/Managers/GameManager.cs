@@ -6,21 +6,27 @@ using UnityEngine.UI;
 
 public class GameManager : SingletonBehaviour<GameManager>
 {
-    [Space(10)]
-    public ClearUIGenerator uiGenerator;
-    public Image whiteout;
-
-    [Space(10)]
-    public bool isGameOver = false;
-
-    public int[] clearIndex = new int[9];
-    public int clearCounter = 0;
-    public static int nFloor, nTurret, nCase, nPlayer, aFloor, aTurret, aCase, white, black;
-
+    [Header("Saved Data")]
     /// <summary>
     /// The index of the current stage.
     /// </summary>
     public TextAsset currentStage;
+    public int stageIdx;
+
+    [Header("UIs in Scene")]
+    public ClearUIGenerator uiGenerator;
+    public BulletUIGenerator bulletUIGenerator;
+    public CommentUIGenerator commentUIGenerator;
+    public Image whiteout;
+    public GameObject clearUI;
+
+    [Header("Stage Data")]
+    public bool isGameOver = false;
+    public bool isPlayerMoving, isPlayerShooting, isZooming, isBulletFlying, isFast;
+
+    public int[] clearIndex = new int[9];
+    public int clearCounter = 0;
+    public static int nFloor, nTurret, nCase, nPlayer, aFloor, aTurret, aCase, white, black;
 
     public void ResetClearIndex()
     {
@@ -56,6 +62,7 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     IEnumerator Whiteout(bool goToWhite)
     {
+        whiteout.gameObject.SetActive(true);
         float setTime = 0.2f;
         float resetTime = 1.5f;
         if (goToWhite)
@@ -75,29 +82,36 @@ public class GameManager : SingletonBehaviour<GameManager>
                 yield return null;
             }
             whiteout.color = new Color(1, 1, 1, 0);
+            whiteout.gameObject.SetActive(false);
         }
     }
     
     public IEnumerator ClearStage()
     {
-        GameObject.Find("TestTools").GetComponent<TestTools>().clear.gameObject.SetActive(true);
+        if (isPlayerShooting) Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer);
+        yield return null;
+        clearUI.SetActive(true);
         Debug.Log("Stage Clear!");
+
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        yield return new WaitForSeconds(3);
-        BackToStageSelect();
+        isGameOver = true;
+        StageSelector.inst.SaveClearData(stageIdx, true);
     }
 
-    public void GameOver()
+    public void GameOver(bool onlyRestart = false)
     {
-        Debug.Log("Game Over!");
+        if (!onlyRestart) Debug.Log("Game Over!");
+        StageSelector.inst.SaveClearData(stageIdx, onlyRestart);
+        isGameOver = true;
         StopAllCoroutines();
+        uiGenerator.ResetAllClearUIs();
+        StartCoroutine(RestartStage());
     }
 
     public IEnumerator RestartStage()
     {
-        Debug.Log("Game Restart!");
         StartCoroutine(Whiteout(true));
         yield return new WaitForSeconds(0.5f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -109,14 +123,23 @@ public class GameManager : SingletonBehaviour<GameManager>
         SceneManager.LoadScene("SelectStage");
     }
 
+    public void LoadNextStage()
+    {
+        StageSelector.selectedStage = StageSelector.nextStage;
+        StageSelector.nextStage++;
+
+        StartCoroutine(RestartStage());
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         if (!MapManager.inst.isMapEditingOn)
         {
             isGameOver = false;
+            stageIdx = StageSelector.selectedStage + 1;
             currentStage = Resources.Load<TextAsset>("Stages/" + "stage" + (StageSelector.selectedStage + 1));
-            StartStage();
+            if (MapManager.inst.emptyMap != null) StartStage();
             //Destroy(FindObjectOfType<StageSelector>().gameObject);
         }
     }

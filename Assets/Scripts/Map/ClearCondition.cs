@@ -24,19 +24,20 @@ public class ClearCondition
         {
             count += _count;
             goal += _goal;
-            assignedClearUI.RefreshClearCondition();
-            if (goal <= count && !isDone)
+            if (((type == ClearType.White || type == ClearType.Black) ? goal == count : goal <= count) && !isDone)
             {
                 GameManager.inst.clearCounter--;
                 isDone = true;
+                //Debug.Log(GameManager.inst.clearCounter);
                 if (GameManager.inst.clearCounter == 0)
                     GameManager.inst.StartCoroutine(GameManager.inst.ClearStage());
             }
-            else if (goal > count)
+            else if (((type == ClearType.White || type == ClearType.Black) ? goal != count : goal > count) && isDone)
             {
                 GameManager.inst.clearCounter++;
                 isDone = false;
             }
+            assignedClearUI.RefreshClearCondition();
         }
     }
 }

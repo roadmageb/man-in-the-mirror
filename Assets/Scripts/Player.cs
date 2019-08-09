@@ -21,6 +21,10 @@ public class Player : MonoBehaviour
     public Floor currentFloor;
 
     public GameObject selectPointer;
+    public VLight aimLight;
+
+    private GameObject currentBullet;
+    private float lastShoot;
 
     /// <summary>
     /// Set this player as the current player.
@@ -59,7 +63,7 @@ public class Player : MonoBehaviour
 		agent.CalculatePath(destination, path);
         if(path.status == NavMeshPathStatus.PathComplete)
         {
-		    PlayerController.inst.isPlayerMoving = true;
+            GameManager.inst.isPlayerMoving = true;
             playerArrivalCheck = StartCoroutine(CheckIfPlayerArrived(destination));
             GetComponent<NavMeshAgent>().SetDestination(destination);
         }
@@ -82,7 +86,10 @@ public class Player : MonoBehaviour
         currentFloor.isPlayerOn = true;
         PlayerController.inst.CheckCurrentFloors();
         anim.SetBool("isWalking", false);
-        PlayerController.inst.isPlayerMoving = false;
+        anim.speed = 1;
+        GetComponent<NavMeshAgent>().speed = 1.5f;
+        GameManager.inst.isFast = false;
+        GameManager.inst.isPlayerMoving = false;
     }
     /// <summary>
     /// Count 2 second to make player in shooting mode.
@@ -92,17 +99,28 @@ public class Player : MonoBehaviour
     public IEnumerator CountPlayerClick(float startTime)
     {
         float time = Time.time;
-        float endTime = startTime + 2;
+        float endTime = startTime + 1.5f;
+        aimLight.gameObject.SetActive(true);
         while (time <= endTime)
         {
             yield return null;
+            aimLight.lightMultiplier += 3 * Time.deltaTime;
+            aimLight.spotAngle -= 40 * Time.deltaTime;
             time = Time.time;
             if (!Input.GetMouseButton(0))
+            {
+                aimLight.lightMultiplier = 0;
+                aimLight.spotAngle = 60;
+                aimLight.gameObject.SetActive(false);
                 break;
+            }
         }
         if (time > endTime)
         {
-            PlayerController.inst.isPlayerShooting = true;
+            aimLight.lightMultiplier = 0;
+            aimLight.spotAngle = 60;
+            aimLight.gameObject.SetActive(false);
+            GameManager.inst.isPlayerShooting = true;
             StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomInAtPlayer(this));
         }
     }
@@ -112,10 +130,14 @@ public class Player : MonoBehaviour
         Bullet newBullet = MapManager.inst.bulletFactory.MakeBullet(bulletCode);
         newBullet.transform.position = shootingFinger.transform.position;
         newBullet.transform.LookAt(shootingArm.transform.forward + newBullet.transform.position);
-        newBullet.Init(shootingArm.transform.forward);
+        newBullet.Init(shootingArm.transform.forward * 3);
+        currentBullet = newBullet.gameObject;
         PlayerController.inst.bulletList.RemoveAt(0);
+        GameManager.inst.bulletUIGenerator.RemoveBulletUI();
+        laser.SetActive(false);
+        lastShoot = Time.time;
+        anim.SetTrigger("shoot");
     }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -125,7 +147,12 @@ public class Player : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    { 
-        laser.transform.position = shootingFinger.transform.position;
+    {
+        if (PlayerController.inst.currentPlayer == this && GameManager.inst.isPlayerShooting && !GameManager.inst.isZooming)
+        {
+            laser.transform.position = shootingFinger.transform.position;
+            if (currentBullet == null && lastShoot + 1f < Time.time) laser.SetActive(true);
+        }
+        else if (laser.activeSelf) laser.SetActive(false);
     }
 }

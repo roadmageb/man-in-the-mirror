@@ -17,7 +17,7 @@ public class MapManager : SingletonBehaviour<MapManager>
     public GameObject truthBullet, fakeBullet, mirrorBullet;
     public GameObject briefCase;
     public GameObject cameraTurret;
-    public GameObject[] mannequins;
+    public GameObject mannequin;
     public GameObject player;
     [Header("All players")]
     public List<GameObject> players;
@@ -36,6 +36,13 @@ public class MapManager : SingletonBehaviour<MapManager>
         PlayerController.inst.bulletList.Clear();
         players.Clear();
         currentMap.maxMapSize = (int)loadedMapData.objects[0].xPos;
+        for (int i = 0; i < loadedMapData.clears.Count; i++)
+        {
+            var temp = loadedMapData.clears[i];
+            currentMap.clearConditions.Add(new ClearCondition(temp.type, temp.goal));
+        }
+        GameManager.inst.SetClearIndex(currentMap);
+        GameManager.inst.uiGenerator.GenerateAllClearUI();
         int casesIndex = 0;
         for(int i = 1; i < loadedMapData.objects.Count; i++)
         {
@@ -68,37 +75,24 @@ public class MapManager : SingletonBehaviour<MapManager>
                     break;
                 case TileMode.goalFloor:
                     currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)).isGoalFloor = true;
+                    currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)).RefreshGoal();
                     break;
                 default:
                     break;
             }
         }
-        for (int i = 0; i < loadedMapData.clears.Count; i++)
-        {
-            var temp = loadedMapData.clears[i];
-            currentMap.clearConditions.Add(new ClearCondition(temp.type, temp.goal));
-        }
-        GameManager.inst.SetClearIndex(currentMap);
         surface.BuildNavMesh();
-        GameManager.inst.uiGenerator.GenerateAllClearUI();
-        foreach(Transform child in currentMap.objects.transform)
-        {
-            if (child.GetComponent<IObject>() is Mannequin)
-            {
-                if(child.GetComponent<Mannequin>().isWhite && GameManager.white >= 0)
-                    currentMap.clearConditions[GameManager.white].IsDone(1);
-                if (!child.GetComponent<Mannequin>().isWhite && GameManager.black >= 0)
-                    currentMap.clearConditions[GameManager.black].IsDone(1);
-            }
-
-        }
-
-
         for (int i = 0; i < currentMap.startFloors.Count; i++)
             PlayerController.inst.CreatePlayer(currentMap.startFloors[i]);
         for (int i = 0; i < loadedMapData.bullets.Count; i++)
             PlayerController.inst.AddBullet(loadedMapData.bullets[i]);
+        if (loadedMapData.comments != null)
+        {
+            currentMap.comments = loadedMapData.comments;
+            GameManager.inst.commentUIGenerator.SetComment(currentMap.comments);
+        }
     }
+
     public IEnumerator Rebaker()
     {
         yield return null;

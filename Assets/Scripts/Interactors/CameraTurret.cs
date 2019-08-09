@@ -8,7 +8,9 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 	private Floor floor = null;
 	public Vector2Int Position { get { return floor != null ? floor.mapPos : throw new UnassignedReferenceException("Floor of Interactor is not assigned"); } }
 
-	public void Init(Floor floor)
+    [Space(15)]
+    public GameObject scatteredTurret;
+    public void Init(Floor floor)
     {
 		this.floor = floor;
         floor.objOnFloor = this;
@@ -18,23 +20,18 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 
     public void Break()
     {
-        if (GameManager.aTurret >= 0)
-            MapManager.inst.currentMap.clearConditions[GameManager.aTurret].IsDone(1);
-        if (GameManager.nTurret >= 0)
-            MapManager.inst.currentMap.clearConditions[GameManager.nTurret].IsDone(1);
+        Instantiate(scatteredTurret, transform.position + new Vector3(0, 0.3f), transform.rotation);
+        if (GameManager.nTurret >= 0) MapManager.inst.currentMap.clearConditions[GameManager.nTurret].IsDone(1);
         MapManager.inst.currentMap.RemoveObject(Position);
     }
 
     public void Interact(Vector2Int pos)
     {
-        if(!GameManager.inst.isGameOver)
+        if(!GameManager.inst.isGameOver && PlayerController.inst.currentPlayer != null)
         {
             if (Position.IsInAdjacentArea(pos, 1) && MapManager.inst.currentMap.GetWallAtPos((Vector2)(Position + pos) / 2) == null)
             {
-                GameManager.inst.isGameOver = true;
-                StartCoroutine(GameManager.inst.RestartStage());
-                GameManager.inst.uiGenerator.ResetAllClearUIs();
-
+                GameManager.inst.GameOver();
                 //TODO : Restart Level
             }
         }

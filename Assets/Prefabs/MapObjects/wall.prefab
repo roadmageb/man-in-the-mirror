@@ -125,3 +125,5 @@ MonoBehaviour:
   mapPos: {x: 0, y: 0}
   len: 1
   type: 1
+  scatteredWall: {fileID: 6821036335413188318, guid: d698ba4b8908f6a43b45d3a4f076ef4a,
+    type: 3}

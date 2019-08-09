@@ -14,9 +14,11 @@ public class Map : MonoBehaviour
     public GameObject floors;
     public GameObject walls;
     public GameObject objects;
+
+    [Header("Stage Data")]
     public List<Floor> startFloors;
     public List<BulletCode> initialBullets;
-
+    public string comments;
     public List<ClearCondition> clearConditions;
 
     /// <summary>
@@ -66,6 +68,7 @@ public class Map : MonoBehaviour
             floorGrid.Add(pos, Instantiate(MapManager.inst.floor, new Vector3(pos.x, 0, pos.y), Quaternion.identity, floors.transform).GetComponent<Floor>());
             floorGrid[pos].mapPos = pos;
             floorGrid[pos].isGoalFloor = isGoal;
+            floorGrid[pos].RefreshGoal();
             if (pos.x > maxBorder.x) maxBorder.x = pos.x;
             else if (pos.x < minBorder.x) minBorder.x = pos.x;
             if (pos.y > maxBorder.y) maxBorder.y = pos.y;
@@ -75,7 +78,11 @@ public class Map : MonoBehaviour
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
+        {
             Debug.Log("Floor already exists at : (" + pos.x + ", " + pos.y + ")");
+            floorGrid[pos].isGoalFloor = isGoal;
+            floorGrid[pos].RefreshGoal();   
+        }
     }
     /// <summary>
     /// Create floor in rectangular area between pos1 and pos2. 
@@ -119,7 +126,7 @@ public class Map : MonoBehaviour
     /// </summary>
     /// <param name="pos">Position of wall.</param>
     /// <param name="wallType">Type of wall.</param>
-    public void CreateWall(Vector2 pos, WallType wallType)
+    public void CreateWall(Vector2 pos, WallType wallType, bool isBreak = true)
     {
         if (((int)pos.x >= 0 ? ((int)pos.x > maxMapSize / 2) : ((int)pos.x < -maxMapSize / 2)) || ((int)pos.y >= 0 ? ((int)pos.y > maxMapSize / 2) : ((int)pos.y < -maxMapSize / 2)))
         {
@@ -133,7 +140,7 @@ public class Map : MonoBehaviour
         }
         if (!wallGrid.ContainsKey(pos))
         {
-            if(wallType == WallType.Normal)
+            if (wallType == WallType.Normal)
                 wallGrid.Add(pos, Instantiate(MapManager.inst.normalWall, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
             else if (wallType == WallType.Mirror)
                 wallGrid.Add(pos, Instantiate(MapManager.inst.mirror, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
@@ -146,7 +153,18 @@ public class Map : MonoBehaviour
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
+        {
             Debug.Log("Wall already exists at : " + pos);
+            if (wallGrid[pos].type == WallType.Normal && wallType == WallType.Mirror) // change to Mirror
+            {
+                MapManager.inst.currentMap.ChangeToMirror(pos, isBreak);
+            }
+            else if (wallGrid[pos].type == WallType.Mirror && wallType == WallType.Normal)
+            {
+                RemoveWall(pos);
+                CreateWall(pos, WallType.Normal);
+            }
+        }
     }
     /// <summary>
     /// Create walls from two floors, toward dir's direction. 
@@ -168,7 +186,7 @@ public class Map : MonoBehaviour
     /// Change normal wall at position to mirror.
     /// </summary>
     /// <param name="pos">Position of wall.</param>
-    public void ChangeToMirror(Vector2 pos)
+    public void ChangeToMirror(Vector2 pos, bool isBreak = true)
     {
         if (((int)pos.x >= 0 ? ((int)pos.x > maxMapSize / 2) : ((int)pos.x < -maxMapSize / 2)) || ((int)pos.y >= 0 ? ((int)pos.y > maxMapSize / 2) : ((int)pos.y < -maxMapSize / 2)))
         {
@@ -182,6 +200,7 @@ public class Map : MonoBehaviour
         }
         if (wallGrid.ContainsKey(pos))
         {
+            if (isBreak) (wallGrid[pos] as NormalWall).Break();
             RemoveWall(pos);
             wallGrid.Add(pos, Instantiate(MapManager.inst.mirror, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
             wallGrid[pos].mapPos = pos;
@@ -235,7 +254,7 @@ public class Map : MonoBehaviour
                     objectGrid[pos].Init(GetFloorAtPos(pos));
                     break;
                 case ObjType.Mannequin:
-                    objectGrid.Add(pos, Instantiate(MapManager.inst.mannequins[Random.Range(0, 5)], new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
+                    objectGrid.Add(pos, Instantiate(MapManager.inst.mannequin, new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
                     objectGrid[pos].Init(GetFloorAtPos(pos));
                     objectGrid[pos].GetObject().GetComponent<Mannequin>().SetColor(isWhite);
                     break;
@@ -254,23 +273,33 @@ public class Map : MonoBehaviour
     /// Remove Object at position.
     /// </summary>
     /// <param name="pos">Position of object.</param>
-    public void RemoveObject(Vector2Int pos, bool isCaseInteracted = false)
+    public void RemoveObject(Vector2Int pos)
     {
         if (objectGrid.ContainsKey(pos))
         {
-            if(objectGrid[pos].GetType() == ObjType.Briefcase && GameManager.aCase >= 0 && !isCaseInteracted)
-                clearConditions[GameManager.aCase].IsDone(0, -1);
-            else if (objectGrid[pos].GetType() == ObjType.Camera && GameManager.aTurret >= 0)
-                clearConditions[GameManager.aTurret].IsDone(0, -1);
-            else if(objectGrid[pos].GetType() == ObjType.Mannequin)
+            //Debug.Log(pos + " Remove Obj, " + objectGrid[pos].GetType());
+            switch (objectGrid[pos].GetType())
             {
-                if(objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.white >= 0)
-                    clearConditions[GameManager.white].IsDone(0, -1);
-                else if (!objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.black >= 0)
-                    clearConditions[GameManager.black].IsDone(0, -1);
+                case ObjType.Camera:
+                    if (GameManager.aTurret >= 0)
+                        clearConditions[GameManager.aTurret].IsDone(0, -1);
+                    PlayerController.inst.OnPlayerMove -= objectGrid[pos].GetObject().GetComponent<IPlayerInteractor>().Interact;
+                    break;
+                case ObjType.Mannequin:
+                    if (objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.white >= 0)
+                        clearConditions[GameManager.white].IsDone(-1);
+                    else if (!objectGrid[pos].GetObject().GetComponent<Mannequin>().isWhite && GameManager.black >= 0)
+                        clearConditions[GameManager.black].IsDone(-1);
+                    break;
+                case ObjType.Briefcase:
+                    if (GameManager.aCase >= 0)
+                        clearConditions[GameManager.aCase].IsDone(0, -1);
+                    PlayerController.inst.OnPlayerMove -= objectGrid[pos].GetObject().GetComponent<IPlayerInteractor>().Interact;
+                    break;
+                default:
+                    Debug.Log("[ERR] 병신아");
+                    break;
             }
-            if(objectGrid[pos].GetType() != ObjType.Mannequin)
-                PlayerController.inst.OnPlayerMove -= objectGrid[pos].GetObject().GetComponent<IPlayerInteractor>().Interact;
             Destroy(objectGrid[pos].GetObject());
             objectGrid.Remove(pos);
             floorGrid[pos].objOnFloor = null;

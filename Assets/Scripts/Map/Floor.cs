@@ -12,15 +12,29 @@ public class Floor : MonoBehaviour
     public IObject objOnFloor = null;
     public bool isPlayerOn = false;
 
+    [Header("Goal Floor Settings")]
+    public SpriteRenderer spriteRenderer;
+    public Sprite goalSpriteOn;
+    public Sprite goalSpriteOff;
+
     // Start is called before the first frame update
     void Start()
     {
         
     }
 
+    public void RefreshGoal()
+    {
+        spriteRenderer.gameObject.SetActive(isGoalFloor);
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+        if (isGoalFloor)
+        {
+            if (isPlayerOn) spriteRenderer.sprite = goalSpriteOn;
+            else spriteRenderer.sprite = goalSpriteOff;
+        }
     }
 }

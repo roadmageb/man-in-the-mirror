@@ -7,13 +7,14 @@ public class CameraController : MonoBehaviour
     Vector3 dragOrigin;
     Vector3 moveOrigin;
     public float dragSpeed;
+    float cameraMoveDuration = 50;
     Vector3 previousPos;
     Vector3 previousAngle;
     float shootingFov = 60f;
     float mapFov = 20f;
     float rotationX = 0;
     float rotationY = 0;
-    float sensitivity = 30;
+    float sensitivity = 1;
 
     [SerializeField]
     Vector3 centerPos = new Vector3(0, 0, 0);
@@ -77,26 +78,32 @@ public class CameraController : MonoBehaviour
     public IEnumerator ZoomInAtPlayer(Player player)
     {
         float startTime = Time.time;
-        Vector3 posDiff = (player.head.transform.position - transform.position) / 40;
-        float fovDiff = (shootingFov - mapFov) / 40f;
-        float angleDiff = -30f / 40f;
-        PlayerController.inst.isZooming = true;
+        Vector3 posDiff = (player.head.transform.position - transform.position) / cameraMoveDuration;
+        float angleDiff = -30f / cameraMoveDuration;
+        GameManager.inst.isZooming = true;
         previousPos = transform.position;
         previousAngle = new Vector3(transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x,
             transform.eulerAngles.y > 180 ? transform.eulerAngles.y - 360 : transform.eulerAngles.y,
             transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z);
-        for (int i = 0; i < 40; i++)
+        int i;
+        for (i = 0; i < cameraMoveDuration; i += 1)
         {
-            yield return null;
+            yield return new WaitForSeconds(0.01f);
+            if (Input.GetMouseButtonDown(0))
+                break;
             transform.position += posDiff;
             transform.eulerAngles += new Vector3(angleDiff, 0, 0);
-            Camera.main.fieldOfView += fovDiff;
+            Camera.main.fieldOfView = Mathf.Lerp(mapFov, shootingFov, i / cameraMoveDuration);
         }
+        transform.position += posDiff * (cameraMoveDuration - i);
+        transform.eulerAngles += new Vector3(angleDiff * (cameraMoveDuration - i), 0, 0);
+        Camera.main.fieldOfView = shootingFov;
+
         player.transform.eulerAngles = new Vector3(player.transform.eulerAngles.x, transform.eulerAngles.y, player.transform.eulerAngles.z);
         transform.position = player.head.transform.position;
         rotationX = transform.eulerAngles.y;
         rotationY = transform.eulerAngles.x;
-        PlayerController.inst.isZooming = false;
+        GameManager.inst.isZooming = false;
         player.laser.SetActive(true);
         player.anim.SetBool("isShooting", true);
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Head");
@@ -112,30 +119,37 @@ public class CameraController : MonoBehaviour
     public IEnumerator ZoomOutFromPlayer(Player player)
     {
         float startTime = Time.time;
-        Vector3 posDiff = (previousPos - transform.position) / 40;
-        float fovDiff = (mapFov - shootingFov) / 40f;
+        Vector3 posDiff = (previousPos - transform.position) / cameraMoveDuration;
         player.laser.SetActive(false);
-        PlayerController.inst.isZooming = true;
+        GameManager.inst.isZooming = true;
         player.anim.SetBool("isShooting", false);
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Player");
         player.head.SetActive(true);
         Vector3 tempAngle = new Vector3(transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x,
             transform.eulerAngles.y > 180 ? transform.eulerAngles.y - 360 : transform.eulerAngles.y,
             transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z);
-        Vector3 angleDiff = (previousAngle - tempAngle) / 40;
+        Vector3 angleDiff = (previousAngle - tempAngle) / cameraMoveDuration;
         angleDiff = new Vector3(angleDiff.x > 180 ? 360 - angleDiff.x : angleDiff.x,
             angleDiff.y > 180 ? 360 - angleDiff.y : angleDiff.y,
             angleDiff.z > 180 ? 360 - angleDiff.z : angleDiff.z);
-        for (int i = 0; i < 40; i++)
+        int i;
+        for (i = 0; i < cameraMoveDuration; i += 1)
         {
-            yield return null;
+            yield return new WaitForSeconds(0.01f);
+            if (Input.GetMouseButtonDown(0))
+                break;
             transform.position += posDiff;
             transform.eulerAngles += angleDiff;
-            Camera.main.fieldOfView += fovDiff;
+            Camera.main.fieldOfView = Mathf.Lerp(shootingFov, mapFov, i / cameraMoveDuration);
         }
+        transform.position += posDiff * (cameraMoveDuration - i);
+        transform.eulerAngles += angleDiff * (cameraMoveDuration - i);
+        Camera.main.fieldOfView = mapFov;
+
         transform.position = previousPos;
-        PlayerController.inst.isPlayerShooting = false;
-        PlayerController.inst.isZooming = false;
+        transform.LookAt(centerPos);
+        GameManager.inst.isPlayerShooting = false;
+        GameManager.inst.isZooming = false;
 
         // Visible mouse cursor
         Cursor.visible = true;
@@ -153,22 +167,10 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!PlayerController.inst.isZooming)
+        if (!GameManager.inst.isZooming)
         {
-            if (!PlayerController.inst.isPlayerShooting)
+            if (!GameManager.inst.isPlayerShooting)
             {
-
-
-
-
-
-
-
-
-
-
-
-
                 CameraMove();
                 CameraDrag();
             }
@@ -176,8 +178,8 @@ public class CameraController : MonoBehaviour
             {
                 float mouseMoveValueX = Input.GetAxis("Mouse X");
                 float mouseMoveValueY = Input.GetAxis("Mouse Y");
-                rotationX += mouseMoveValueX * sensitivity * Time.deltaTime;
-                rotationY += mouseMoveValueY * sensitivity * Time.deltaTime;
+                rotationX += mouseMoveValueX * sensitivity;
+                rotationY += mouseMoveValueY * sensitivity;
                 rotationY = Mathf.Clamp(rotationY, -20, 10);
                 transform.eulerAngles = new Vector3(-rotationY, rotationX, 0);
             }

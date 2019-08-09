@@ -8,6 +8,11 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     [SerializeField] private Material[] mannequinMaterial = new Material[2];
     [SerializeField] private Floor floor;
     private Color _color;
+
+    [Space(15)]
+    public GameObject scatteredWhite;
+    public GameObject scatteredBlack;
+
     public Color Color {
         get
         {
@@ -47,6 +52,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
         {
             Color = Color.white;
             isWhite = true;
+            Instantiate(scatteredBlack, transform);
             if (GameManager.white >= 0)
                 MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(1);
             if (GameManager.black >= 0)
@@ -56,6 +62,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
         {
 			Color = Color.black;
             isWhite = false;
+            Instantiate(scatteredWhite, transform);
             if (GameManager.black >= 0)
                 MapManager.inst.currentMap.clearConditions[GameManager.black].IsDone(1);
             if (GameManager.white >= 0)
@@ -70,18 +77,15 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
         transform.Rotate(new Vector3(0, Random.Range(0, 4) * 90, 0));
         isWhite = true;
         Color = Color.white;
-        if (GameManager.white >= 0) MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(1);
+        //if (GameManager.white >= 0) MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(1);
     }
 
     public void SetColor(bool isWhite)
     {
         Color = isWhite ? Color.white : Color.black;
         this.isWhite = isWhite;
-        if (GameManager.black >= 0 && !isWhite)
-        {
-            MapManager.inst.currentMap.clearConditions[GameManager.black].count++;
-            if (GameManager.white >= 0) MapManager.inst.currentMap.clearConditions[GameManager.white].count--;
-        }
+        if (GameManager.black >= 0 && !isWhite) MapManager.inst.currentMap.clearConditions[GameManager.black].IsDone(1);
+        else if (GameManager.white >= 0 && isWhite) MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(1);
     }
 
     #region IObject Override

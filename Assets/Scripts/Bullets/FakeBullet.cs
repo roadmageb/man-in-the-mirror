@@ -6,10 +6,13 @@ public class FakeBullet : Bullet
 {
     protected override void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<IBulletInteractor>() != null)
+        if (other.gameObject.layer != LayerMask.NameToLayer("Scattered") && other.gameObject.layer != LayerMask.NameToLayer("Player"))
         {
-            other.GetComponent<IBulletInteractor>().Interact(this);
+            if (other.GetComponent<IBulletInteractor>() != null)
+            {
+                other.GetComponent<IBulletInteractor>().Interact(this);
+            }
+            Destroy(gameObject);
         }
-		Destroy(gameObject);
 	}
 }
