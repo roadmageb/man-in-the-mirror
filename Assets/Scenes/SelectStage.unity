@@ -480,12 +480,12 @@ PrefabInstance:
     - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
         type: 3}
       propertyPath: categoryCounts.Array.size
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
         type: 3}
       propertyPath: categoryTitles.Array.size
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
         type: 3}
@@ -495,7 +495,7 @@ PrefabInstance:
     - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
         type: 3}
       propertyPath: categoryCounts.Array.data[1]
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
         type: 3}
@@ -510,22 +510,42 @@ PrefabInstance:
     - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
         type: 3}
       propertyPath: categoryTitles.Array.data[3]
-      value: V. HARD
+      value: MANNEQUIN
       objectReference: {fileID: 0}
     - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
         type: 3}
       propertyPath: categoryTitles.Array.data[0]
-      value: EASY
+      value: MOVE
       objectReference: {fileID: 0}
     - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
         type: 3}
       propertyPath: categoryTitles.Array.data[1]
-      value: NORMAL
+      value: CASE
       objectReference: {fileID: 0}
     - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
         type: 3}
       propertyPath: categoryTitles.Array.data[2]
-      value: HARD
+      value: TURRET
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: categoryCounts.Array.data[4]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: categoryCounts.Array.data[5]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: categoryTitles.Array.data[4]
+      value: MIRROR
+      objectReference: {fileID: 0}
+    - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: categoryTitles.Array.data[5]
+      value: SPECIAL
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8115fd4d1a1025b4fb05e45fc5fa6578, type: 3}
