@@ -195,7 +195,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                     }
                     else if (GameManager.inst.isPlayerShooting && currentPlayer.laser.activeSelf)
                     {
-                        if (bulletList.Count > 0)
+                        if (bulletList.Count > 0 && currentPlayer.canShoot)
                         {
                             currentPlayer.Shoot(bulletList[0]);
                         }
@@ -210,6 +210,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                 else if (Input.GetMouseButtonDown(1) && GameManager.inst.isPlayerShooting)
                 {
                     StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomOutFromPlayer(currentPlayer));
+                    currentPlayer.OffAllOutline();
                     currentPlayer.shootingArm.rotation = currentPlayer.armRotation;
                 }
             }
