@@ -19,6 +19,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     public CommentUIGenerator commentUIGenerator;
     public Image whiteout;
     public GameObject clearUI;
+    public Text clearUINextText;
 
     [Header("Stage Data")]
     public bool isGameOver = false;
@@ -90,6 +91,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     {
         if (isPlayerShooting) yield return StartCoroutine(Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer));
         yield return null;
+        clearUINextText.text = StageSelector.nextStage.Replace("-", " - ");
         clearUI.SetActive(true);
         Debug.Log("Stage Clear!");
 
