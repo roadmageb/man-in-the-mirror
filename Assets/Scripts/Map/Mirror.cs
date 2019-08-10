@@ -79,6 +79,19 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         int minMapRange = -1 * MapManager.inst.currentMap.maxMapSize - 1;
         int maxMapRange = MapManager.inst.currentMap.maxMapSize + 1;
 
+        // start reflection
+        Vector2Int frontFloorPos = dir ? 
+            new Vector2Int(Mathf.RoundToInt(mapPos.x), Mathf.RoundToInt(mapPos.y + 0.5f * side)) 
+            : new Vector2Int(Mathf.RoundToInt(mapPos.x + 0.5f * side), Mathf.RoundToInt(mapPos.y));
+        int frontFloorCount = 0;
+        if (floorCountGrid.TryGetValue(frontFloorPos, out frontFloorCount))
+        {
+            if (frontFloorCount == 0) floorCountGrid[frontFloorPos]++; // have floor
+        }
+        else // no floor on there
+        {
+            floorCountGrid.Add(frontFloorPos, -1);
+        }
         for (; Mathf.Abs(i) < maxMapRange; i += side)
         {
             // check walls and copy
