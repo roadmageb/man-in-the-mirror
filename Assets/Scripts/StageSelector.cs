@@ -23,6 +23,7 @@ public class StageSelector : SingletonBehaviour<StageSelector>
     [Header("UI Settings")]
     public GameObject buttonUI;
     public GameObject titleUI;
+    public Transform scrollTransform;
     public Sprite tutorialFalse; 
     public Color tutorialFalseColor = new Color(1f, 0.9921569f, 0.8666667f);
     public Sprite tutorialTrue;
@@ -32,8 +33,8 @@ public class StageSelector : SingletonBehaviour<StageSelector>
     public Sprite mainTrue;
     public Color mainTrueColor = new Color(0.1921569f, 1f, 0.3843138f);
     int maxRow = 8; // y-=155
-    private Vector3 generatePoint = new Vector3(-470, 360); // x+=160
-    private Vector3 titleGeneratePoint = new Vector3(-770, 360);
+    private Vector3 generatePoint = new Vector3(-470, -220); // x+=160
+    private Vector3 titleGeneratePoint = new Vector3(-770, -220);
 
     public void GenerateStageUI()
     {
@@ -41,7 +42,7 @@ public class StageSelector : SingletonBehaviour<StageSelector>
         int stageIdxCounter = 0;
         for (int i = 0; i < categoryCounts.Length; i++) // "Stagei-j"
         {
-            var nameInst = Instantiate(titleUI, transform);
+            var nameInst = Instantiate(titleUI, scrollTransform);
             nameInst.transform.localPosition = titleGeneratePoint;
             nameInst.GetComponent<Text>().text = categoryTitles[i];
             if (isColorSel < 0) nameInst.GetComponent<Text>().color = tutorialTrueColor;
@@ -50,7 +51,7 @@ public class StageSelector : SingletonBehaviour<StageSelector>
             int rowCount = 0;
             for (int j = 0; j < categoryCounts[i]; j++)
             {
-                var uiInst = Instantiate(buttonUI, transform);
+                var uiInst = Instantiate(buttonUI, scrollTransform);
                 var uiText = uiInst.GetComponentInChildren<Text>();
                 string uiStage = (i + 1) + "_" + (j + 1);
                 stageIdxs.Add(uiStage);
