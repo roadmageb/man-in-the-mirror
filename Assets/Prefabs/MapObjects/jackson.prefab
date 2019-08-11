@@ -1442,6 +1442,7 @@ MonoBehaviour:
   currentFloor: {fileID: 0}
   selectPointer: {fileID: 6250617794677575084}
   aimLight: {fileID: 2401818891807728848}
+  canShoot: 0
 --- !u!1 &494213313239918029
 GameObject:
   m_ObjectHideFlags: 0
@@ -2663,7 +2664,7 @@ MonoBehaviour:
   renderWireFrame: 0
   lightType: 0
   lightMultiplier: 0
-  spotExponent: 20
+  spotExponent: 1
   constantAttenuation: 1
   linearAttenuation: 10
   quadraticAttenuation: 100

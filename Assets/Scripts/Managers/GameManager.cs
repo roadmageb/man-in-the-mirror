@@ -19,8 +19,8 @@ public class GameManager : SingletonBehaviour<GameManager>
     public CommentUIGenerator commentUIGenerator;
     public Image whiteout;
     public GameObject clearUI;
+    public GameObject clearUInextBtn;
     public GameObject buttonUIs;
-    public Text clearUINextText;
 
     [Header("Stage Data")]
     public bool isGameOver = false;
@@ -95,8 +95,8 @@ public class GameManager : SingletonBehaviour<GameManager>
         {
             if (isPlayerShooting) yield return StartCoroutine(Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer));
             yield return null;
-            clearUINextText.text = StageSelector.nextStage.Replace("_", " - ");
             clearUI.SetActive(true);
+            if (StageSelector.nextStage.Length < 3) clearUInextBtn.SetActive(false);
             buttonUIs.SetActive(false);
             Debug.Log("Stage Clear!");
 
@@ -137,11 +137,13 @@ public class GameManager : SingletonBehaviour<GameManager>
         StageSelector.inst.stageIdx++;
         if (StageSelector.inst.stageIdxs.Count > StageSelector.inst.stageIdx + 1)
         {
-            StageSelector.nextStage = StageSelector.inst.stageIdxs[StageSelector.inst.stageIdx + 1];
+            var tempNext = StageSelector.inst.stageIdxs[StageSelector.inst.stageIdx + 1];
+            if (tempNext[2] == '1') StageSelector.nextStage = "";
+            else StageSelector.nextStage = tempNext;
         }
         else
         {
-            StageSelector.nextStage = "1_1";
+            StageSelector.nextStage = "";
         }
 
         StartCoroutine(RestartStage());

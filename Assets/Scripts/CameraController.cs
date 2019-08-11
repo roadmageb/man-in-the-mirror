@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public GameObject helpUI;
+
     Vector3 dragOrigin;
     Vector3 moveOrigin;
     public float dragSpeed;
@@ -109,6 +111,7 @@ public class CameraController : MonoBehaviour
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Head");
 
         // Invisible mouse cursor
+        helpUI.SetActive(true);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -121,6 +124,7 @@ public class CameraController : MonoBehaviour
         float startTime = Time.time;
         Vector3 posDiff = (previousPos - transform.position) / cameraMoveDuration;
         player.laser.SetActive(false);
+        helpUI.SetActive(false);
         GameManager.inst.isZooming = true;
         player.anim.SetBool("isShooting", false);
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Player");
