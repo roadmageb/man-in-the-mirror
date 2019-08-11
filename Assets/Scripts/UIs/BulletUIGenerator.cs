@@ -37,13 +37,18 @@ public class BulletUIGenerator : MonoBehaviour
                 bulletUIInst.GetComponent<Image>().sprite = truthBullet;
                 bulletUIInst.GetComponent<BulletHoverUI>().headerText.text = "진실탄";
                 bulletUIInst.GetComponent<BulletHoverUI>().headerText.color = Color.green;
-                bulletUIInst.GetComponent<BulletHoverUI>().bodyText.text = "거울, 터렛을 파괴함\n초록 서류가방에서 제공";
+                if (GameManager.inst.stageStrIdx[0].Equals('1')) bulletUIInst.GetComponent<BulletHoverUI>().bodyText.text = "거울을 파괴함";
+                else if (GameManager.inst.stageStrIdx[0].Equals('2')) bulletUIInst.GetComponent<BulletHoverUI>().bodyText.text = "거울을 파괴함\n초록 서류가방에서 제공";
+                else if (GameManager.inst.stageStrIdx[0].Equals('3')) bulletUIInst.GetComponent<BulletHoverUI>().bodyText.text = "거울, 터렛을 파괴함\n초록 서류가방에서 제공";
+                else bulletUIInst.GetComponent<BulletHoverUI>().bodyText.text = "거울, 터렛을 파괴함\n초록 서류가방에서 제공\n검은 마네킹을 희게 만듦";
                 break;
         case BulletCode.False:
                 bulletUIInst.GetComponent<Image>().sprite = falseBullet;
                 bulletUIInst.GetComponent<BulletHoverUI>().headerText.text = "거짓탄";
                 bulletUIInst.GetComponent<BulletHoverUI>().headerText.color = Color.red;
-                bulletUIInst.GetComponent<BulletHoverUI>().bodyText.text = "거울의 상을 실제로 만듦\n빨간 서류가방에서 제공";
+                if (GameManager.inst.stageStrIdx[0].Equals('1')) bulletUIInst.GetComponent<BulletHoverUI>().bodyText.text = "거울의 상을 실제로 만듦";
+                else if (GameManager.inst.stageStrIdx[0].Equals('2') || GameManager.inst.stageStrIdx[0].Equals('3')) bulletUIInst.GetComponent<BulletHoverUI>().bodyText.text = "거울의 상을 실제로 만듦\n빨간 서류가방에서 제공";
+                else bulletUIInst.GetComponent<BulletHoverUI>().bodyText.text = "거울의 상을 실제로 만듦\n빨간 서류가방에서 제공\n흰 마네킹을 검게 만듦";
                 break;
         case BulletCode.Mirror:
                 bulletUIInst.GetComponent<Image>().sprite = mirrBullet;

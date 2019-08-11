@@ -154,9 +154,9 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1.36
+    m_LineSpacing: 1.15
   m_Text: "\uAC70\uC6B8, \uD130\uB81B\uC744 \uD30C\uAD34\uD568\n\uCD08\uB85D \uC11C\uB958\uAC00\uBC29\uC5D0\uC11C
-    \uC81C\uACF5"
+    \uC81C\uACF5\n\uAC80\uC740 \uB9C8\uB124\uD0B9\uC744 \uD76C\uAC8C \uB9CC\uB4E6"
 --- !u!114 &2928030034610582071
 MonoBehaviour:
   m_ObjectHideFlags: 0
