@@ -25,6 +25,8 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 
 	public event Action<Vector2Int> OnPlayerMove;
 
+    public Coroutine zoomReady = null;
+
     public GameObject CreatePlayer(Floor floor)
     {
         foreach (var obj in MapManager.inst.players)
@@ -178,7 +180,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                                 currentPlayer.ResetCurrentPlayer();
                             currentPlayer = hit.transform.gameObject.GetComponent<Player>();
                             StartCoroutine(currentPlayer.SetCurrentPlayer());
-                            StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
+                            if (zoomReady == null) zoomReady = StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
                             //Debug.Log(hit.collider.gameObject.tag);
                         }
                         else if (Physics.Raycast(mouseRay, out hit, float.MaxValue, layerMask) && hit.collider.gameObject.tag.Equals("floor"))

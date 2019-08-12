@@ -103,7 +103,10 @@ public class Player : MonoBehaviour
     public IEnumerator CountPlayerClick(float startTime)
     {
         float time = Time.time;
+        float doubleClickDelay = 0.2f;
         float endTime = startTime + 1f;
+        bool doubleClicked = false;
+        bool isHoldExit = false;
         aimLight.gameObject.SetActive(true);
         while (time <= endTime)
         {
@@ -113,13 +116,27 @@ public class Player : MonoBehaviour
             time = Time.time;
             if (!Input.GetMouseButton(0))
             {
-                aimLight.lightMultiplier = 0;
-                aimLight.spotAngle = 60;
-                aimLight.gameObject.SetActive(false);
+                isHoldExit = true;
                 break;
             }
         }
-        if (time > endTime)
+        if (isHoldExit)
+        {
+            while (time + doubleClickDelay > Time.time)
+            {
+                yield return null;
+                aimLight.lightMultiplier *= 0.8f;
+                if (Input.GetMouseButtonDown(0))
+                {
+                    doubleClicked = true;
+                    break;
+                }
+            }
+            aimLight.lightMultiplier = 0;
+            aimLight.spotAngle = 60;
+            aimLight.gameObject.SetActive(false);
+        }
+        if ((!isHoldExit && time > endTime) || doubleClicked)
         {
             aimLight.lightMultiplier = 0;
             aimLight.spotAngle = 60;
@@ -127,6 +144,7 @@ public class Player : MonoBehaviour
             GameManager.inst.isPlayerShooting = true;
             StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomInAtPlayer(this));
         }
+        PlayerController.inst.zoomReady = null;
     }
 
     public void Shoot(BulletCode bulletCode)
