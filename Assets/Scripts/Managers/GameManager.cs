@@ -18,6 +18,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     public ClearUIGenerator uiGenerator;
     public BulletUIGenerator bulletUIGenerator;
     public CommentUIGenerator commentUIGenerator;
+    public MenuUIController menuUIController;
     public Image whiteout;
     public GameObject clearUI;
     public GameObject clearUInextBtn;
@@ -60,6 +61,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     public void StartStage()
     {
         MapManager.inst.LoadMap(currentStage);
+        menuUIController.titleText.text = "Stage\n" + (stageStrIdx.Replace("_", " - "));
         StartCoroutine(Whiteout(false));
     }
 

@@ -186,7 +186,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (PlayerController.inst.currentPlayer == this && GameManager.inst.isPlayerShooting && !GameManager.inst.isZooming)
+        if (!GameManager.inst.isGameOver && PlayerController.inst.currentPlayer == this && GameManager.inst.isPlayerShooting && !GameManager.inst.isZooming)
         {
             laser.transform.position = shootingFinger.transform.position;
             if (currentBullet == null && lastShoot + 1f < Time.time)

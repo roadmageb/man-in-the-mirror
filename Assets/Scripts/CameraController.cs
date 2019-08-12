@@ -171,7 +171,7 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!GameManager.inst.isZooming)
+        if (!GameManager.inst.isGameOver && !GameManager.inst.isZooming)
         {
             if (!GameManager.inst.isPlayerShooting)
             {

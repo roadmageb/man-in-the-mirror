@@ -247,12 +247,4 @@ public class StageSelector : SingletonBehaviour<StageSelector>
         GenerateStageUI();
         selectedStage = "0_0";
     }
-
-    void OnEnable()
-    {
-        if (inst.isLoaded)
-        {
-            mainScreen.SetActive(false);
-        }
-    }
 }

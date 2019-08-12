@@ -77,16 +77,8 @@ public class MainScreenControl : MonoBehaviour
 
     public void ToggleTurnOffMenu(bool forceOff = false)
     {
-        if (forceOff || isTurnOffMenuOn)
-        {
-            offMenu.SetActive(false);
-            isTurnOffMenuOn = false;
-        }
-        else
-        {
-            offMenu.SetActive(true);
-            isTurnOffMenuOn = true;
-        }
+        offMenu.SetActive(!(forceOff || isTurnOffMenuOn));
+        isTurnOffMenuOn = !(forceOff || isTurnOffMenuOn);
     }
     public void TurnOff()
     {
@@ -99,15 +91,7 @@ public class MainScreenControl : MonoBehaviour
 
     public void ToggleSettingMenu(bool forceOff = false)
     {
-        if (forceOff || isSettingMenuOn)
-        {
-            settingMenu.SetActive(false);
-            isSettingMenuOn = false;
-        }
-        else
-        {
-            settingMenu.SetActive(true);
-            isSettingMenuOn = true;
-        }
+        settingMenu.SetActive(!(forceOff || isSettingMenuOn));
+        isSettingMenuOn = !(forceOff || isSettingMenuOn);
     }
 }
