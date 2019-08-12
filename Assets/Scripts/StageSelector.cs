@@ -8,11 +8,17 @@ using Newtonsoft.Json;
 
 public class StageSelector : SingletonBehaviour<StageSelector>
 {
+    public bool isLoaded = false;
     public static string selectedStage;
     public static string nextStage;
     public TextAsset[] stage;
     public List<string> stageIdxs = new List<string>();
     public int stageIdx;
+    public Dictionary<string, bool> gameSettings = new Dictionary<string, bool>()
+    {
+        { "postProcessing", true },
+        { "sound", true }
+    };
 
     [Header("맵 추가시 반드시 바꿔줘야하는 값.각 카테고리마다의 스테이지 수")]
     public int[] categoryCounts; // 맵 추가시 반드시 바꿔줘야하는 값. 각 카테고리마다의 스테이지 수
@@ -35,6 +41,11 @@ public class StageSelector : SingletonBehaviour<StageSelector>
     int maxRow = 8; // y-=155
     private Vector3 generatePoint = new Vector3(-470, -220); // x+=160
     private Vector3 titleGeneratePoint = new Vector3(-770, -220);
+    private List<Image> buttons = new List<Image>();
+
+    [Header("기타 다른 메뉴세팅들")]
+    public GameObject mainScreen;
+    public GameObject optionScreen;
 
     public void GenerateStageUI()
     {
@@ -52,6 +63,7 @@ public class StageSelector : SingletonBehaviour<StageSelector>
             for (int j = 0; j < categoryCounts[i]; j++)
             {
                 var uiInst = Instantiate(buttonUI, scrollTransform);
+                buttons.Add(uiInst.GetComponent<Image>());
                 var uiText = uiInst.GetComponentInChildren<Text>();
                 string uiStage = (i + 1) + "_" + (j + 1);
                 stageIdxs.Add(uiStage);
@@ -103,6 +115,58 @@ public class StageSelector : SingletonBehaviour<StageSelector>
         }
     }
 
+    public void RefreshStageUI()
+    {
+        int isColorSel = 1;
+        for (int i = 0; i < categoryCounts.Length; i++)
+        { 
+            for (int j = 0; j < categoryCounts[i]; j++)
+            {
+                string uiStage = (i + 1) + "_" + (j + 1);
+                int uiIdx = -1;
+                for (int k = 0; k < stageIdxs.Count; k++)
+                {
+                    if (stageIdxs[k] == uiStage)
+                    {
+                        uiIdx = k;
+                        break;
+                    }
+                }
+
+                if (uiIdx >= 0)
+                {
+                    if (playerData.isCleared.ContainsKey(uiStage) && playerData.isCleared[uiStage])
+                    {
+                        if (isColorSel < 0)
+                        {
+                            buttons[uiIdx].sprite = tutorialTrue;
+                            buttons[uiIdx].GetComponentInChildren<Text>().color = tutorialTrueColor;
+                        }
+                        else
+                        {
+                            buttons[uiIdx].sprite = mainTrue;
+                            buttons[uiIdx].GetComponentInChildren<Text>().color = mainTrueColor;
+                        }
+                    }
+                    else
+                    {
+                        if (isColorSel < 0)
+                        {
+                            buttons[uiIdx].sprite = tutorialFalse;
+                            buttons[uiIdx].GetComponentInChildren<Text>().color = tutorialFalseColor;
+                        }
+                        else
+                        {
+                            buttons[uiIdx].sprite = mainFalse;
+                            buttons[uiIdx].GetComponentInChildren<Text>().color = mainFalseColor;
+                        }
+                    }
+                }
+            }
+            isColorSel *= -1;
+        }
+    }
+
     public void StartSelectedStage(string stageStr, string nextStr, int stageIdx)
     {
         selectedStage = stageStr;
@@ -143,14 +207,36 @@ public class StageSelector : SingletonBehaviour<StageSelector>
         }
     }
 
+    public void ResetClearData()
+    {
+        Debug.Log("Reset Clear Data");
+        playerData = new ClearData();
+        SaveClearData();
+        RefreshStageUI();
+    }
+
     public class ClearData
     {
         public Dictionary<string, bool> isCleared = new Dictionary<string, bool>();
     }
 
+    public void ToggleSetting(string key)
+    {
+        if (gameSettings.ContainsKey(key))
+        {
+            gameSettings[key] = !gameSettings[key];
+        }
+        else Debug.LogError("gameSettings have no key with name " + key);
+    }
+
     void Awake()
     {
-        DontDestroyOnLoad(this);
+        if (!inst.isLoaded)
+        {
+            DontDestroyOnLoad(this);
+            isLoaded = true;
+        }
+        else Destroy(gameObject);
         stage = Resources.LoadAll<TextAsset>("Stages");
         LoadClearData();
     }
@@ -160,5 +246,13 @@ public class StageSelector : SingletonBehaviour<StageSelector>
     {
         GenerateStageUI();
         selectedStage = "0_0";
+    }
+
+    void OnEnable()
+    {
+        if (inst.isLoaded)
+        {
+            mainScreen.SetActive(false);
+        }
     }
 }

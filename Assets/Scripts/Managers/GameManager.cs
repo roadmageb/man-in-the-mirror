@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Rendering.PostProcessing;
 
 public class GameManager : SingletonBehaviour<GameManager>
 {
@@ -127,7 +128,8 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     public void BackToStageSelect()
     {
-        Destroy(FindObjectOfType<StageSelector>().gameObject);
+        StageSelector.inst.GetComponent<Canvas>().enabled = true;
+        StageSelector.inst.RefreshStageUI();
         SceneManager.LoadScene("SelectStage");
     }
 
@@ -149,6 +151,12 @@ public class GameManager : SingletonBehaviour<GameManager>
         StartCoroutine(RestartStage());
     }
 
+    void AdjustSettings()
+    {
+        FindObjectOfType<PostProcessVolume>().enabled = StageSelector.inst.gameSettings["postProcessing"];
+        Camera.main.GetComponent<PostProcessLayer>().enabled = StageSelector.inst.gameSettings["postProcessing"];
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -158,6 +166,7 @@ public class GameManager : SingletonBehaviour<GameManager>
             stageStrIdx = StageSelector.selectedStage;
             currentStage = Resources.Load<TextAsset>("Stages/" + "stage" + StageSelector.selectedStage);
             if (MapManager.inst.emptyMap != null) StartStage();
+            AdjustSettings();
             //Destroy(FindObjectOfType<StageSelector>().gameObject);
         }
     }
