@@ -166,7 +166,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
             //Control player only if camera is not zooming in to or out from the current player
             if (!GameManager.inst.isZooming && !GameManager.inst.isBulletFlying)
             {
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && zoomReady == null)
                 {
                     //Move the current player.
                     if (!GameManager.inst.isPlayerMoving && !GameManager.inst.isPlayerShooting)
@@ -180,7 +180,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                                 currentPlayer.ResetCurrentPlayer();
                             currentPlayer = hit.transform.gameObject.GetComponent<Player>();
                             StartCoroutine(currentPlayer.SetCurrentPlayer());
-                            if (zoomReady == null) zoomReady = StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
+                            zoomReady = StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
                             //Debug.Log(hit.collider.gameObject.tag);
                         }
                         else if (Physics.Raycast(mouseRay, out hit, float.MaxValue, layerMask) && hit.collider.gameObject.tag.Equals("floor"))
