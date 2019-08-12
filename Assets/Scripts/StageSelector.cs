@@ -17,7 +17,8 @@ public class StageSelector : SingletonBehaviour<StageSelector>
     public Dictionary<string, bool> gameSettings = new Dictionary<string, bool>()
     {
         { "postProcessing", true },
-        { "sound", true }
+        { "sound", true },
+        { "zoomAnim", true }
     };
 
     [Header("맵 추가시 반드시 바꿔줘야하는 값.각 카테고리마다의 스테이지 수")]

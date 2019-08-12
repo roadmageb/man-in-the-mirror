@@ -91,7 +91,7 @@ public class CameraController : MonoBehaviour
         for (i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) || !StageSelector.inst.gameSettings["zoomAnim"])
                 break;
             transform.position += posDiff;
             transform.eulerAngles += new Vector3(angleDiff, 0, 0);
@@ -140,7 +140,7 @@ public class CameraController : MonoBehaviour
         for (i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) || !StageSelector.inst.gameSettings["zoomAnim"])
                 break;
             transform.position += posDiff;
             transform.eulerAngles += angleDiff;

@@ -17,10 +17,20 @@ public abstract class Bullet : MonoBehaviour
         GameManager.inst.isBulletFlying = false;
     }
 
-    public void Init(Vector3 velocity)
+    IEnumerator ForceInteract(Collider col, float _time)
+    {
+        yield return new WaitForSeconds(_time);
+        OnTriggerEnter(col);
+    }
+
+    public void Init(Vector3 velocity, Collider col)
     {
         GameManager.inst.isBulletFlying = true;
         GetComponent<Rigidbody>().velocity = velocity;
-        Destroy(gameObject, MapManager.inst.currentMap.maxMapSize / velocity.magnitude);
+        float flightTime;
+        if (col != null) flightTime = (col.transform.position - transform.position).magnitude / velocity.magnitude;
+        else flightTime = MapManager.inst.currentMap.maxMapSize / velocity.magnitude;
+        StartCoroutine(ForceInteract(col, flightTime));
+        Destroy(gameObject, flightTime + 0.5f);
     }    
 }

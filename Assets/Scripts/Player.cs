@@ -25,9 +25,10 @@ public class Player : MonoBehaviour
     public VLight aimLight;
 
     public bool canShoot = false;
+    public Collider lastCol = null;
+    private Collider beforeRay = null;
     private GameObject currentBullet;
     private float lastShoot;
-    private Collider beforeRay = null;
 
     /// <summary>
     /// Set this player as the current player.
@@ -153,7 +154,7 @@ public class Player : MonoBehaviour
         Bullet newBullet = MapManager.inst.bulletFactory.MakeBullet(bulletCode);
         newBullet.transform.position = shootingFinger.transform.position;
         newBullet.transform.LookAt(shootingArm.transform.forward + newBullet.transform.position);
-        newBullet.Init(shootingArm.transform.forward * 3);
+        newBullet.Init(shootingArm.transform.forward * 3, lastCol);
         currentBullet = newBullet.gameObject;
         PlayerController.inst.bulletList.RemoveAt(0);
         GameManager.inst.bulletUIGenerator.RemoveBulletUI();
@@ -164,6 +165,7 @@ public class Player : MonoBehaviour
     public void OffAllOutline()
     {
         canShoot = false;
+        if (beforeRay != null) lastCol = beforeRay;
         laser.GetComponent<LineRenderer>().startColor = Color.red;
         laser.GetComponent<LineRenderer>().endColor = Color.red;
         if (beforeRay != null)
