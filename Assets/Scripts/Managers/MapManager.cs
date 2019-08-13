@@ -93,7 +93,10 @@ public class MapManager : SingletonBehaviour<MapManager>
         }
         Camera.main.GetComponent<CameraController>().centerPos =
             new Vector3((float)(currentMap.maxBorder.x + currentMap.minBorder.x) / 2, 0, (float)(currentMap.maxBorder.y + currentMap.minBorder.y) / 2);
-        Debug.Log(new Vector3((float)(currentMap.maxBorder.x + currentMap.minBorder.x) / 2, 0, (float)(currentMap.maxBorder.y + currentMap.minBorder.y) / 2));
+        float fov = (Mathf.Max(currentMap.maxBorder.x - currentMap.minBorder.x, currentMap.maxBorder.y - currentMap.minBorder.y) + 1) + 10;
+        Camera.main.fieldOfView = fov;
+        Camera.main.GetComponent<CameraController>().minFOV = fov * 0.7f;
+        Camera.main.GetComponent<CameraController>().maxFOV = fov * 1.5f;
     }
 
     public IEnumerator Rebaker()
