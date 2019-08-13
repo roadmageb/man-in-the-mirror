@@ -237,6 +237,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     }
                 }
             }
+            if (parRay.Count == 0) break;
         }
         yield return null;
         // copy floors
