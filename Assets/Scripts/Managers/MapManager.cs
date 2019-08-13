@@ -91,6 +91,9 @@ public class MapManager : SingletonBehaviour<MapManager>
             currentMap.comments = loadedMapData.comments;
             GameManager.inst.commentUIGenerator.SetComment(currentMap.comments);
         }
+        Camera.main.GetComponent<CameraController>().centerPos =
+            new Vector3((float)(currentMap.maxBorder.x + currentMap.minBorder.x) / 2, 0, (float)(currentMap.maxBorder.y + currentMap.minBorder.y) / 2);
+        Debug.Log(new Vector3((float)(currentMap.maxBorder.x + currentMap.minBorder.x) / 2, 0, (float)(currentMap.maxBorder.y + currentMap.minBorder.y) / 2));
     }
 
     public IEnumerator Rebaker()

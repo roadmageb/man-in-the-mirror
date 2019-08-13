@@ -19,7 +19,7 @@ public class CameraController : MonoBehaviour
     float sensitivity = 1;
 
     [SerializeField]
-    Vector3 centerPos = new Vector3(0, 0, 0);
+    public Vector3 centerPos = new Vector3(-0.5f, 0, -0.5f);
     Vector3 distance = new Vector3(0, 0, 0);
     /// <summary>
     /// Move camera.
@@ -91,14 +91,14 @@ public class CameraController : MonoBehaviour
         for (i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
-            if (Input.GetMouseButtonDown(0) || !StageSelector.inst.gameSettings["zoomAnim"])
+            if (!StageSelector.inst.gameSettings["zoomAnim"])
                 break;
             transform.position += posDiff;
             transform.eulerAngles += new Vector3(angleDiff, 0, 0);
             Camera.main.fieldOfView = Mathf.Lerp(mapFov, shootingFov, i / cameraMoveDuration);
         }
-        transform.position += posDiff * (cameraMoveDuration - i);
-        transform.eulerAngles += new Vector3(angleDiff * (cameraMoveDuration - i), 0, 0);
+        /*transform.position += posDiff * (cameraMoveDuration - i);
+        transform.eulerAngles += new Vector3(angleDiff * (cameraMoveDuration - i), 0, 0);*/
         Camera.main.fieldOfView = shootingFov;
 
         player.transform.eulerAngles = new Vector3(player.transform.eulerAngles.x, transform.eulerAngles.y, player.transform.eulerAngles.z);
@@ -140,14 +140,14 @@ public class CameraController : MonoBehaviour
         for (i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
-            if (Input.GetMouseButtonDown(0) || !StageSelector.inst.gameSettings["zoomAnim"])
+            if (!StageSelector.inst.gameSettings["zoomAnim"])
                 break;
             transform.position += posDiff;
             transform.eulerAngles += angleDiff;
             Camera.main.fieldOfView = Mathf.Lerp(shootingFov, mapFov, i / cameraMoveDuration);
         }
-        transform.position += posDiff * (cameraMoveDuration - i);
-        transform.eulerAngles += angleDiff * (cameraMoveDuration - i);
+        /*transform.position += posDiff * (cameraMoveDuration - i);
+        transform.eulerAngles += angleDiff * (cameraMoveDuration - i);*/
         Camera.main.fieldOfView = mapFov;
 
         transform.position = previousPos;
