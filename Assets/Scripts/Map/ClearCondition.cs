@@ -28,7 +28,6 @@ public class ClearCondition
             {
                 GameManager.inst.clearCounter--;
                 isDone = true;
-                //Debug.Log(GameManager.inst.clearCounter)
                 if (GameManager.inst.clearCounter == 0)
                     GameManager.inst.StartCoroutine(GameManager.inst.ClearStage());
             }
