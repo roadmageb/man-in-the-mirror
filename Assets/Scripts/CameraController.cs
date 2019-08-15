@@ -13,10 +13,11 @@ public class CameraController : MonoBehaviour
     Vector3 previousPos;
     Vector3 previousAngle;
     float shootingFov = 60f;
-    float mapFov = 20f;
+    float mapFov = 0;
     float rotationX = 0;
     float rotationY = 0;
-    float sensitivity = 1;
+    float sensitivity = 5;
+    public float minFOV, maxFOV;
 
     [SerializeField]
     public Vector3 centerPos = new Vector3(-0.5f, 0, -0.5f);
@@ -71,6 +72,16 @@ public class CameraController : MonoBehaviour
         transform.LookAt(centerPos);
         dragOrigin = Input.mousePosition;
         transform.eulerAngles = new Vector3(30, transform.eulerAngles.y, transform.eulerAngles.z);
+    }
+    /// <summary>
+    /// Zoom in / out camera with mouse scroll.
+    /// </summary>
+    void CameraScroll()
+    {
+        float scroll = Input.GetAxis("Mouse ScrollWheel") * sensitivity;
+        if (Camera.main.fieldOfView >= maxFOV && scroll < 0) Camera.main.fieldOfView = maxFOV;
+        else if (Camera.main.fieldOfView <= minFOV && scroll > 0) Camera.main.fieldOfView = minFOV;
+        else Camera.main.fieldOfView -= scroll;
     }
     /// <summary>
     /// Zoom in at player.
@@ -175,8 +186,10 @@ public class CameraController : MonoBehaviour
         {
             if (!GameManager.inst.isPlayerShooting)
             {
+                mapFov = Camera.main.fieldOfView;
                 CameraMove();
                 CameraDrag();
+                CameraScroll();
             }
             else if (!GameManager.inst.isGameOver)
             {
