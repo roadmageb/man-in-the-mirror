@@ -108,6 +108,7 @@ public class Map : MonoBehaviour
     public void SetGoalFloor(Vector2Int pos)
     {
         GetFloorAtPos(pos).isGoalFloor = true;
+        GetFloorAtPos(pos).RefreshGoal();
         if (GameManager.aFloor >= 0) clearConditions[GameManager.aFloor].IsDone(0, 1);
     }
     /// <summary>
