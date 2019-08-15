@@ -34,8 +34,9 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         //Debug.Log("stPos: " + stPos);
         List<Pair> parRay = new List<Pair>
         {
-            new Pair(0, 1)
+            new Pair(PointToParRay(stPos, ldPos, false), PointToParRay(stPos, rdPos, false))
         };
+        //Debug.Log(parRay[0].l + ", " + parRay[0].r);
 
         int side, i, reflectSide, mapRange;
         bool isSameRSide;
@@ -66,9 +67,10 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         foreach (var wall in MapManager.inst.currentMap.wallGrid)
         {
             float wallPos = (dir ? wall.Key.y : wall.Key.x);
-            if (wall.Value.mapPos != mapPos && (side < 0 ? wallPos < mirrorPos && wallPos > stPosFix : wallPos > mirrorPos && wallPos < stPosFix))
+            if (wall.Key != mapPos && (side < 0 ? wallPos < mirrorPos && wallPos > stPosFix : wallPos > mirrorPos && wallPos < stPosFix))
             {
                 Pair pair = new Pair(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
+                //Debug.Log(wall.Key);
                 if (IsInRay(parRay, pair)) SubtractRay(parRay, pair);
                 yield return null;
             }
@@ -83,6 +85,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         }
 
         // start reflection
+        Debug.Log("Start Reflection");
         Vector2Int frontFloorPos = dir ? 
             new Vector2Int(Mathf.RoundToInt(mapPos.x), Mathf.RoundToInt(mapPos.y + 0.5f * side)) 
             : new Vector2Int(Mathf.RoundToInt(mapPos.x + 0.5f * side), Mathf.RoundToInt(mapPos.y));
@@ -306,22 +309,10 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         foreach (Pair pair in _parRay)
         {
             if (pair.r < _sub.l || pair.l > _sub.r) continue;
-            float[] arr = { pair.l, pair.r, _sub.l, _sub.r };
+            List<float> arr = new List<float>()
+            { pair.l, pair.r, _sub.l, _sub.r };
 
-            for (int i = 0; i < 4; i++) // sort arr
-            {
-                int smallest = i;
-                for (int j = i + 1; j < 4; j++)
-                {
-                    if (arr[smallest] > arr[j])
-                    {
-                        smallest = j;
-                    }
-                }
-                float temp = arr[i];
-                arr[i] = arr[smallest];
-                arr[smallest] = temp;
-            }
+            arr.Sort();
 
             // subtract
             if      (arr[0] == _sub.l && arr[2] == _sub.r)
@@ -336,6 +327,10 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             {
                 toAdd = new Pair(_sub.r, pair.r);
                 pair.r = _sub.l;
+            }
+            else if (arr[0] == _sub.l && arr[3] == _sub.r)
+            {
+                pair.r = pair.l;
             }
         }
         if (toAdd != null) _parRay.Add(toAdd);
@@ -434,15 +429,15 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
     {
         if (dir)
         {
-            float px = (_chPos.x-_stPos.x)*(ldPos.y-_stPos.y)/(_isRefl ? 2*ldPos.y-_chPos.y-_stPos.y : _chPos.y-_stPos.y) + _stPos.x;
+            float px = (_chPos.x - _stPos.x) * (mapPos.y - _stPos.y) / (_isRefl ? 2 * mapPos.y - _chPos.y - _stPos.y : _chPos.y - _stPos.y) + _stPos.x;
             //Debug.Log("chPos: " + _chPos + ", output: " + (px - ldPos.x));
-            return px - ldPos.x;
+            return px;
         }
         else
         {
-            float py = (_chPos.y - _stPos.y) * (ldPos.x - _stPos.x) / (_isRefl ? 2 * ldPos.x - _chPos.x - _stPos.x : _chPos.x - _stPos.x) + _stPos.y;
+            float py = (_chPos.y - _stPos.y) * (mapPos.x - _stPos.x) / (_isRefl ? 2 * mapPos.x - _chPos.x - _stPos.x : _chPos.x - _stPos.x) + _stPos.y;
             //Debug.Log("chPos: " + _chPos + ", output: " + (py - ldPos.y));
-            return py - ldPos.y;
+            return py;
         }
     }
 }
