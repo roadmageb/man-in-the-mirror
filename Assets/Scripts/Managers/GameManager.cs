@@ -94,7 +94,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     public IEnumerator ClearStage()
     {
         yield return new WaitForSeconds(0.1f);
-        if (clearCounter == 0)
+        if (clearCounter == 0 && !isGameOver)
         {
             if (isPlayerShooting) yield return StartCoroutine(Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer));
             yield return null;

@@ -7,11 +7,17 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
 {
     [Space(15)]
     public GameObject scatteredMirror;
+    public bool doReflect = false;
 
     public void Break()
     {
         Instantiate(scatteredMirror, transform.position, transform.rotation);
         MapManager.inst.currentMap.RemoveWall(this.mapPos);
+    }
+
+    public void StartCopy()
+    {
+        StartCoroutine(CopyObjects(PlayerController.inst.currentPlayer));
     }
 
     public void Interact(Bullet bullet)
@@ -20,7 +26,6 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         {
             //Debug.Log("ldPos: " + ldPos + ", rdPos: " + rdPos + ", dir: " + dir);
             // Make reflected objects
-            StartCoroutine(CopyObjects(PlayerController.inst.currentPlayer));
         }
     }
 
@@ -99,6 +104,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         }
         for (; Mathf.Abs(i) < (MapManager.inst.currentMap.maxMapSize + 1); i += side)
         {
+            yield return null;
             bool anotherSide = false;
             for (int j = mapRange; Mathf.Abs(j) <= (MapManager.inst.currentMap.maxMapSize + 1); j += reflectSide)
             {
@@ -119,7 +125,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         floorCountGrid.Add(floorPos, -1);
                     }
                 }
-
+                
                 // check walls and copy
                 Vector2 wallPos = dir ? new Vector2(j + 0.5f * reflectSide, i) : new Vector2(i, j + 0.5f * reflectSide);
                 //Debug.Log(wallPos);
@@ -242,7 +248,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             }
             if (parRay.Count == 0) break;
         }
-        yield return null;
+        yield return new WaitUntil(() => doReflect);
         // copy floors
         foreach (var floorCount in floorCountGrid)
         {

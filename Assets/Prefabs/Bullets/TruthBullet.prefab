@@ -13,9 +13,8 @@ GameObject:
   - component: {fileID: 9013146449102202151}
   - component: {fileID: 2621242702935536648}
   - component: {fileID: 1468768842466997388}
-  - component: {fileID: 2012789303173402189}
   - component: {fileID: -7647737824225647995}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: TruthBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -204,20 +203,6 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
---- !u!136 &2012789303173402189
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7554112578236620015}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.015
-  m_Height: 0.1
-  m_Direction: 2
-  m_Center: {x: 0, y: 0, z: 0.03}
 --- !u!114 &-7647737824225647995
 MonoBehaviour:
   m_ObjectHideFlags: 0
