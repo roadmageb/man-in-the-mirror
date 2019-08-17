@@ -24,6 +24,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
     {
         if (bullet is FakeBullet)
         {
+            doReflect = true;
             //Debug.Log("ldPos: " + ldPos + ", rdPos: " + rdPos + ", dir: " + dir);
             // Make reflected objects
         }
@@ -248,7 +249,9 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             }
             if (parRay.Count == 0) break;
         }
-        yield return new WaitUntil(() => doReflect);
+
+        while (!doReflect) yield return null;
+
         // copy floors
         foreach (var floorCount in floorCountGrid)
         {

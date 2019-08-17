@@ -23,7 +23,6 @@ public abstract class Bullet : MonoBehaviour
         {
             col.GetComponent<Mirror>().StartCopy();
             yield return new WaitForSeconds(_time);
-            col.GetComponent<Mirror>().doReflect = true;
             OnTriggerEnter(col);
         }
         else
