@@ -5,6 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public GameObject helpUI;
+    public GameObject helpUI2;
 
     Vector3 dragOrigin;
     Vector3 moveOrigin;
@@ -94,6 +95,7 @@ public class CameraController : MonoBehaviour
         float startTime = Time.time;
         Vector3 posDiff = (player.head.transform.position - transform.position) / cameraMoveDuration;
         float angleDiff = -30f / cameraMoveDuration;
+        helpUI2.SetActive(false);
         previousPos = transform.position;
         previousAngle = new Vector3(transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x,
             transform.eulerAngles.y > 180 ? transform.eulerAngles.y - 360 : transform.eulerAngles.y,
@@ -167,6 +169,7 @@ public class CameraController : MonoBehaviour
         GameManager.inst.isZooming = false;
 
         // Visible mouse cursor
+        helpUI2.SetActive(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }

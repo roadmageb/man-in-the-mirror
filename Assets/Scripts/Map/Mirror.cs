@@ -92,16 +92,19 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
 
         // start reflection
         Debug.Log("Start Reflection");
-        Vector2Int frontFloorPos = dir ? 
-            new Vector2Int(Mathf.RoundToInt(mapPos.x), Mathf.RoundToInt(mapPos.y + 0.5f * side)) 
-            : new Vector2Int(Mathf.RoundToInt(mapPos.x + 0.5f * side), Mathf.RoundToInt(mapPos.y));
-        if (floorCountGrid.TryGetValue(frontFloorPos, out int frontFloorCount))
+        if (parRay.Count > 0)
         {
-            if (frontFloorCount == 0) floorCountGrid[frontFloorPos]++; // have floor
-        }
-        else // no floor on there
-        {
-            floorCountGrid.Add(frontFloorPos, -1);
+            Vector2Int frontFloorPos = dir ?
+                new Vector2Int(Mathf.RoundToInt(mapPos.x), Mathf.RoundToInt(mapPos.y + 0.5f * side))
+                : new Vector2Int(Mathf.RoundToInt(mapPos.x + 0.5f * side), Mathf.RoundToInt(mapPos.y));
+            if (floorCountGrid.TryGetValue(frontFloorPos, out int frontFloorCount))
+            {
+                if (frontFloorCount == 0) floorCountGrid[frontFloorPos]++; // have floor
+            }
+            else // no floor on there
+            {
+                floorCountGrid.Add(frontFloorPos, -1);
+            }
         }
         for (; Mathf.Abs(i) < (MapManager.inst.currentMap.maxMapSize + 1); i += side)
         {

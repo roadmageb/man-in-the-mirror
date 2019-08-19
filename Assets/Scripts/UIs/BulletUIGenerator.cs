@@ -53,7 +53,7 @@ public class BulletUIGenerator : MonoBehaviour
         case BulletCode.Mirror:
                 bulletUIInst.GetComponent<Image>().sprite = mirrBullet;
                 bulletUIInst.GetComponent<BulletHoverUI>().headerText.text = "거울탄";
-                bulletUIInst.GetComponent<BulletHoverUI>().headerText.color = Color.gray;
+                bulletUIInst.GetComponent<BulletHoverUI>().headerText.color = new Color(0.1f,0.1f,0.1f,1);
                 bulletUIInst.GetComponent<BulletHoverUI>().bodyText.text = "일반 벽을 거울로 만듦\n회색 서류가방에서 제공";
                 break;
         default:

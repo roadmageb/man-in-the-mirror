@@ -101,15 +101,15 @@ public class Player : MonoBehaviour
     /// </summary>
     /// <param name="startTime">Start time of the timer.</param>
     /// <returns></returns>
-    public IEnumerator CountPlayerClick(float startTime)
+    public IEnumerator CountPlayerClick(float startTime, bool direct = false)
     {
         float time = Time.time;
         float doubleClickDelay = 0.2f;
         float endTime = startTime + 1f;
-        bool doubleClicked = false;
+        bool doubleClicked = direct;
         bool isHoldExit = false;
         aimLight.gameObject.SetActive(true);
-        while (time <= endTime)
+        while (time <= endTime && !direct)
         {
             yield return null;
             aimLight.lightMultiplier += 10 * Time.deltaTime;

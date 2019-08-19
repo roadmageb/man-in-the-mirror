@@ -114,8 +114,10 @@ public class GameManager : SingletonBehaviour<GameManager>
     public void GameOver(bool onlyRestart = false)
     {
         if (!onlyRestart) Debug.Log("Game Over!");
-        StageSelector.inst.SaveClearData(stageStrIdx, onlyRestart);
+        StageSelector.inst.SaveClearData(stageStrIdx, false);
         isGameOver = true;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         StopAllCoroutines();
         uiGenerator.ResetAllClearUIs();
         StartCoroutine(RestartStage());

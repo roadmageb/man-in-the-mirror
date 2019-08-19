@@ -11,13 +11,11 @@ public class BulletHoverUI : MonoBehaviour
 
     public void OnMouseEnter()
     {
-        Debug.Log("hello");
         hoverUI.SetActive(true);
     }
 
     public void OnMouseExit()
     {
-        Debug.Log("hello");
         hoverUI.SetActive(false);
     }
 }
