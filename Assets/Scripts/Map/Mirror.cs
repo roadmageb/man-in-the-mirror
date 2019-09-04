@@ -7,6 +7,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
 {
     [Space(15)]
     public GameObject scatteredMirror;
+    public bool doReflect = false;
 
     public void Break()
     {
@@ -14,13 +15,18 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         MapManager.inst.currentMap.RemoveWall(this.mapPos);
     }
 
+    public void StartCopy()
+    {
+        StartCoroutine(CopyObjects(PlayerController.inst.currentPlayer));
+    }
+
     public void Interact(Bullet bullet)
     {
         if (bullet is FakeBullet)
         {
+            doReflect = true;
             //Debug.Log("ldPos: " + ldPos + ", rdPos: " + rdPos + ", dir: " + dir);
             // Make reflected objects
-            StartCoroutine(CopyObjects(PlayerController.inst.currentPlayer));
         }
     }
 
@@ -34,24 +40,31 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         //Debug.Log("stPos: " + stPos);
         List<Pair> parRay = new List<Pair>
         {
-            new Pair(0, 1)
+            new Pair(PointToParRay(stPos, ldPos, false), PointToParRay(stPos, rdPos, false))
         };
+        //Debug.Log(parRay[0].l + ", " + parRay[0].r);
 
-        int side, i, iBack, stCheck;
+        int side, i, reflectSide, mapRange;
+        bool isSameRSide;
         if (dir) // horizontal, parallel with x
         {
             side = (mapPos.y - stPos.y > 0) ? -1 : 1;
+            reflectSide = (mapPos.x - stPos.x > 0) ? 1 : -1;
+            if (isSameRSide = mapPos.x == stPos.x) mapRange = Mathf.RoundToInt(mapPos.x);
+            else mapRange = -reflectSide * (MapManager.inst.currentMap.maxMapSize + 1);
             i = side > 0 ? Mathf.CeilToInt(mapPos.y) : Mathf.FloorToInt(mapPos.y);
-            iBack = side < 0 ? Mathf.CeilToInt(mapPos.y) : Mathf.FloorToInt(mapPos.y);
-            stCheck = (int)stPos.y;
         }
         else // vertical, parallel with y
         {
             side = (mapPos.x - stPos.x > 0) ? -1 : 1;
+            reflectSide = (mapPos.y - stPos.y > 0) ? 1 : -1;
+            if (isSameRSide = mapPos.y == stPos.y) mapRange = Mathf.RoundToInt(mapPos.y);
+            else mapRange = -reflectSide * (MapManager.inst.currentMap.maxMapSize + 1);
             i = side > 0 ? Mathf.CeilToInt(mapPos.x) : Mathf.FloorToInt(mapPos.x);
-            iBack = side < 0 ? Mathf.CeilToInt(mapPos.x) : Mathf.FloorToInt(mapPos.x);
-            stCheck = (int)stPos.x;
         }
+
+        //Debug.Log("side: " + side + ", reflectSide: " + reflectSide + ", i: " + i + ", isSameRSide: " + isSameRSide);
+        //Debug.Log("minRange: " + mapRange);
         yield return null;
 
         // check before reflect (check walls and mirrors)
@@ -60,9 +73,10 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         foreach (var wall in MapManager.inst.currentMap.wallGrid)
         {
             float wallPos = (dir ? wall.Key.y : wall.Key.x);
-            if (wall.Value.mapPos != mapPos && (side < 0 ? wallPos < mirrorPos && wallPos > stPosFix : wallPos > mirrorPos && wallPos < stPosFix))
+            if (wall.Key != mapPos && (side < 0 ? wallPos < mirrorPos && wallPos > stPosFix : wallPos > mirrorPos && wallPos < stPosFix))
             {
                 Pair pair = new Pair(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
+                //Debug.Log(wall.Key);
                 if (IsInRay(parRay, pair)) SubtractRay(parRay, pair);
                 yield return null;
             }
@@ -76,15 +90,49 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             floorCountGrid.Add(floor.Key, 0);
         }
 
-        int minMapRange = -1 * MapManager.inst.currentMap.maxMapSize - 1;
-        int maxMapRange = MapManager.inst.currentMap.maxMapSize + 1;
-
-        for (; Mathf.Abs(i) < maxMapRange; i += side)
+        // start reflection
+        Debug.Log("Start Reflection");
+        if (parRay.Count > 0)
         {
-            // check walls and copy
-            for (float j = minMapRange + 0.5f; j < maxMapRange + 0.5f; j++)
+            Vector2Int frontFloorPos = dir ?
+                new Vector2Int(Mathf.RoundToInt(mapPos.x), Mathf.RoundToInt(mapPos.y + 0.5f * side))
+                : new Vector2Int(Mathf.RoundToInt(mapPos.x + 0.5f * side), Mathf.RoundToInt(mapPos.y));
+            if (floorCountGrid.TryGetValue(frontFloorPos, out int frontFloorCount))
             {
-                Vector2 wallPos = dir ? new Vector2(j, i) : new Vector2(i, j);
+                if (frontFloorCount == 0) floorCountGrid[frontFloorPos]++; // have floor
+            }
+            else // no floor on there
+            {
+                floorCountGrid.Add(frontFloorPos, -1);
+            }
+        }
+        for (; Mathf.Abs(i) < (MapManager.inst.currentMap.maxMapSize + 1); i += side)
+        {
+            yield return null;
+            bool anotherSide = false;
+            for (int j = mapRange; Mathf.Abs(j) <= (MapManager.inst.currentMap.maxMapSize + 1); j += reflectSide)
+            {
+                // check floors
+                Vector2Int floorPos = dir ? new Vector2Int(j, i) : new Vector2Int(i, j);
+                Pair floorPair = new Pair(
+                    PointToParRay(stPos, floorPos + 0.5f * (dir ? new Vector2(reflectSide, -side) : new Vector2(-side, reflectSide)), true),
+                    PointToParRay(stPos, floorPos + 0.5f * (dir ? new Vector2(-reflectSide, side) : new Vector2(side, -reflectSide)), true));
+                if (IsInRay(parRay, floorPair))
+                {
+                    int floorCount;
+                    if (floorCountGrid.TryGetValue(floorPos, out floorCount))
+                    {
+                        if (floorCount == 0) floorCountGrid[floorPos]++; // have floor
+                    }
+                    else // no floor on there
+                    {
+                        floorCountGrid.Add(floorPos, -1);
+                    }
+                }
+                
+                // check walls and copy
+                Vector2 wallPos = dir ? new Vector2(j + 0.5f * reflectSide, i) : new Vector2(i, j + 0.5f * reflectSide);
+                //Debug.Log(wallPos);
                 Vector2 oppoPos = GetOpposite(wallPos);
                 Pair wallPair = dir ?
                     (new Pair(PointToParRay(stPos, wallPos + new Vector2(0, -0.5f), true), PointToParRay(stPos, wallPos + new Vector2(0, 0.5f), true))) :
@@ -102,29 +150,29 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         if (copyWallGrid.ContainsKey(oppoPos)) MapManager.inst.currentMap.RemoveWall(oppoPos);
                     }
                 }
-            }
-            for (int j = minMapRange + 1; j < maxMapRange; j++)
-            {
-                // check floors
-                Vector2Int floorPos = dir ? new Vector2Int(j, i) : new Vector2Int(i, j);
-                if (IsInRay(parRay, PointToParRay(stPos, floorPos, true)))
+
+                if (isSameRSide && Mathf.Abs(j) == (MapManager.inst.currentMap.maxMapSize + 1))
                 {
-                    int floorCount;
-                    if (floorCountGrid.TryGetValue(floorPos, out floorCount))
+                    if (anotherSide)
                     {
-                        if (floorCount == 0) floorCountGrid[floorPos]++; // have floor
+                        reflectSide *= -1;
+                        anotherSide = false;
+                        break;
                     }
-                    else // no floor on there
+                    else
                     {
-                        floorCountGrid.Add(floorPos, -1);
+                        anotherSide = true;
+                        reflectSide *= -1;
+                        j = mapRange - reflectSide;
                     }
                 }
             }
             float iMid = i + 0.5f * side;
             // check walls and copy
-            for (int j = minMapRange; j < maxMapRange; j++)
+            for (int j = mapRange; Mathf.Abs(j) <= (MapManager.inst.currentMap.maxMapSize + 1); j += reflectSide)
             {
                 Vector2 wallPos = dir ? new Vector2(j, iMid) : new Vector2(iMid, j);
+                //Debug.Log(wallPos);
                 Vector2 oppoPos = GetOpposite(wallPos);
                 Pair wallPair = !dir ?
                     (new Pair(PointToParRay(stPos, wallPos + new Vector2(0, -0.5f), true), PointToParRay(stPos, wallPos + new Vector2(0, 0.5f), true))) :
@@ -142,11 +190,27 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         if (copyWallGrid.ContainsKey(oppoPos)) MapManager.inst.currentMap.RemoveWall(oppoPos);
                     }
                 }
+
+                if (isSameRSide && Mathf.Abs(j) == (MapManager.inst.currentMap.maxMapSize + 1))
+                {
+                    if (anotherSide)
+                    {
+                        reflectSide *= -1;
+                        anotherSide = false;
+                        break;
+                    }
+                    else
+                    {
+                        anotherSide = true;
+                        reflectSide *= -1;
+                        j = mapRange - reflectSide;
+                    }
+                }
             }
             // check floors
-            for (int j = minMapRange; j < maxMapRange; j++)
+            for (int j = mapRange; Mathf.Abs(j) <= (MapManager.inst.currentMap.maxMapSize + 1); j += reflectSide)
             {
-                Vector2 crossPoint = dir ? new Vector2(j + 0.5f, iMid) : new Vector2(iMid, j + 0.5f);
+                Vector2 crossPoint = dir ? new Vector2(j + 0.5f * reflectSide, iMid) : new Vector2(iMid, j + 0.5f * reflectSide);
                 if (IsInRayWeak(parRay, PointToParRay(stPos, crossPoint, true)))
                 {
                     Vector2Int[] floorPoses =
@@ -169,9 +233,28 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         }
                     }
                 }
+
+                if (isSameRSide && Mathf.Abs(j) == (MapManager.inst.currentMap.maxMapSize + 1))
+                {
+                    if (anotherSide)
+                    {
+                        reflectSide *= -1;
+                        anotherSide = false;
+                        break;
+                    }
+                    else
+                    {
+                        anotherSide = true;
+                        reflectSide *= -1;
+                        j = mapRange - reflectSide;
+                    }
+                }
             }
+            if (parRay.Count == 0) break;
         }
-        yield return null;
+
+        while (!doReflect) yield return null;
+
         // copy floors
         foreach (var floorCount in floorCountGrid)
         {
@@ -238,22 +321,10 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         foreach (Pair pair in _parRay)
         {
             if (pair.r < _sub.l || pair.l > _sub.r) continue;
-            float[] arr = { pair.l, pair.r, _sub.l, _sub.r };
+            List<float> arr = new List<float>()
+            { pair.l, pair.r, _sub.l, _sub.r };
 
-            for (int i = 0; i < 4; i++) // sort arr
-            {
-                int smallest = i;
-                for (int j = i + 1; j < 4; j++)
-                {
-                    if (arr[smallest] > arr[j])
-                    {
-                        smallest = j;
-                    }
-                }
-                float temp = arr[i];
-                arr[i] = arr[smallest];
-                arr[smallest] = temp;
-            }
+            arr.Sort();
 
             // subtract
             if      (arr[0] == _sub.l && arr[2] == _sub.r)
@@ -268,6 +339,10 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             {
                 toAdd = new Pair(_sub.r, pair.r);
                 pair.r = _sub.l;
+            }
+            else if (arr[0] == _sub.l && arr[3] == _sub.r)
+            {
+                pair.r = pair.l;
             }
         }
         if (toAdd != null) _parRay.Add(toAdd);
@@ -366,15 +441,15 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
     {
         if (dir)
         {
-            float px = (_chPos.x-_stPos.x)*(ldPos.y-_stPos.y)/(_isRefl ? 2*ldPos.y-_chPos.y-_stPos.y : _chPos.y-_stPos.y) + _stPos.x;
+            float px = (_chPos.x - _stPos.x) * (mapPos.y - _stPos.y) / (_isRefl ? 2 * mapPos.y - _chPos.y - _stPos.y : _chPos.y - _stPos.y) + _stPos.x;
             //Debug.Log("chPos: " + _chPos + ", output: " + (px - ldPos.x));
-            return px - ldPos.x;
+            return px;
         }
         else
         {
-            float py = (_chPos.y - _stPos.y) * (ldPos.x - _stPos.x) / (_isRefl ? 2 * ldPos.x - _chPos.x - _stPos.x : _chPos.x - _stPos.x) + _stPos.y;
+            float py = (_chPos.y - _stPos.y) * (mapPos.x - _stPos.x) / (_isRefl ? 2 * mapPos.x - _chPos.x - _stPos.x : _chPos.x - _stPos.x) + _stPos.y;
             //Debug.Log("chPos: " + _chPos + ", output: " + (py - ldPos.y));
-            return py - ldPos.y;
+            return py;
         }
     }
 }

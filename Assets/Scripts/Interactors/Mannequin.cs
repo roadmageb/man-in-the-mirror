@@ -12,6 +12,8 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     [Space(15)]
     public GameObject scatteredWhite;
     public GameObject scatteredBlack;
+    [Space(15)]
+    public MeshRenderer[] downside;
 
     public Color Color {
         get
@@ -26,11 +28,19 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
                 {
                     renderer.material = mannequinMaterial[0];
                 }
+                foreach (var renderer in downside)
+                {
+                    renderer.material = mannequinMaterial[0];
+                }
 				//Change mesh to black mannequin
 			}
 			else if (value == Color.white)
 			{
                 foreach (var renderer in renderers)
+                {
+                    renderer.material = mannequinMaterial[1];
+                }
+                foreach (var renderer in downside)
                 {
                     renderer.material = mannequinMaterial[1];
                 }

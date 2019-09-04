@@ -25,6 +25,8 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 
 	public event Action<Vector2Int> OnPlayerMove;
 
+    public Coroutine zoomReady = null;
+
     public GameObject CreatePlayer(Floor floor)
     {
         foreach (var obj in MapManager.inst.players)
@@ -164,7 +166,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
             //Control player only if camera is not zooming in to or out from the current player
             if (!GameManager.inst.isZooming && !GameManager.inst.isBulletFlying)
             {
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && zoomReady == null)
                 {
                     //Move the current player.
                     if (!GameManager.inst.isPlayerMoving && !GameManager.inst.isPlayerShooting)
@@ -178,7 +180,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                                 currentPlayer.ResetCurrentPlayer();
                             currentPlayer = hit.transform.gameObject.GetComponent<Player>();
                             StartCoroutine(currentPlayer.SetCurrentPlayer());
-                            StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
+                            zoomReady = StartCoroutine(currentPlayer.CountPlayerClick(Time.time));
                             //Debug.Log(hit.collider.gameObject.tag);
                         }
                         else if (Physics.Raycast(mouseRay, out hit, float.MaxValue, layerMask) && hit.collider.gameObject.tag.Equals("floor"))
@@ -195,7 +197,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                     }
                     else if (GameManager.inst.isPlayerShooting && currentPlayer.laser.activeSelf)
                     {
-                        if (bulletList.Count > 0)
+                        if (bulletList.Count > 0 && currentPlayer.canShoot)
                         {
                             currentPlayer.Shoot(bulletList[0]);
                         }
@@ -210,6 +212,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                 else if (Input.GetMouseButtonDown(1) && GameManager.inst.isPlayerShooting)
                 {
                     StartCoroutine(Camera.main.GetComponent<CameraController>().ZoomOutFromPlayer(currentPlayer));
+                    currentPlayer.OffAllOutline();
                     currentPlayer.shootingArm.rotation = currentPlayer.armRotation;
                 }
             }

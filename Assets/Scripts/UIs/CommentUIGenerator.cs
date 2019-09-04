@@ -8,6 +8,7 @@ public class CommentUIGenerator : MonoBehaviour
     public GameObject commentUI;
     public Text comment;
     public string commentString = "";
+    public GameObject descBtn;
 
     public bool isViewed = false;
     private Coroutine currentFadeOut;
@@ -17,13 +18,25 @@ public class CommentUIGenerator : MonoBehaviour
         commentString = commentStr;
         comment.text = commentString;
         commentUI.SetActive(true);
+        descBtn.SetActive(true);
         currentFadeOut = StartCoroutine(FadeOut());
     }
 
     public void ViewComment()
     {
-        StopCoroutine(currentFadeOut);
+        if (!isViewed)
+        {
+            StopCoroutine(currentFadeOut);
+            commentUI.GetComponent<Image>().color = new Color(0.2358491f, 0.2358491f, 0.2358491f, 1);
+            comment.color = new Color(1, 1, 1, 1);
+        }
+        commentUI.SetActive(true);
         isViewed = true;
+    }
+
+    public void HideComment()
+    {
+        commentUI.SetActive(false);
     }
 
     IEnumerator FadeOut()

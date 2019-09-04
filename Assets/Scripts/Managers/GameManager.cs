@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Rendering.PostProcessing;
 
 public class GameManager : SingletonBehaviour<GameManager>
 {
@@ -11,14 +12,17 @@ public class GameManager : SingletonBehaviour<GameManager>
     /// The index of the current stage.
     /// </summary>
     public TextAsset currentStage;
-    public int stageIdx;
+    public string stageStrIdx;
 
     [Header("UIs in Scene")]
     public ClearUIGenerator uiGenerator;
     public BulletUIGenerator bulletUIGenerator;
     public CommentUIGenerator commentUIGenerator;
+    public MenuUIController menuUIController;
     public Image whiteout;
     public GameObject clearUI;
+    public GameObject clearUInextBtn;
+    public GameObject buttonUIs;
 
     [Header("Stage Data")]
     public bool isGameOver = false;
@@ -57,6 +61,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     public void StartStage()
     {
         MapManager.inst.LoadMap(currentStage);
+        menuUIController.titleText.text = "Stage\n" + (stageStrIdx.Replace("_", " - "));
         StartCoroutine(Whiteout(false));
     }
 
@@ -88,23 +93,31 @@ public class GameManager : SingletonBehaviour<GameManager>
     
     public IEnumerator ClearStage()
     {
-        if (isPlayerShooting) Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer);
-        yield return null;
-        clearUI.SetActive(true);
-        Debug.Log("Stage Clear!");
+        yield return new WaitForSeconds(0.1f);
+        if (clearCounter == 0 && !isGameOver)
+        {
+            if (isPlayerShooting) yield return StartCoroutine(Camera.main.gameObject.GetComponent<CameraController>().ZoomOutFromPlayer(PlayerController.inst.currentPlayer));
+            yield return null;
+            clearUI.SetActive(true);
+            if (StageSelector.nextStage.Length < 3) clearUInextBtn.SetActive(false);
+            buttonUIs.SetActive(false);
+            Debug.Log("Stage Clear!");
 
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
 
-        isGameOver = true;
-        StageSelector.inst.SaveClearData(stageIdx, true);
+            isGameOver = true;
+            StageSelector.inst.SaveClearData(stageStrIdx, true);
+        }
     }
 
     public void GameOver(bool onlyRestart = false)
     {
         if (!onlyRestart) Debug.Log("Game Over!");
-        StageSelector.inst.SaveClearData(stageIdx, onlyRestart);
+        StageSelector.inst.SaveClearData(stageStrIdx, false);
         isGameOver = true;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         StopAllCoroutines();
         uiGenerator.ResetAllClearUIs();
         StartCoroutine(RestartStage());
@@ -119,16 +132,33 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     public void BackToStageSelect()
     {
-        Destroy(FindObjectOfType<StageSelector>().gameObject);
+        StageSelector.inst.GetComponent<Canvas>().enabled = true;
+        StageSelector.inst.RefreshStageUI();
         SceneManager.LoadScene("SelectStage");
     }
 
     public void LoadNextStage()
     {
         StageSelector.selectedStage = StageSelector.nextStage;
-        StageSelector.nextStage++;
+        StageSelector.inst.stageIdx++;
+        if (StageSelector.inst.stageIdxs.Count > StageSelector.inst.stageIdx + 1)
+        {
+            var tempNext = StageSelector.inst.stageIdxs[StageSelector.inst.stageIdx + 1];
+            if (tempNext[2] == '1') StageSelector.nextStage = "";
+            else StageSelector.nextStage = tempNext;
+        }
+        else
+        {
+            StageSelector.nextStage = "";
+        }
 
         StartCoroutine(RestartStage());
+    }
+
+    void AdjustSettings()
+    {
+        FindObjectOfType<PostProcessVolume>().enabled = StageSelector.inst.gameSettings["postProcessing"];
+        Camera.main.GetComponent<PostProcessLayer>().enabled = StageSelector.inst.gameSettings["postProcessing"];
     }
 
     // Start is called before the first frame update
@@ -137,9 +167,10 @@ public class GameManager : SingletonBehaviour<GameManager>
         if (!MapManager.inst.isMapEditingOn)
         {
             isGameOver = false;
-            stageIdx = StageSelector.selectedStage + 1;
-            currentStage = Resources.Load<TextAsset>("Stages/" + "stage" + (StageSelector.selectedStage + 1));
+            stageStrIdx = StageSelector.selectedStage;
+            currentStage = Resources.Load<TextAsset>("Stages/" + "stage" + StageSelector.selectedStage);
             if (MapManager.inst.emptyMap != null) StartStage();
+            AdjustSettings();
             //Destroy(FindObjectOfType<StageSelector>().gameObject);
         }
     }

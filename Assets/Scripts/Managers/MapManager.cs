@@ -74,8 +74,8 @@ public class MapManager : SingletonBehaviour<MapManager>
                     currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Mannequin, false);
                     break;
                 case TileMode.goalFloor:
-                    currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)).isGoalFloor = true;
-                    currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)).RefreshGoal();
+                    currentMap.SetGoalFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos));
+                    //currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)).RefreshGoal();
                     break;
                 default:
                     break;
@@ -91,6 +91,12 @@ public class MapManager : SingletonBehaviour<MapManager>
             currentMap.comments = loadedMapData.comments;
             GameManager.inst.commentUIGenerator.SetComment(currentMap.comments);
         }
+        Camera.main.GetComponent<CameraController>().centerPos =
+            new Vector3((float)(currentMap.maxBorder.x + currentMap.minBorder.x) / 2, 0, (float)(currentMap.maxBorder.y + currentMap.minBorder.y) / 2);
+        float fov = (Mathf.Max(currentMap.maxBorder.x - currentMap.minBorder.x, currentMap.maxBorder.y - currentMap.minBorder.y) + 1) + 10;
+        Camera.main.fieldOfView = fov;
+        Camera.main.GetComponent<CameraController>().minFOV = fov * 0.7f;
+        Camera.main.GetComponent<CameraController>().maxFOV = fov * 1.5f;
     }
 
     public IEnumerator Rebaker()

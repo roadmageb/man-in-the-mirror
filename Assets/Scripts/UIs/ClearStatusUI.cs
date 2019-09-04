@@ -50,27 +50,30 @@ public class ClearStatusUI : MonoBehaviour
 
     public void RefreshClearCondition()
     {
-        if (assignedCondition.type == ClearType.AllCase || assignedCondition.type == ClearType.AllFloor || assignedCondition.type == ClearType.AllTurret)
+        if (!GameManager.inst.isGameOver)
         {
-            counterText.text = (assignedCondition.goal - assignedCondition.count).ToString();
-        }
-        else
-        {
-            counterText.text = assignedCondition.count.ToString();
-        }
-        if (assignedCondition.isDone)
-        {
-            condImage.sprite = whenCleared;
-            tooltipText.color = clearColor;
-            checkerText.color = clearColor;
-            counterText.color = clearColor;
-        }
-        else
-        {
-            condImage.sprite = notCleared;
-            tooltipText.color = notClearedTooltipColor;
-            counterText.color = notClearedColor;
-            checkerText.color = notClearedColor;
+            if (assignedCondition.type == ClearType.AllCase || assignedCondition.type == ClearType.AllFloor || assignedCondition.type == ClearType.AllTurret)
+            {
+                counterText.text = (assignedCondition.goal - assignedCondition.count).ToString();
+            }
+            else
+            {
+                counterText.text = assignedCondition.count.ToString();
+            }
+            if (assignedCondition.isDone)
+            {
+                condImage.sprite = whenCleared;
+                tooltipText.color = clearColor;
+                checkerText.color = clearColor;
+                counterText.color = clearColor;
+            }
+            else
+            {
+                condImage.sprite = notCleared;
+                tooltipText.color = notClearedTooltipColor;
+                counterText.color = notClearedColor;
+                checkerText.color = notClearedColor;
+            }
         }
     }
 }

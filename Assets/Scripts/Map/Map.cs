@@ -99,6 +99,18 @@ public class Map : MonoBehaviour
             for (int j = yMin; j <= yMax; j++)
                 CreateFloor(new Vector2Int(i, j));
     }
+
+    /// <summary>
+    /// Create floor in rectangular area between pos1 and pos2. 
+    /// </summary>
+    /// <param name="pos1"></param>
+    /// <param name="pos2"></param>
+    public void SetGoalFloor(Vector2Int pos)
+    {
+        GetFloorAtPos(pos).isGoalFloor = true;
+        GetFloorAtPos(pos).RefreshGoal();
+        if (GameManager.aFloor >= 0) clearConditions[GameManager.aFloor].IsDone(0, 1);
+    }
     /// <summary>
     /// Remove floor at position.
     /// </summary>

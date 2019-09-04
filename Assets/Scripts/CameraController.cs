@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public GameObject helpUI;
+    public GameObject helpUI2;
+
     Vector3 dragOrigin;
     Vector3 moveOrigin;
     public float dragSpeed;
@@ -11,13 +14,14 @@ public class CameraController : MonoBehaviour
     Vector3 previousPos;
     Vector3 previousAngle;
     float shootingFov = 60f;
-    float mapFov = 20f;
+    float mapFov = 0;
     float rotationX = 0;
     float rotationY = 0;
-    float sensitivity = 1;
+    float sensitivity = 5;
+    public float minFOV, maxFOV;
 
     [SerializeField]
-    Vector3 centerPos = new Vector3(0, 0, 0);
+    public Vector3 centerPos = new Vector3(-0.5f, 0, -0.5f);
     Vector3 distance = new Vector3(0, 0, 0);
     /// <summary>
     /// Move camera.
@@ -71,16 +75,27 @@ public class CameraController : MonoBehaviour
         transform.eulerAngles = new Vector3(30, transform.eulerAngles.y, transform.eulerAngles.z);
     }
     /// <summary>
+    /// Zoom in / out camera with mouse scroll.
+    /// </summary>
+    void CameraScroll()
+    {
+        float scroll = Input.GetAxis("Mouse ScrollWheel") * sensitivity;
+        if (Camera.main.fieldOfView >= maxFOV && scroll < 0) Camera.main.fieldOfView = maxFOV;
+        else if (Camera.main.fieldOfView <= minFOV && scroll > 0) Camera.main.fieldOfView = minFOV;
+        else Camera.main.fieldOfView -= scroll;
+    }
+    /// <summary>
     /// Zoom in at player.
     /// </summary>
     /// <param name="player">Player to be zoomed in.</param>
     /// <returns></returns>
     public IEnumerator ZoomInAtPlayer(Player player)
     {
+        GameManager.inst.isZooming = true;
         float startTime = Time.time;
         Vector3 posDiff = (player.head.transform.position - transform.position) / cameraMoveDuration;
         float angleDiff = -30f / cameraMoveDuration;
-        GameManager.inst.isZooming = true;
+        helpUI2.SetActive(false);
         previousPos = transform.position;
         previousAngle = new Vector3(transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x,
             transform.eulerAngles.y > 180 ? transform.eulerAngles.y - 360 : transform.eulerAngles.y,
@@ -89,14 +104,14 @@ public class CameraController : MonoBehaviour
         for (i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
-            if (Input.GetMouseButtonDown(0))
+            if (!StageSelector.inst.gameSettings["zoomAnim"])
                 break;
             transform.position += posDiff;
             transform.eulerAngles += new Vector3(angleDiff, 0, 0);
             Camera.main.fieldOfView = Mathf.Lerp(mapFov, shootingFov, i / cameraMoveDuration);
         }
-        transform.position += posDiff * (cameraMoveDuration - i);
-        transform.eulerAngles += new Vector3(angleDiff * (cameraMoveDuration - i), 0, 0);
+        /*transform.position += posDiff * (cameraMoveDuration - i);
+        transform.eulerAngles += new Vector3(angleDiff * (cameraMoveDuration - i), 0, 0);*/
         Camera.main.fieldOfView = shootingFov;
 
         player.transform.eulerAngles = new Vector3(player.transform.eulerAngles.x, transform.eulerAngles.y, player.transform.eulerAngles.z);
@@ -109,6 +124,7 @@ public class CameraController : MonoBehaviour
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Head");
 
         // Invisible mouse cursor
+        helpUI.SetActive(true);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -118,10 +134,11 @@ public class CameraController : MonoBehaviour
     /// <returns></returns>
     public IEnumerator ZoomOutFromPlayer(Player player)
     {
+        GameManager.inst.isZooming = true;
         float startTime = Time.time;
         Vector3 posDiff = (previousPos - transform.position) / cameraMoveDuration;
         player.laser.SetActive(false);
-        GameManager.inst.isZooming = true;
+        helpUI.SetActive(false);
         player.anim.SetBool("isShooting", false);
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Player");
         player.head.SetActive(true);
@@ -136,14 +153,14 @@ public class CameraController : MonoBehaviour
         for (i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
-            if (Input.GetMouseButtonDown(0))
+            if (!StageSelector.inst.gameSettings["zoomAnim"])
                 break;
             transform.position += posDiff;
             transform.eulerAngles += angleDiff;
             Camera.main.fieldOfView = Mathf.Lerp(shootingFov, mapFov, i / cameraMoveDuration);
         }
-        transform.position += posDiff * (cameraMoveDuration - i);
-        transform.eulerAngles += angleDiff * (cameraMoveDuration - i);
+        /*transform.position += posDiff * (cameraMoveDuration - i);
+        transform.eulerAngles += angleDiff * (cameraMoveDuration - i);*/
         Camera.main.fieldOfView = mapFov;
 
         transform.position = previousPos;
@@ -152,6 +169,7 @@ public class CameraController : MonoBehaviour
         GameManager.inst.isZooming = false;
 
         // Visible mouse cursor
+        helpUI2.SetActive(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
@@ -171,10 +189,12 @@ public class CameraController : MonoBehaviour
         {
             if (!GameManager.inst.isPlayerShooting)
             {
+                mapFov = Camera.main.fieldOfView;
                 CameraMove();
                 CameraDrag();
+                CameraScroll();
             }
-            else
+            else if (!GameManager.inst.isGameOver)
             {
                 float mouseMoveValueX = Input.GetAxis("Mouse X");
                 float mouseMoveValueY = Input.GetAxis("Mouse Y");
