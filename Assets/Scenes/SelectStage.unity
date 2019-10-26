@@ -487,6 +487,11 @@ PrefabInstance:
       propertyPath: categoryCounts.Array.data[1]
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 5996849666618765155, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
+        type: 3}
+      propertyPath: categoryCounts.Array.data[0]
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 5087174722634247129, guid: 8115fd4d1a1025b4fb05e45fc5fa6578,
         type: 3}
       propertyPath: m_AnchorMax.x

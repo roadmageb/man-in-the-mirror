@@ -53,7 +53,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     TileMode currentMode;
     BulletCode bulletMode;
     public Text modeSign;
-    public GameObject startSign, goalSign, mapSizeSetter, mapEditorTiles;
+    public GameObject startSign, goalSign, mapSizeSetter, loadMapSelector, mapEditorTiles;
     public Dictionary<Floor, GameObject> startSigns, goalSigns;
 
     public Material editNormalMat;
@@ -71,8 +71,9 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     /// Saves map to Assets folder.
     /// </summary>
     /// <param name="_newMap"></param>
-    public void SaveMap(Map _newMap)
+    public void SaveMap()
     {
+        Map _newMap = currentMap;
         /* 맵 저장 시 반드시 승리 조건 작성할 것
          * 목표가 '모든'일 경우 승리 목표는 초기 맵 기준으로 작성
          */
@@ -126,13 +127,79 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                 mapSaveData.AddClears(currentMap.clearConditions[i].type, currentMap.clearConditions[i].goal);
             for (int i = 0; i < currentMap.initialBullets.Count; i++)
                 mapSaveData.bullets.Add(currentMap.initialBullets[i]);
+
+            mapSaveData.comments = currentMap.comments;
             File.WriteAllText(localPath, JsonConvert.SerializeObject(mapSaveData));
             Debug.Log("Map saved at " + localPath);}
     }
-    public void SaveCurrentMap()
+
+    public void LoadMap()
     {
-        SaveMap(currentMap);
+        loadMapSelector.SetActive(false);
+        var x = loadMapSelector.transform.Find("x").GetComponent<InputField>();
+        var y = loadMapSelector.transform.Find("y").GetComponent<InputField>();
+        TextAsset _newMap = Resources.Load("Stages/stage" + x.text + "_" + y.text) as TextAsset;
+        if(_newMap != null)
+        {
+            var loadedMapData = JsonConvert.DeserializeObject<MapEditor.MapSaveData>(_newMap.ToString());
+
+            InputField xInput = mapSizeSetter.transform.Find("x").GetComponent<InputField>();
+            InputField yInput = mapSizeSetter.transform.Find("y").GetComponent<InputField>();
+            xInput.text = loadedMapData.objects[0].xPos.ToString();
+            yInput.text = loadedMapData.objects[0].xPos.ToString();
+            SetMapSize();
+
+            for (int i = 0; i < loadedMapData.clears.Count; i++)
+            {
+                var temp = loadedMapData.clears[i];
+                currentMap.clearConditions.Add(new ClearCondition(temp.type, temp.goal));
+            }
+            int casesIndex = 0;
+            for (int i = 1; i < loadedMapData.objects.Count; i++)
+            {
+                var temp = loadedMapData.objects[i];
+                switch (temp.tag)
+                {
+                    case TileMode.Floor:
+                        currentMap.CreateFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos));
+                        break;
+                    case TileMode.Normal:
+                        currentMap.CreateWall(new Vector2(temp.xPos, temp.yPos), WallType.Normal);
+                        break;
+                    case TileMode.Mirror:
+                        currentMap.CreateWall(new Vector2(temp.xPos, temp.yPos), WallType.Mirror);
+                        break;
+                    case TileMode.StartFloor:
+                        currentMap.startFloors.Add(currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)));
+                        startSigns.Add(currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)), Instantiate(startSign));
+                        startSigns[currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos))].transform.position = new Vector3(temp.xPos, 2, temp.yPos);
+                        break;
+                    case TileMode.Briefcase:
+                        currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, loadedMapData.cases[casesIndex++]);
+                        break;
+                    case TileMode.Camera:
+                        currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Camera);
+                        break;
+                    case TileMode.WMannequin:
+                        currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Mannequin, true);
+                        break;
+                    case TileMode.BMannequin:
+                        currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Mannequin, false);
+                        break;
+                    case TileMode.goalFloor:
+                        currentMap.SetGoalFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos));
+                        goalSigns.Add(currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)), Instantiate(goalSign));
+                        goalSigns[currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos))].transform.position = new Vector3(temp.xPos, 2, temp.yPos);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            for (int i = 0; i < loadedMapData.bullets.Count; i++) currentMap.initialBullets.Add(loadedMapData.bullets[i]);
+            if (loadedMapData.comments != null) currentMap.comments = loadedMapData.comments;
+        }
     }
+
     public void SetMapSize()
     {
         InputField xInput = mapSizeSetter.transform.Find("x").GetComponent<InputField>();
@@ -181,7 +248,6 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public void AddBulletToPlayer(int bulletMode)
     {
         currentMap.initialBullets.Add((BulletCode)bulletMode);
-        //PlayerController.inst.bulletList.Add((BulletCode)bulletMode);
     }
 
     private void Awake()
@@ -205,7 +271,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     // Update is called once per frame
     void Update()
     {
-        if (isEditorStarted && Input.GetMouseButtonDown(0))
+        if (isEditorStarted && Input.GetMouseButtonDown(0) && Input.mousePosition.x > 250 && Input.mousePosition.x < 1550)
         {
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -271,8 +337,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         else
                         {
                             currentMap.GetFloorAtPos(clickedPos).isGoalFloor = true;
-                            goalSigns.Add(currentMap.GetFloorAtPos(clickedPos), 
-                                Instantiate(goalSign));
+                            goalSigns.Add(currentMap.GetFloorAtPos(clickedPos), Instantiate(goalSign));
                             goalSigns[currentMap.GetFloorAtPos(clickedPos)].transform.position = new Vector3(clickedPos.x, 2, clickedPos.y);
                         }
                     }
