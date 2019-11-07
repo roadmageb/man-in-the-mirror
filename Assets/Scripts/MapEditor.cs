@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class MapEditor : SingletonBehaviour<MapEditor>
 {
@@ -53,13 +54,15 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     TileMode currentMode;
     BulletCode bulletMode;
     public Text modeSign;
-    public GameObject startSign, goalSign, mapSizeSetter, loadMapSelector, mapEditorTiles;
+    public GameObject startSign, goalSign, mapSizeSetter, saveMapSelector, loadMapSelector, mapEditorTiles;
     public Dictionary<Floor, GameObject> startSigns, goalSigns;
 
     public Material editNormalMat;
     
-    bool isEditorStarted;
+    public bool isEditorStarted;
     bool isCreateMode;
+
+    public string mapName;
 
     public void StartMap(Map _newMap)
     {
@@ -73,13 +76,18 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     /// <param name="_newMap"></param>
     public void SaveMap()
     {
+        saveMapSelector.SetActive(false);
         Map _newMap = currentMap;
         /* 맵 저장 시 반드시 승리 조건 작성할 것
          * 목표가 '모든'일 경우 승리 목표는 초기 맵 기준으로 작성
          */
-        System.DateTime time = System.DateTime.Now;
-        string localPath = "Assets/" + time.ToShortDateString() + "-" + time.Hour + "-" + time.Minute + "-" + time.Second + ".json";
-        if(currentMap.startFloors.Count == 0)
+        var x = saveMapSelector.transform.Find("x").GetComponent<InputField>();
+        var y = saveMapSelector.transform.Find("y").GetComponent<InputField>();
+        mapName = x.text + "_" + y.text;
+        //System.DateTime time = System.DateTime.Now;
+        //string localPath = "Assets/" + time.ToShortDateString() + "-" + time.Hour + "-" + time.Minute + "-" + time.Second + ".json";
+        string localPath = "Assets/Resources/Stages/stage" + mapName + ".json";
+        if (currentMap.startFloors.Count == 0)
             Debug.Log("There is no start floor.");
         else
         {
@@ -129,6 +137,9 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                 mapSaveData.bullets.Add(currentMap.initialBullets[i]);
 
             mapSaveData.comments = currentMap.comments;
+
+            if(File.Exists(localPath)) File.Delete(localPath);
+
             File.WriteAllText(localPath, JsonConvert.SerializeObject(mapSaveData));
             Debug.Log("Map saved at " + localPath);}
     }
@@ -138,7 +149,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         loadMapSelector.SetActive(false);
         var x = loadMapSelector.transform.Find("x").GetComponent<InputField>();
         var y = loadMapSelector.transform.Find("y").GetComponent<InputField>();
-        TextAsset _newMap = Resources.Load("Stages/stage" + x.text + "_" + y.text) as TextAsset;
+        mapName = x.text + "_" + y.text;
+        TextAsset _newMap = Resources.Load("Stages/stage" + mapName) as TextAsset;
         if(_newMap != null)
         {
             var loadedMapData = JsonConvert.DeserializeObject<MapEditor.MapSaveData>(_newMap.ToString());
@@ -220,6 +232,22 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public void ResizeMap()
     {
         mapSizeSetter.SetActive(true);
+        saveMapSelector.SetActive(false);
+        loadMapSelector.SetActive(false);
+        isEditorStarted = false;
+    }
+    public void LoadMapButton()
+    {
+        mapSizeSetter.SetActive(false);
+        saveMapSelector.SetActive(false);
+        loadMapSelector.SetActive(true);
+        isEditorStarted = false;
+    }
+    public void SaveMapButton()
+    {
+        mapSizeSetter.SetActive(false);
+        saveMapSelector.SetActive(true);
+        loadMapSelector.SetActive(false);
         isEditorStarted = false;
     }
     public void SwitchMode(int _tileMode)
@@ -247,7 +275,21 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     }
     public void AddBulletToPlayer(int bulletMode)
     {
-        currentMap.initialBullets.Add((BulletCode)bulletMode);
+        if (bulletMode < 0) currentMap.initialBullets.Clear();
+        else currentMap.initialBullets.Add((BulletCode)bulletMode);
+    }
+
+    public void TestMapStart()
+    {
+        if(mapName != "")
+        {
+            StageSelector.selectedStage = mapName;
+            SceneManager.LoadScene("PlayStage");
+        }
+        else
+        {
+            Debug.Log("Save Your Map!");
+        }
     }
 
     private void Awake()
