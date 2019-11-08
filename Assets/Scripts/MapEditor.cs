@@ -8,45 +8,45 @@ using UnityEngine.SceneManagement;
 
 public class MapEditor : SingletonBehaviour<MapEditor>
 {
-    public class objectData
+    public class ObjectData
     {
         public TileMode tag;
         public float xPos, yPos;
-        public objectData(TileMode _tag, Vector2 _pos)
+        public ObjectData(TileMode _tag, Vector2 _pos)
         {
             tag = _tag; xPos = _pos.x; yPos = _pos.y;
         }
     }
-    public class clearData
+    public class ClearData
     {
         public ClearType type;
         public int goal;
-        public clearData(ClearType _type, int _goal)
+        public ClearData(ClearType _type, int _goal)
         {
             type = _type; goal = _goal;
         }
     }
     public class MapSaveData
     {
-        public List<objectData> objects;
-        public List<clearData> clears;
+        public List<ObjectData> objects;
+        public List<ClearData> clears;
         public List<BulletCode> cases;
         public List<BulletCode> bullets;
         public string comments = null;
         public MapSaveData()
         {
-            objects = new List<objectData>();
-            clears = new List<clearData>();
+            objects = new List<ObjectData>();
+            clears = new List<ClearData>();
             cases = new List<BulletCode>();
             bullets = new List<BulletCode>();
         }
         public void AddObject(TileMode _tag, Vector2 _pos)
         {
-            objects.Add(new objectData(_tag, _pos));
+            objects.Add(new ObjectData(_tag, _pos));
         }
         public void AddClears(ClearType _type, int _goal)
         {
-            clears.Add(new clearData(_type, _goal));
+            clears.Add(new ClearData(_type, _goal));
         }
     }
     public Map currentMap;
@@ -55,6 +55,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     BulletCode bulletMode;
     public Text modeSign;
     public GameObject startSign, goalSign, mapSizeSetter, saveMapSelector, loadMapSelector, mapEditorTiles;
+    public Dropdown goalDropdown;
+    public InputField goalInputField;
     public Dictionary<Floor, GameObject> startSigns, goalSigns;
 
     public Material editNormalMat;
@@ -292,6 +294,21 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         }
     }
 
+    public void AddClearCondition()
+    {
+        ClearType c = (ClearType)System.Enum.Parse(typeof(ClearType), goalDropdown.options[goalDropdown.value].text);
+        int n = int.Parse(goalInputField.text);
+        if(n >= 0)
+        {
+            currentMap.clearConditions.Add(new ClearCondition(c, n));
+        }
+    }
+
+    public void ClearClearCondition()
+    {
+        currentMap.clearConditions.Clear();
+    }
+
     private void Awake()
     {
         MapManager.inst.isMapEditingOn = true;
@@ -308,6 +325,12 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         StartMap(currentMap);
         SwitchMode(0);
         SwitchBulletMode((int)BulletCode.None);
+        goalDropdown.options.Clear();
+        foreach(ClearType c in (ClearType[])System.Enum.GetValues(typeof(ClearType)))
+        {
+            goalDropdown.options.Add(new Dropdown.OptionData(c.ToString()));
+        }
+        goalDropdown.value = 0;
     }
 
     // Update is called once per frame
