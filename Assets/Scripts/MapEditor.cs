@@ -140,7 +140,11 @@ public class MapEditor : SingletonBehaviour<MapEditor>
 
             mapSaveData.comments = currentMap.comments;
 
-            if(File.Exists(localPath)) File.Delete(localPath);
+            if (File.Exists(localPath))
+            {
+                Debug.Log("File Exists");
+                File.Delete(localPath);
+            }
 
             File.WriteAllText(localPath, JsonConvert.SerializeObject(mapSaveData));
             Debug.Log("Map saved at " + localPath);}
@@ -179,6 +183,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         break;
                     case TileMode.Normal:
                         currentMap.CreateWall(new Vector2(temp.xPos, temp.yPos), WallType.Normal);
+                        if (currentMap.GetWallAtPos(new Vector2(temp.xPos, temp.yPos)) != null && currentMap.GetWallAtPos(new Vector2(temp.xPos, temp.yPos)).GetComponent<Wall>() is NormalWall)
+                            currentMap.GetWallAtPos(new Vector2(temp.xPos, temp.yPos)).gameObject.GetComponent<MeshRenderer>().material = editNormalMat;
                         break;
                     case TileMode.Mirror:
                         currentMap.CreateWall(new Vector2(temp.xPos, temp.yPos), WallType.Mirror);
@@ -211,6 +217,9 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             }
             for (int i = 0; i < loadedMapData.bullets.Count; i++) currentMap.initialBullets.Add(loadedMapData.bullets[i]);
             if (loadedMapData.comments != null) currentMap.comments = loadedMapData.comments;
+            xInput.text = (currentMap.maxBorder.x - currentMap.minBorder.x + 1).ToString();
+            yInput.text = (currentMap.maxBorder.y - currentMap.minBorder.y + 1).ToString();
+            SetMapSize();
         }
     }
 
@@ -336,31 +345,38 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     // Update is called once per frame
     void Update()
     {
-        if (isEditorStarted && Input.GetMouseButtonDown(0) && Input.mousePosition.x > 250 && Input.mousePosition.x < 1550)
+        if (isEditorStarted && Input.GetMouseButton(0) && Input.mousePosition.x > 250 && Input.mousePosition.x < 1550)
         {
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
+            bool isWall = false;
             if (Physics.Raycast(mouseRay, out hit))
             {
                 Debug.Log(hit.transform.position);
                 Vector2Int clickedPos = Vector2Int.zero;
                 Vector2 wallPos = Vector2.zero;
                 if (hit.transform.tag == "wallSign")
+                {
                     wallPos = new Vector2(hit.transform.position.x, hit.transform.position.z);
+                    isWall = true;
+                }
                 else
+                {
                     clickedPos = new Vector2Int((int)hit.transform.position.x, (int)hit.transform.position.z);
-                if(currentMode == TileMode.Floor)
+                    isWall = false;
+                }
+            
+                if(currentMode == TileMode.Floor && !isWall)
                 {
                     if (isCreateMode)
                         currentMap.CreateFloor(clickedPos);
                     else
                         currentMap.RemoveFloor(clickedPos);
                 }
-                else if(currentMode == TileMode.Normal || currentMode == TileMode.Mirror)
+                else if(currentMode == TileMode.Normal || currentMode == TileMode.Mirror && isWall)
                 {
                     if (isCreateMode)
                     {
-                        Debug.Log(wallPos);
                         currentMap.CreateWall(wallPos, (WallType)((int)currentMode - 1));
                         if (currentMap.GetWallAtPos(wallPos) != null && currentMap.GetWallAtPos(wallPos).GetComponent<Wall>() is NormalWall)
                             currentMap.GetWallAtPos(wallPos).gameObject.GetComponent<MeshRenderer>().material = editNormalMat;
@@ -368,7 +384,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                     else
                         currentMap.RemoveWall(wallPos);
                 }
-                else if(currentMode == TileMode.StartFloor)
+                else if(currentMode == TileMode.StartFloor && !isWall)
                 {
                     if (isCreateMode)
                     {
@@ -393,7 +409,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         }
                     }
                 }
-                else if(currentMode == TileMode.goalFloor)
+                else if(currentMode == TileMode.goalFloor && isWall)
                 {
                     if (isCreateMode)
                     {
@@ -418,7 +434,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         }
                     }
                 }
-                else if((int)currentMode >= 5 && (int)currentMode <= 8)
+                else if((int)currentMode >= 5 && (int)currentMode <= 8 && isWall)
                 {
                     if (isCreateMode)
                     {
