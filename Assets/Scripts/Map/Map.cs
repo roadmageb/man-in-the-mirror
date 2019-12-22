@@ -328,16 +328,4 @@ public class Map : MonoBehaviour
         objectGrid = new Dictionary<Vector2Int, IObject>();
         startFloors = new List<Floor>();
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
