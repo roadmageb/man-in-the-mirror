@@ -42,7 +42,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         {
             new Pair(PointToParRay(stPos, ldPos, false), PointToParRay(stPos, rdPos, false))
         };
-        //Debug.Log(parRay[0].l + ", " + parRay[0].r);
+        Debug.Log(parRay[0].l + ", " + parRay[0].r);
 
         int side, i, reflectSide, mapRange;
         bool isSameRSide;
@@ -266,33 +266,45 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 MapManager.inst.currentMap.CreateFloor(oppoPos, originFloor.isGoalFloor);
                 if (oppoFloor != null)
                 {
+                    // 이부분에서 안보이면 중력을 작용하게 하고, 보이면 보이는대로를 따른다.
                     if (oppoFloor.isPlayerOn) PlayerController.inst.RemovePlayer(oppoFloor);
                     if (oppoFloor.objOnFloor != null) MapManager.inst.currentMap.RemoveObject(oppoPos);
                 }
-                if (originFloor.isPlayerOn) PlayerController.inst.CreatePlayer(oppoPos, floorCount.Key, dir);
+                if (originFloor.isPlayerOn) PlayerController.inst.CreatePlayer(oppoPos, floorCount.Key, dir); // player의 radius 체크해야됨.
                 else if (originFloor.objOnFloor != null)
                 {
                     IObject obj = originFloor.objOnFloor;
-                    switch (obj.GetType())
+                    bool isObjVisible = false;
+                    for (int r = 0; r < parRay.Count; ++r)
                     {
-                        case ObjType.Mannequin:
-                            MapManager.inst.currentMap.CreateObject(oppoPos, ObjType.Mannequin, (obj as Mannequin).isWhite);
-                            GameObject tempMann = MapManager.inst.currentMap.GetObjectAtPos(floorCount.Key).GetObject();
-                            GameObject oppoMann = MapManager.inst.currentMap.GetObjectAtPos(oppoPos).GetObject();
-                            Quaternion mirroredRotation = tempMann.transform.rotation;
-                            Vector3 mirroredScale = tempMann.transform.localScale;
-                            mirroredRotation.w *= -1;
-                            if (dir) { mirroredRotation.z *= -1; mirroredScale.z *= -1; }
-                            else { mirroredRotation.x *= -1; mirroredScale.x *= -1; }
-                            oppoMann.transform.rotation = mirroredRotation;
-                            oppoMann.transform.localScale = mirroredScale;
-                            break;
-                        case ObjType.Briefcase:
-                            MapManager.inst.currentMap.CreateObject(oppoPos, ObjType.Briefcase, (obj as Briefcase).dropBullet);
-                            break;
-                        default:
-                            MapManager.inst.currentMap.CreateObject(oppoPos, obj.GetType());
-                            break;
+                        float radSq = obj.GetRadius() * obj.GetRadius();
+                        Debug.Log("radSquare: " + radSq);
+                        if      (radSq > PointToRayDistanceSquare(obj.GetPos(), stPos, parRay[r].l)) isObjVisible = true;
+                        else if (radSq > PointToRayDistanceSquare(obj.GetPos(), stPos, parRay[r].r)) isObjVisible = true;
+                    }
+                    if (isObjVisible)
+                    {
+                        switch (obj.GetType())
+                        {
+                            case ObjType.Mannequin:
+                                MapManager.inst.currentMap.CreateObject(oppoPos, ObjType.Mannequin, (obj as Mannequin).isWhite);
+                                GameObject tempMann = MapManager.inst.currentMap.GetObjectAtPos(floorCount.Key).GetObject();
+                                GameObject oppoMann = MapManager.inst.currentMap.GetObjectAtPos(oppoPos).GetObject();
+                                Quaternion mirroredRotation = tempMann.transform.rotation;
+                                Vector3 mirroredScale = tempMann.transform.localScale;
+                                mirroredRotation.w *= -1;
+                                if (dir) { mirroredRotation.z *= -1; mirroredScale.z *= -1; }
+                                else { mirroredRotation.x *= -1; mirroredScale.x *= -1; }
+                                oppoMann.transform.rotation = mirroredRotation;
+                                oppoMann.transform.localScale = mirroredScale;
+                                break;
+                            case ObjType.Briefcase:
+                                MapManager.inst.currentMap.CreateObject(oppoPos, ObjType.Briefcase, (obj as Briefcase).dropBullet);
+                                break;
+                            default:
+                                MapManager.inst.currentMap.CreateObject(oppoPos, obj.GetType());
+                                break;
+                        }
                     }
                 }
             }
@@ -451,5 +463,18 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             //Debug.Log("chPos: " + _chPos + ", output: " + (py - ldPos.y));
             return py;
         }
+    }
+
+    float PointToRayDistanceSquare(Vector2Int point, Vector2 stPos, float ray)
+    {
+        point = GetOpposite(point);
+        Vector2 realPos = dir ? mapPos + new Vector2(ray, 0) : mapPos + new Vector2(0, ray);
+        // ax + by + c = 0
+        float a = realPos.x - stPos.x;
+        float b = stPos.y - realPos.y;
+        float c = (stPos.x - realPos.x) * stPos.y + (realPos.y - stPos.y) * stPos.x;
+        float distSq = (a * point.x + b * point.y + c) * (a * point.x + b * point.y + c) / (a * a + b * b);
+        Debug.Log("point: " + point + ", ray: " + ray + ", distSq: " + distSq);
+        return distSq;
     }
 }
