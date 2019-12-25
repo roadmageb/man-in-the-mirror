@@ -61,6 +61,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -132,6 +133,7 @@ MonoBehaviour:
   type: 2
   scatteredMirror: {fileID: 5067960725721402673, guid: 05802e44cda3ff549a5ed7f4291ea9b8,
     type: 3}
+  doReflect: 0
 --- !u!114 &8506389964569478669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,6 +204,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -233,15 +236,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1244481854748242454}
     m_Modifications:
-    - target: {fileID: 5956712601806148718, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+    - target: {fileID: 5956712601794644638, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
-      propertyPath: m_Name
-      value: Mirror
+      propertyPath: TextureSize
+      value: 768
       objectReference: {fileID: 0}
-    - target: {fileID: 5956712601806148718, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+    - target: {fileID: 5956712601794644638, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
-      propertyPath: m_Layer
-      value: 11
+      propertyPath: ReflectLayers.m_Bits
+      value: 30519
+      objectReference: {fileID: 0}
+    - target: {fileID: 5956712601804180398, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 5431
       objectReference: {fileID: 0}
     - target: {fileID: 5956712601805655926, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
@@ -308,20 +316,25 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.9
       objectReference: {fileID: 0}
-    - target: {fileID: 5956712601794644638, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+    - target: {fileID: 5956712601806075721, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
-      propertyPath: TextureSize
-      value: 768
+      propertyPath: mirrorCam
+      value: 
+      objectReference: {fileID: 5893704869078394710}
+    - target: {fileID: 5956712601806075721, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+        type: 3}
+      propertyPath: mirrorRef
+      value: 
+      objectReference: {fileID: 5893704869078369918}
+    - target: {fileID: 5956712601806148718, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+        type: 3}
+      propertyPath: m_Name
+      value: Mirror
       objectReference: {fileID: 0}
-    - target: {fileID: 5956712601794644638, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+    - target: {fileID: 5956712601806148718, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
-      propertyPath: ReflectLayers.m_Bits
-      value: 30519
-      objectReference: {fileID: 0}
-    - target: {fileID: 5956712601804180398, guid: 6cee9ce2ee605c54c957dc68c69cea90,
-        type: 3}
-      propertyPath: m_CullingMask.m_Bits
-      value: 5431
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 5956712601806149758, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
@@ -341,6 +354,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 243436096608247296}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5893704869078394710 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5956712601806174550, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+    type: 3}
+  m_PrefabInstance: {fileID: 243436096608247296}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5893704869078369918 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5956712601806149758, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+    type: 3}
+  m_PrefabInstance: {fileID: 243436096608247296}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2905396486803718915
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -348,15 +373,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1244481854748242454}
     m_Modifications:
-    - target: {fileID: 5956712601806148718, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+    - target: {fileID: 5956712601794644638, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
-      propertyPath: m_Name
-      value: Mirror (1)
+      propertyPath: TextureSize
+      value: 768
       objectReference: {fileID: 0}
-    - target: {fileID: 5956712601806148718, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+    - target: {fileID: 5956712601794644638, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
-      propertyPath: m_Layer
-      value: 11
+      propertyPath: ReflectLayers.m_Bits
+      value: 30519
+      objectReference: {fileID: 0}
+    - target: {fileID: 5956712601804180398, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 5431
       objectReference: {fileID: 0}
     - target: {fileID: 5956712601805655926, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
@@ -423,20 +453,25 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.9
       objectReference: {fileID: 0}
-    - target: {fileID: 5956712601794644638, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+    - target: {fileID: 5956712601806075721, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
-      propertyPath: TextureSize
-      value: 768
+      propertyPath: mirrorCam
+      value: 
+      objectReference: {fileID: 8860960064478214741}
+    - target: {fileID: 5956712601806075721, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+        type: 3}
+      propertyPath: mirrorRef
+      value: 
+      objectReference: {fileID: 8860960064478190461}
+    - target: {fileID: 5956712601806148718, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+        type: 3}
+      propertyPath: m_Name
+      value: Mirror (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 5956712601794644638, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+    - target: {fileID: 5956712601806148718, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
-      propertyPath: ReflectLayers.m_Bits
-      value: 30519
-      objectReference: {fileID: 0}
-    - target: {fileID: 5956712601804180398, guid: 6cee9ce2ee605c54c957dc68c69cea90,
-        type: 3}
-      propertyPath: m_CullingMask.m_Bits
-      value: 5431
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 5956712601806149758, guid: 6cee9ce2ee605c54c957dc68c69cea90,
         type: 3}
@@ -453,6 +488,18 @@ PrefabInstance:
 --- !u!4 &8860960064478022773 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5956712601805655926, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+    type: 3}
+  m_PrefabInstance: {fileID: 2905396486803718915}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8860960064478214741 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5956712601806174550, guid: 6cee9ce2ee605c54c957dc68c69cea90,
+    type: 3}
+  m_PrefabInstance: {fileID: 2905396486803718915}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8860960064478190461 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5956712601806149758, guid: 6cee9ce2ee605c54c957dc68c69cea90,
     type: 3}
   m_PrefabInstance: {fileID: 2905396486803718915}
   m_PrefabAsset: {fileID: 0}
