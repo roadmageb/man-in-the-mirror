@@ -264,25 +264,38 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 Floor originFloor = MapManager.inst.currentMap.GetFloorAtPos(floorCount.Key);
                 Floor oppoFloor = MapManager.inst.currentMap.GetFloorAtPos(oppoPos);
                 MapManager.inst.currentMap.CreateFloor(oppoPos, originFloor.isGoalFloor);
-                if (oppoFloor != null)
+
+                bool isOriginObjVisible = false;
+                bool isOppoObjVisible = false;
+
+                IObject obj = null;
+                if (originFloor.objOnFloor != null || originFloor.isPlayerOn)
                 {
-                    // 이부분에서 안보이면 중력을 작용하게 하고, 보이면 보이는대로를 따른다.
-                    if (oppoFloor.isPlayerOn) PlayerController.inst.RemovePlayer(oppoFloor);
-                    if (oppoFloor.objOnFloor != null) MapManager.inst.currentMap.RemoveObject(oppoPos);
-                }
-                if (originFloor.isPlayerOn) PlayerController.inst.CreatePlayer(oppoPos, floorCount.Key, dir); // player의 radius 체크해야됨.
-                else if (originFloor.objOnFloor != null)
-                {
-                    IObject obj = originFloor.objOnFloor;
-                    bool isObjVisible = false;
+                    obj = originFloor.objOnFloor;
                     for (int r = 0; r < parRay.Count; ++r)
                     {
-                        float radSq = obj.GetRadius() * obj.GetRadius();
-                        Debug.Log("radSquare: " + radSq);
-                        if      (radSq > PointToRayDistanceSquare(obj.GetPos(), stPos, parRay[r].l)) isObjVisible = true;
-                        else if (radSq > PointToRayDistanceSquare(obj.GetPos(), stPos, parRay[r].r)) isObjVisible = true;
+                        float radSq = originFloor.isPlayerOn ?
+                            PlayerController.inst.radius * PlayerController.inst.radius :
+                            obj.GetRadius() * obj.GetRadius();
+                        //Debug.Log("radSquare: " + radSq);
+                        if (radSq > PointToRayDistanceSquare(originFloor.mapPos, stPos, parRay[r].l) ||
+                            radSq > PointToRayDistanceSquare(originFloor.mapPos, stPos, parRay[r].r))
+                        {
+                            isOriginObjVisible = true;
+                            break;
+                        }
                     }
-                    if (isObjVisible)
+                }
+                if (isOriginObjVisible)
+                {
+                    if (oppoFloor != null) // obj를 카피해야하므로 무조건 반대편거를 지워야한다.
+                    {
+                        if (oppoFloor.isPlayerOn) PlayerController.inst.RemovePlayer(oppoFloor);
+                        if (oppoFloor.objOnFloor != null) MapManager.inst.currentMap.RemoveObject(oppoPos);
+                    }
+
+                    if (originFloor.isPlayerOn) PlayerController.inst.CreatePlayer(oppoPos, floorCount.Key, dir); // player의 radius 체크해야됨.
+                    else
                     {
                         switch (obj.GetType())
                         {
@@ -305,6 +318,28 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                                 MapManager.inst.currentMap.CreateObject(oppoPos, obj.GetType());
                                 break;
                         }
+                    }
+                }
+                else if (oppoFloor != null && oppoFloor.objOnFloor != null)
+                {
+                    obj = oppoFloor.objOnFloor;
+                    for (int r = 0; r < parRay.Count; ++r)
+                    {
+                        float radSq = oppoFloor.isPlayerOn ?
+                            PlayerController.inst.radius * PlayerController.inst.radius :
+                            obj.GetRadius() * obj.GetRadius();
+                        //Debug.Log("radSquare: " + radSq);
+                        if (radSq > PointToRayDistanceSquare(oppoFloor.mapPos, stPos, parRay[r].l) ||
+                            radSq > PointToRayDistanceSquare(oppoFloor.mapPos, stPos, parRay[r].r))
+                        {
+                            isOppoObjVisible = true;
+                            break;
+                        }
+                    }
+                    if (isOppoObjVisible)
+                    {
+                        if (oppoFloor.isPlayerOn) PlayerController.inst.RemovePlayer(oppoFloor);
+                        if (oppoFloor.objOnFloor != null) MapManager.inst.currentMap.RemoveObject(oppoPos);
                     }
                 }
             }

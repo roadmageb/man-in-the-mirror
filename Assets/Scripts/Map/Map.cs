@@ -79,7 +79,7 @@ public class Map : MonoBehaviour
         }
         else
         {
-            Debug.Log("Floor already exists at : (" + pos.x + ", " + pos.y + ")");
+            //Debug.Log("Floor already exists at : (" + pos.x + ", " + pos.y + ")");
             floorGrid[pos].isGoalFloor = isGoal;
             floorGrid[pos].RefreshGoal();   
         }
