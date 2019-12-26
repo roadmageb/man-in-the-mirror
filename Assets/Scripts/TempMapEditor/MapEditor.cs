@@ -89,17 +89,19 @@ public class MapEditor : SingletonBehaviour<MapEditor>
 
     public bool CheckFloor(int x, int y)
     {
-        foreach (MapEditorTile child in floors)
+        for(int i = 0; i < floors.childCount; i++)
         {
-            if (child.mapPos.x == x && child.mapPos.y == y) return true;
+            MapEditorTile temp = floors.GetChild(i).GetComponent<MapEditorTile>();
+            if (temp.mapPos.x == x && temp.mapPos.y == y) return true;
         }
         return false;
     }
     public bool CheckObject(int x, int y)
     {
-        foreach (MapEditorTile child in floors)
+        for (int i = 0; i < objects.childCount; i++)
         {
-            if (child.mapPos.x == x && child.mapPos.y == y) return true;
+            MapEditorTile temp = floors.GetChild(i).GetComponent<MapEditorTile>();
+            if (temp.mapPos.x == x && temp.mapPos.y == y) return true;
         }
         return false;
     }
@@ -115,7 +117,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         else
         {
             int minX = 0, minY = 0, maxX = 0, maxY = 0;
-            foreach (MapEditorTile child in floors.transform)
+            foreach (MapEditorTile child in floors)
             {
                 if (child.mapPos.x < minX) minX = (int)child.mapPos.x;
                 if (child.mapPos.y < minY) minY = (int)child.mapPos.y;
@@ -126,17 +128,21 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             MapSaveData mapSaveData = new MapSaveData();
             mapSaveData.AddObject(TileMode.None, new Vector2(Mathf.Max(maxX - minX, maxY - minY), 0));
 
-            foreach (MapEditorTile child in walls.transform)
+            foreach (MapEditorTile child in walls)
             {
                 if (child.thisTile == TileMode.NormalWall) mapSaveData.AddObject(TileMode.NormalWall, child.mapPos);
                 else mapSaveData.AddObject(TileMode.Mirror, child.mapPos);
             }
-            foreach (MapEditorTile child in floors.transform)
+            foreach (MapEditorTile child in floors)
             {
                 mapSaveData.AddObject(TileMode.Floor, child.mapPos);
                 if (child.thisTile == TileMode.goalFloor) mapSaveData.AddObject(TileMode.goalFloor, child.mapPos);
             }
-            foreach (MapEditorTile child in objects.transform)
+            foreach (MapEditorTile child in jacksons)
+            {
+                mapSaveData.AddObject(TileMode.StartFloor, child.mapPos);
+            }
+            foreach (MapEditorTile child in objects)
             {
                 switch (child.thisTile)
                 {
@@ -213,24 +219,29 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             currentTile.transform.position = mousePoint;
             if (Input.GetMouseButtonDown(0))
             {
-                if(tileMode != TileMode.Floor)
+                if (tileMode != TileMode.Floor)
                 {
                     if (isFloat)
                     {
-                        if (isAtPoint && CheckFloor((int)(mousePoint.x + 0.5f), (int)(mousePoint.y + 0.5f)) || CheckFloor((int)(mousePoint.x + 0.5f), (int)(mousePoint.y - 0.5f)) ||
-                                CheckFloor((int)(mousePoint.x - 0.5f), (int)(mousePoint.y + 0.5f)) || CheckFloor((int)(mousePoint.x - 0.5f), (int)(mousePoint.y - 0.5f)))
+                        if (isAtPoint && CheckFloor((int)(mousePoint.x + 0.5f), (int)(mousePoint.z + 0.5f)) || CheckFloor((int)(mousePoint.x + 0.5f), (int)(mousePoint.z - 0.5f)) ||
+                                CheckFloor((int)(mousePoint.x - 0.5f), (int)(mousePoint.z + 0.5f)) || CheckFloor((int)(mousePoint.x - 0.5f), (int)(mousePoint.z - 0.5f)))
                             isValid = true;
                         else
                         {
-                            if ((int)mousePoint.x != mousePoint.x && CheckFloor((int)(mousePoint.x + 0.5f), (int)mousePoint.y) || CheckFloor((int)(mousePoint.x + 0.5f), (int)mousePoint.y))
+                            if ((int)mousePoint.x != mousePoint.x && CheckFloor((int)(mousePoint.x + 0.5f), (int)mousePoint.z) || CheckFloor((int)(mousePoint.x + 0.5f), (int)mousePoint.z))
                                 isValid = true;
-                            else if (CheckFloor((int)mousePoint.x, (int)(mousePoint.y + 0.5f)) || CheckFloor((int)mousePoint.x, (int)(mousePoint.y - 0.5f)))
+                            else if (CheckFloor((int)mousePoint.x, (int)(mousePoint.z + 0.5f)) || CheckFloor((int)mousePoint.x, (int)(mousePoint.z - 0.5f)))
                                 isValid = true;
                         }
                     }
-                    else
+                    else if (CheckFloor((int)mousePoint.x, (int)mousePoint.z)) isValid = true;
+                }
+                else if (!CheckFloor((int)mousePoint.x, (int)mousePoint.z)) isValid = true;
+                if (isValid)
+                {
+                    if(tileMode == TileMode.Floor || tileMode == TileMode.goalFloor)
                     {
-
+                        Instantiate(currentTile, mousePoint, Quaternion.identity, floors).GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
                     }
                 }
             }
