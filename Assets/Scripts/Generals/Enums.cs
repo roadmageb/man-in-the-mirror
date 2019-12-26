@@ -1,7 +1,7 @@
 ﻿public enum TileMode
 {
-    None, Floor, Normal, Mirror, StartFloor,
-    Briefcase, Camera, WMannequin, BMannequin, goalFloor
+    None, Floor, NormalWall, Mirror, StartFloor, TrueCase, FalseCase,
+    MirrorCase, NullCase, Camera, WMannequin, BMannequin, goalFloor
 }
 
 public enum ClearType

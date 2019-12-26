@@ -43,7 +43,6 @@ public class MapManager : SingletonBehaviour<MapManager>
         }
         GameManager.inst.SetClearIndex(currentMap);
         GameManager.inst.uiGenerator.GenerateAllClearUI();
-        int casesIndex = 0;
         for(int i = 1; i < loadedMapData.objects.Count; i++)
         {
             var temp = loadedMapData.objects[i];
@@ -52,7 +51,7 @@ public class MapManager : SingletonBehaviour<MapManager>
                 case TileMode.Floor:
                     currentMap.CreateFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos));
                     break;
-                case TileMode.Normal:
+                case TileMode.NormalWall:
                     currentMap.CreateWall(new Vector2(temp.xPos, temp.yPos), WallType.Normal);
                     break;
                 case TileMode.Mirror:
@@ -61,8 +60,17 @@ public class MapManager : SingletonBehaviour<MapManager>
                 case TileMode.StartFloor:
                     currentMap.startFloors.Add(currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)));
                     break;
-                case TileMode.Briefcase:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, loadedMapData.cases[casesIndex++]);
+                case TileMode.TrueCase:
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.True);
+                    break;
+                case TileMode.FalseCase:
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.False);
+                    break;
+                case TileMode.MirrorCase:
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.Mirror);
+                    break;
+                case TileMode.NullCase:
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.None);
                     break;
                 case TileMode.Camera:
                     currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Camera);
@@ -75,7 +83,6 @@ public class MapManager : SingletonBehaviour<MapManager>
                     break;
                 case TileMode.goalFloor:
                     currentMap.SetGoalFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos));
-                    //currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)).RefreshGoal();
                     break;
                 default:
                     break;

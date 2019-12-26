@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using System.IO;
 using UnityEngine.SceneManagement;
 
-public class MapEditor : SingletonBehaviour<MapEditor>
+public class TempMapEditor : SingletonBehaviour<MapEditor>
 {
     public class ObjectData
     {
@@ -99,7 +99,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             {
                 Wall temp = child.GetComponent<Wall>();
                 if (temp is NormalWall)
-                    mapSaveData.AddObject(TileMode.Normal, temp.mapPos);
+                    mapSaveData.AddObject(TileMode.NormalWall, temp.mapPos);
                 else
                     mapSaveData.AddObject(TileMode.Mirror, temp.mapPos);
             }
@@ -121,7 +121,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                 if (temp.GetType() == ObjType.Briefcase)
                 {
                     mapSaveData.cases.Add(temp.GetObject().GetComponent<Briefcase>().dropBullet);
-                    mapSaveData.AddObject(TileMode.Briefcase, temp.GetPos());
+                    //mapSaveData.AddObject(TileMode.Briefcase, temp.GetPos());
                 }
                 else if(temp.GetType() == ObjType.Camera)
                     mapSaveData.AddObject(TileMode.Camera, temp.GetPos());
@@ -181,7 +181,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                     case TileMode.Floor:
                         currentMap.CreateFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos));
                         break;
-                    case TileMode.Normal:
+                    case TileMode.NormalWall:
                         currentMap.CreateWall(new Vector2(temp.xPos, temp.yPos), WallType.Normal);
                         if (currentMap.GetWallAtPos(new Vector2(temp.xPos, temp.yPos)) != null && currentMap.GetWallAtPos(new Vector2(temp.xPos, temp.yPos)).GetComponent<Wall>() is NormalWall)
                             currentMap.GetWallAtPos(new Vector2(temp.xPos, temp.yPos)).gameObject.GetComponent<MeshRenderer>().material = editNormalMat;
@@ -194,9 +194,9 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         startSigns.Add(currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)), Instantiate(startSign));
                         startSigns[currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos))].transform.position = new Vector3(temp.xPos, 2, temp.yPos);
                         break;
-                    case TileMode.Briefcase:
+                    /*case TileMode.Briefcase:
                         currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, loadedMapData.cases[casesIndex++]);
-                        break;
+                        break;*/
                     case TileMode.Camera:
                         currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Camera);
                         break;
@@ -264,7 +264,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public void SwitchMode(int _tileMode)
     {
         currentMode = (TileMode)_tileMode;
-        if (currentMode != TileMode.Briefcase) SwitchBulletMode(3);
+        //if (currentMode != TileMode.Briefcase) SwitchBulletMode(3);
         SetModeSign();
     }
     public void SwitchBulletMode(int _bulletMode)
@@ -373,7 +373,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                     else
                         currentMap.RemoveFloor(clickedPos);
                 }
-                else if(currentMode == TileMode.Normal || currentMode == TileMode.Mirror && isWall)
+                else if(currentMode == TileMode.NormalWall || currentMode == TileMode.Mirror && isWall)
                 {
                     if (isCreateMode)
                     {
@@ -441,8 +441,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         Debug.Log(wallPos);
                         if(currentMode == TileMode.BMannequin)
                             currentMap.CreateObject(clickedPos, ObjType.Mannequin, false);
-                        else if(currentMode == TileMode.Briefcase)
-                            currentMap.CreateObject(clickedPos, ObjType.Briefcase, bulletMode);
+                        /*else if(currentMode == TileMode.Briefcase)
+                            currentMap.CreateObject(clickedPos, ObjType.Briefcase, bulletMode);*/
                         else
                             currentMap.CreateObject(clickedPos, (ObjType)((int)currentMode - 4));
                     }
