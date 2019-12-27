@@ -86,23 +86,35 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         else mousePoint = new Vector3(Mathf.Round(originPos.x), 0, Mathf.Round(originPos.z));
         return mousePoint;
     }
+    
+    public void DeleteAll()
+    {
+        for (int i = 0; i < walls.childCount; i++) Destroy(walls.GetChild(i).gameObject);
+        for (int i = 0; i < floors.childCount; i++) Destroy(floors.GetChild(i).gameObject);
+        for (int i = 0; i < jacksons.childCount; i++) Destroy(jacksons.GetChild(i).gameObject);
+        for (int i = 0; i < objects.childCount; i++) Destroy(objects.GetChild(i).gameObject);
+    }
 
     public void ChangeTileMode(int _tileMode)
     {
         tileMode = (TileMode)_tileMode;
-        if(currentTile != null) currentTile.SetActive(false);
-        currentTile = tiles[_tileMode - 1];
-        currentTile.SetActive(true);
-        if ((TileMode)_tileMode == TileMode.NormalWall || (TileMode)_tileMode == TileMode.Mirror)
+        if (currentTile != null) currentTile.SetActive(false);
+        if (_tileMode != 0)
         {
-            isFloat = true;
-            isAtPoint = false;
+            currentTile = tiles[_tileMode - 1];
+            currentTile.SetActive(true);
+            if ((TileMode)_tileMode == TileMode.NormalWall || (TileMode)_tileMode == TileMode.Mirror)
+            {
+                isFloat = true;
+                isAtPoint = false;
+            }
+            else
+            {
+                isFloat = false;
+                isAtPoint = false;
+            }
         }
-        else
-        {
-            isFloat = false;
-            isAtPoint = false;
-        }
+        else currentTile = null;
     }
     
     public bool CheckFloor(int x, int y)
@@ -162,7 +174,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                 if (temp.mapPos.y > maxY) maxY = (int)temp.mapPos.y;
             }
             MapSaveData mapSaveData = new MapSaveData();
-            mapSaveData.AddObject(TileMode.None, new Vector2(Mathf.Max(maxX - minX, maxY - minY), 0));
+            mapSaveData.AddObject(TileMode.None, new Vector2(Mathf.Max(maxX - minX, maxY - minY) + 1, 0));
 
             for (int i = 0; i < walls.childCount; i++)
             {
@@ -252,49 +264,59 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     // Update is called once per frame
     void Update()
     {
-        if (!isPanelOn && currentTile != null)
+        if (!isPanelOn)
         {
-            Vector3 mousePoint = GetMousePoint();
-            isValid = false;
-            currentTile.transform.position = mousePoint;
-            if (Input.GetMouseButtonDown(0))
+            if (currentTile != null && tileMode != 0)
             {
-                if (tileMode != TileMode.Floor && tileMode != TileMode.goalFloor)
+                Vector3 mousePoint = GetMousePoint();
+                isValid = false;
+                currentTile.transform.position = mousePoint;
+                currentTile.transform.rotation = Quaternion.Euler(0, (int)mousePoint.x == mousePoint.x ? 0 : 90, 0);
+                if (Input.GetMouseButtonDown(0))
                 {
-                    if (isFloat)
+                    if (tileMode != TileMode.Floor && tileMode != TileMode.goalFloor)
                     {
-                        if (isAtPoint && CheckFloor((int)(mousePoint.x + 0.5f), (int)(mousePoint.z + 0.5f)) || CheckFloor((int)(mousePoint.x + 0.5f), (int)(mousePoint.z - 0.5f)) ||
-                                CheckFloor((int)(mousePoint.x - 0.5f), (int)(mousePoint.z + 0.5f)) || CheckFloor((int)(mousePoint.x - 0.5f), (int)(mousePoint.z - 0.5f)))
-                            isValid = true;
-                        else
+                        if (isFloat)
                         {
-                            if ((int)mousePoint.x != mousePoint.x && CheckFloor((int)(mousePoint.x + 0.5f), (int)mousePoint.z) || CheckFloor((int)(mousePoint.x + 0.5f), (int)mousePoint.z))
+                            if (isAtPoint && CheckFloor((int)(mousePoint.x + 0.5f), (int)(mousePoint.z + 0.5f)) || CheckFloor((int)(mousePoint.x + 0.5f), (int)(mousePoint.z - 0.5f)) ||
+                                    CheckFloor((int)(mousePoint.x - 0.5f), (int)(mousePoint.z + 0.5f)) || CheckFloor((int)(mousePoint.x - 0.5f), (int)(mousePoint.z - 0.5f)))
                                 isValid = true;
-                            else if (CheckFloor((int)mousePoint.x, (int)(mousePoint.z + 0.5f)) || CheckFloor((int)mousePoint.x, (int)(mousePoint.z - 0.5f)))
-                                isValid = true;
+                            else
+                            {
+                                if ((int)mousePoint.x != mousePoint.x && CheckFloor((int)(mousePoint.x + 0.5f), (int)mousePoint.z) || CheckFloor((int)(mousePoint.x + 0.5f), (int)mousePoint.z))
+                                    isValid = true;
+                                else if (CheckFloor((int)mousePoint.x, (int)(mousePoint.z + 0.5f)) || CheckFloor((int)mousePoint.x, (int)(mousePoint.z - 0.5f)))
+                                    isValid = true;
+                            }
                         }
+                        else if (CheckFloor((int)mousePoint.x, (int)mousePoint.z)) isValid = true;
                     }
-                    else if (CheckFloor((int)mousePoint.x, (int)mousePoint.z)) isValid = true;
-                }
-                else isValid = true;
+                    else isValid = true;
 
-                if ((tileMode == TileMode.Floor || tileMode == TileMode.goalFloor) && CheckFloor((int)mousePoint.x, (int)mousePoint.z)) isValid = false;
-                else if (tileMode == TileMode.StartFloor && CheckJackson((int)mousePoint.x, (int)mousePoint.z)) isValid = false;
-                else if ((tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror) && CheckWall(mousePoint.x, mousePoint.z)) isValid = false;
-                if (isValid)
+                    if ((tileMode == TileMode.Floor || tileMode == TileMode.goalFloor) && CheckFloor((int)mousePoint.x, (int)mousePoint.z)) isValid = false;
+                    else if (tileMode == TileMode.StartFloor && CheckJackson((int)mousePoint.x, (int)mousePoint.z)) isValid = false;
+                    else if ((tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror) && CheckWall(mousePoint.x, mousePoint.z)) isValid = false;
+                    else if (CheckObject(mousePoint.x, mousePoint.z)) isValid = false;
+                    if (isValid)
+                    {
+                        if (tileMode == TileMode.Floor || tileMode == TileMode.goalFloor) Instantiate(currentTile, mousePoint, currentTile.transform.rotation, floors).
+                                GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
+                        else if (tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror) Instantiate(currentTile, mousePoint, currentTile.transform.rotation, walls).
+                                GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
+                        else if (tileMode == TileMode.StartFloor) Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), Quaternion.identity, jacksons).
+                                 GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
+                        else Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), currentTile.transform.rotation, objects).
+                                GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
+                    }
+                }
+            }
+            else
+            {
+                if (Input.GetMouseButtonDown(0))
                 {
-                    if (tileMode == TileMode.Floor || tileMode == TileMode.goalFloor)
-                        Instantiate(currentTile, mousePoint, Quaternion.identity, floors).
-                            GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
-                    else if (tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror)
-                        Instantiate(currentTile, mousePoint, Quaternion.Euler(0, (int)mousePoint.x == mousePoint.x ? 0 : 90, 0), walls).
-                            GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
-                    else if(tileMode == TileMode.StartFloor)
-                        Instantiate(currentTile, mousePoint, Quaternion.identity, jacksons).
-                            GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
-                    else
-                        Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), Quaternion.identity, objects).
-                            GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
+                    Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    RaycastHit hit;
+                    if (Physics.Raycast(mouseRay, out hit)) Destroy(hit.transform.gameObject);
                 }
             }
         }

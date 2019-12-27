@@ -480,6 +480,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6155479862173202160}
   - component: {fileID: -5324842491198854842}
+  - component: {fileID: -560489043220551904}
   m_Layer: 8
   m_Name: jackson
   m_TagString: Player
@@ -520,6 +521,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 0}
   thisTile: 4
+--- !u!65 &-560489043220551904
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6155479862172773008}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.2222223, y: 0.20000361, z: 2.2222223}
+  m_Center: {x: -0.000000029802322, y: 0, z: 0}
 --- !u!1 &6155479862172773010
 GameObject:
   m_ObjectHideFlags: 0

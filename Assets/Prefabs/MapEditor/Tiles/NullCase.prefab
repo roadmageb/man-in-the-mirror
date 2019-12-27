@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8364891068325950311}
   - component: {fileID: 7927956575146729663}
   - component: {fileID: 325867100273803610}
+  - component: {fileID: 372087296442313786}
   m_Layer: 13
   m_Name: NullCase
   m_TagString: briefcase
@@ -96,3 +97,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 0}
   thisTile: 8
+--- !u!65 &372087296442313786
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2395426028593709070}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.0000005, y: 0.20000361, z: 1.0000007}
+  m_Center: {x: -0.000000029802322, y: 0, z: 0}

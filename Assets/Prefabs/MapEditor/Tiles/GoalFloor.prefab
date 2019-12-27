@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: 9160298084211846941}
   - component: {fileID: 9160298084212813277}
   - component: {fileID: 3810274908510528146}
+  - component: {fileID: 4759869090254141790}
   m_Layer: 0
   m_Name: GoalFloor
   m_TagString: floor
@@ -176,3 +177,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 0}
   thisTile: 12
+--- !u!65 &4759869090254141790
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9160298084210619165}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.0000005, y: 0.20000361, z: 1.0000007}
+  m_Center: {x: -0.000000029802322, y: 0, z: 0}

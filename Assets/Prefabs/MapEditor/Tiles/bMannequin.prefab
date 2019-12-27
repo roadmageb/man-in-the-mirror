@@ -952,6 +952,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5315223615845766573}
   - component: {fileID: 4174960559820391772}
+  - component: {fileID: 8531087716706903863}
   m_Layer: 0
   m_Name: bMannequin
   m_TagString: Untagged
@@ -990,6 +991,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 0}
   thisTile: 11
+--- !u!65 &8531087716706903863
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5315223615846123917}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.6666666, y: 0.20000361, z: 1.6666666}
+  m_Center: {x: -0.000000029802322, y: 0, z: 0}
 --- !u!1 &5315223615846123919
 GameObject:
   m_ObjectHideFlags: 0
