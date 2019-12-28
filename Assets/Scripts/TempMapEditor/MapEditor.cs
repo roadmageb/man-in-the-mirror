@@ -48,10 +48,12 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         }
     }
 
+    public bool isLoaded = false;
     public GameObject[] tiles;
-    public Transform walls, floors, objects, jacksons;
+    Transform walls, floors, objects, jacksons;
     int startFloors = 0;
-    GameObject currentTile = null, controlPanel;
+    public Button stageSelectButton;
+    GameObject currentTile = null, controlPanel, stageSelectPanel, stageSelectContent;
     bool isPanelOn = false;
     bool isFloat = false, isAtPoint = false;
     TileMode tileMode = 0;
@@ -59,29 +61,16 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     Vector3 GetMousePoint()
     {
         Vector3 originPos = Camera.main.ScreenPointToRay(Input.mousePosition).origin;
-        /*Vector3 mousePoint = new Vector3(Mathf.Round(originPos.x - (isFloat ? 0.5f : 0)) + (isFloat ? 0.5f : 0), 0, 
-            Mathf.Round(originPos.z - (isFloat ? 0.5f : 0)) + (isFloat ? 0.5f : 0));*/
         Vector3 mousePoint;
         if (isFloat)
         {
             if (!isAtPoint)
             {
-                /*if(Mathf.Abs(originPos.x - mousePoint.x) > Mathf.Abs(originPos.z - mousePoint.z)) mousePoint = new Vector3(Mathf.Round(mousePoint.x), 0, mousePoint.z);
-                else mousePoint = new Vector3(mousePoint.x, 0, Mathf.Round(mousePoint.z));*/
                 if (Mathf.Abs(Mathf.Round(originPos.x) - originPos.x) < Mathf.Abs(Mathf.Round(originPos.y) - originPos.y))
-                {
                     mousePoint = new Vector3(Mathf.Round(originPos.x), 0, Mathf.Round(originPos.z - 0.5f) + 0.5f);
-                }
-                else
-                {
-
-                    mousePoint = new Vector3(Mathf.Round(originPos.x - 0.5f) + 0.5f, 0, Mathf.Round(originPos.z));
-                }
+                else mousePoint = new Vector3(Mathf.Round(originPos.x - 0.5f) + 0.5f, 0, Mathf.Round(originPos.z));
             }
-            else
-            {
-                mousePoint = new Vector3(Mathf.Round(originPos.x - 0.5f) + 0.5f, 0, Mathf.Round(originPos.z - 0.5f) + 0.5f);
-            }
+            else mousePoint = new Vector3(Mathf.Round(originPos.x - 0.5f) + 0.5f, 0, Mathf.Round(originPos.z - 0.5f) + 0.5f);
         }
         else mousePoint = new Vector3(Mathf.Round(originPos.x), 0, Mathf.Round(originPos.z));
         return mousePoint;
@@ -154,14 +143,17 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         return false;
     }
 
-    public void SaveMap()
+    public MapSaveData SerializeMap()
     {
         /* 맵 저장 시 반드시 승리 조건 작성할 것
          * 목표가 '모든'일 경우 승리 목표는 초기 맵 기준으로 작성
          */
-        string mapName = "abcd";
-        string localPath = "Assets/Resources/Stages/stage" + mapName + ".json";
-        if (jacksons.childCount == 0) Debug.Log("There is no start floor.");
+
+        if (jacksons.childCount == 0)
+        {
+            Debug.Log("There is no start floor.");
+            return null;
+        }
         else
         {
             int minX = 0, minY = 0, maxX = 0, maxY = 0;
@@ -174,7 +166,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                 if (temp.mapPos.y > maxY) maxY = (int)temp.mapPos.y;
             }
             MapSaveData mapSaveData = new MapSaveData();
-            mapSaveData.AddObject(TileMode.None, new Vector2(Mathf.Max(maxX - minX, maxY - minY) + 1, 0));
+            mapSaveData.AddObject(TileMode.None, new Vector2((Mathf.Max(maxX - minX, maxY - minY) + 1) * 5, 0));
 
             for (int i = 0; i < walls.childCount; i++)
             {
@@ -229,7 +221,17 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                 mapSaveData.bullets.Add(currentMap.initialBullets[i]);
 
             mapSaveData.comments = currentMap.comments;*/
+            return mapSaveData;
+        }
+    }
 
+    public void SaveMap()
+    {
+        string mapName = "6_5";
+        string localPath = "Assets/Resources/Stages/stage" + mapName + ".json";
+        MapSaveData mapSaveData = SerializeMap();
+        if(mapSaveData != null)
+        {
             if (File.Exists(localPath))
             {
                 Debug.Log("File Exists");
@@ -241,12 +243,94 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         }
     }
 
+    public void CheckLoadableStages()
+    {
+        stageSelectPanel.SetActive(true);
+        TextAsset[] newMaps = Resources.LoadAll<TextAsset>("Stages");
+        RectTransform rt = stageSelectContent.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(0, Mathf.Max(375, newMaps.Length * 90));
+        float y = rt.rect.height / 2 - 50;
+        for (int i = 0; i < newMaps.Length; i++)
+        {
+            TextAsset child = newMaps[i];
+            Button temp = Instantiate(stageSelectButton, stageSelectContent.transform);
+            temp.transform.Find("Text").GetComponent<Text>().text = child.name;
+            temp.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, y - 90 * i);
+        }
+    }
+    public void CancelMapLoad()
+    {
+        for (int i = 0; i < stageSelectContent.transform.childCount; i++) Destroy(stageSelectContent.transform.GetChild(i).gameObject);
+        stageSelectPanel.SetActive(false);
+    }
 
+    public void InstantiateMap(MapSaveData loadedMapData)
+    {
+        /*for (int i = 0; i < loadedMapData.clears.Count; i++)
+        {
+            var temp = loadedMapData.clears[i];
+            currentMap.clearConditions.Add(new ClearCondition(temp.type, temp.goal));
+        }*/
+        for (int i = 1; i < loadedMapData.objects.Count; i++)
+        {
+            ObjectData temp = loadedMapData.objects[i];
+            ChangeTileMode((int)temp.tag);
+            Vector3 tilePos = new Vector3(temp.xPos, 0, temp.yPos);
 
+            if (temp.tag == TileMode.Floor || temp.tag == TileMode.goalFloor)
+                Instantiate(currentTile, tilePos, Quaternion.identity, floors).
+                    GetComponent<MapEditorTile>().mapPos = new Vector2(tilePos.x, tilePos.z);
+            else if (temp.tag == TileMode.NormalWall || temp.tag == TileMode.Mirror)
+                Instantiate(currentTile, tilePos, Quaternion.Euler(0, (int)tilePos.x == tilePos.x ? 0 : 90, 0), walls).
+                    GetComponent<MapEditorTile>().mapPos = new Vector2(tilePos.x, tilePos.z);
+            else if (temp.tag == TileMode.StartFloor)
+                Instantiate(currentTile, tilePos + new Vector3(0, 1, 0), Quaternion.identity, jacksons).
+                    GetComponent<MapEditorTile>().mapPos = new Vector2(tilePos.x, tilePos.z);
+            else
+                Instantiate(currentTile, tilePos + new Vector3(0, 1, 0), Quaternion.Euler(0, (int)tilePos.x == tilePos.x ? 0 : 90, 0), objects).
+                    GetComponent<MapEditorTile>().mapPos = new Vector2(tilePos.x, tilePos.z);
+        }
+        /*for (int i = 0; i < loadedMapData.bullets.Count; i++) currentMap.initialBullets.Add(loadedMapData.bullets[i]);
+        if (loadedMapData.comments != null) currentMap.comments = loadedMapData.comments;*/
+    }
+
+    public void LoadMap(Text text)
+    {
+        TextAsset newMap = Resources.Load("Stages/" + text.text) as TextAsset;
+        if (newMap != null)
+        {
+            DeleteAll();
+            InstantiateMap(JsonConvert.DeserializeObject<MapSaveData>(newMap.ToString()));
+        }
+        else Debug.Log("There is no map named " + text.text);
+        stageSelectPanel.SetActive(false);
+        isPanelOn = false;
+    }
+
+    public void TestMap()
+    {
+        StageInfo.inst.testMap = SerializeMap();
+        if(StageInfo.inst.testMap != null)
+        {
+            StageInfo.inst.selectedStage = "0_0";
+            StageInfo.inst.nextStage = "0_0";
+            DontDestroyOnLoad(StageInfo.inst);
+            SceneManager.LoadScene("PlayStage");
+        }
+    }
 
     private void Awake()
     {
         controlPanel = GameObject.Find("ControlPanel");
+        stageSelectPanel = GameObject.Find("StageSelectPanel");
+        stageSelectContent = GameObject.Find("StageSelectContent");
+        walls = GameObject.Find("Walls").transform;
+        floors = GameObject.Find("Floors").transform;
+        objects = GameObject.Find("Objects").transform;
+        jacksons = GameObject.Find("Jacksons").transform;
+        StageInfo.inst.isMapEditor = true;
+        stageSelectPanel.SetActive(false);
+        Debug.Log(StageInfo.inst.selectedStage);
         for (int i = 0; i < tiles.Length; i++)
         {
             tiles[i] = Instantiate(tiles[i]);
@@ -254,16 +338,15 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        
+        if(StageInfo.inst.testMap != null) InstantiateMap(StageInfo.inst.testMap);
     }
 
-    bool isValid;
     // Update is called once per frame
     void Update()
     {
+        bool isValid;
         if (!isPanelOn)
         {
             if (currentTile != null && tileMode != 0)

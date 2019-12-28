@@ -9,8 +9,7 @@ using Newtonsoft.Json;
 public class StageSelector : SingletonBehaviour<StageSelector>
 {
     public bool isLoaded = false;
-    public static string selectedStage;
-    public static string nextStage;
+    public GameObject stageInfo;
     public TextAsset[] stage;
     public List<string> stageIdxs = new List<string>();
     public int stageIdx;
@@ -170,8 +169,8 @@ public class StageSelector : SingletonBehaviour<StageSelector>
 
     public void StartSelectedStage(string stageStr, string nextStr, int stageIdx)
     {
-        selectedStage = stageStr;
-        nextStage = nextStr;
+        StageInfo.inst.selectedStage = stageStr;
+        StageInfo.inst.nextStage = nextStr;
         this.stageIdx = stageIdx;
         gameObject.GetComponent<Canvas>().enabled = false;
         SceneManager.LoadScene("PlayStage");
@@ -234,10 +233,15 @@ public class StageSelector : SingletonBehaviour<StageSelector>
     {
         if (!inst.isLoaded)
         {
+            DontDestroyOnLoad(stageInfo);
             DontDestroyOnLoad(this);
             isLoaded = true;
         }
-        else Destroy(gameObject);
+        else
+        {
+            Destroy(stageInfo);
+            Destroy(gameObject);
+        }
         stage = Resources.LoadAll<TextAsset>("Stages");
         LoadClearData();
     }
@@ -246,6 +250,5 @@ public class StageSelector : SingletonBehaviour<StageSelector>
     void Start()
     {
         GenerateStageUI();
-        selectedStage = "0_0";
     }
 }

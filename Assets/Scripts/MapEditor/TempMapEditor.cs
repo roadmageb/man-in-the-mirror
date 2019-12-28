@@ -294,7 +294,7 @@ public class TempMapEditor : SingletonBehaviour<MapEditor>
     {
         if(mapName != "")
         {
-            StageSelector.selectedStage = mapName;
+            StageInfo.inst.selectedStage = mapName;
             SceneManager.LoadScene("PlayStage");
         }
         else
@@ -320,7 +320,6 @@ public class TempMapEditor : SingletonBehaviour<MapEditor>
 
     private void Awake()
     {
-        MapManager.inst.isMapEditingOn = true;
         isEditorStarted = false;
         isCreateMode = true;
         startSigns = new Dictionary<Floor, GameObject>();

@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 
 public class MapManager : SingletonBehaviour<MapManager>
 {
-    public bool isMapEditingOn;
     public NavMeshSurface surface;
     public Map currentMap;
     public Map emptyMap;
@@ -27,9 +26,8 @@ public class MapManager : SingletonBehaviour<MapManager>
     /// Load and make a map by map data json file.
     /// </summary>
     /// <param name="_newMap">The json file of the map data to be created.</param>
-    public void LoadMap(TextAsset _newMap)
+    public void LoadMap(MapEditor.MapSaveData loadedMapData)
     {
-        var loadedMapData = JsonConvert.DeserializeObject<MapEditor.MapSaveData>(_newMap.ToString());
         currentMap = Instantiate(emptyMap, new Vector3(0, 0, 0), Quaternion.identity);
         currentMap.InitiateMap();
         GameManager.inst.ResetClearIndex();
