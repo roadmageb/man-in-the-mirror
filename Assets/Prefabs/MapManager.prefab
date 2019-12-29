@@ -51,6 +51,7 @@ MonoBehaviour:
   normalWall: {fileID: 2953616027608884528, guid: a4dcd71ec9f819f4e88c7b5ac24f4b0d,
     type: 3}
   mirror: {fileID: 17874052963739924, guid: 90282f1c82fff7545962b5ca66f1a102, type: 3}
+  glass: {fileID: 4309373473407055835, guid: 32346cd51c4e91649a3cb454f2f80edb, type: 3}
   truthBullet: {fileID: 7554112578236620015, guid: 356d6cdfb01c9a24bb36c0871000d504,
     type: 3}
   fakeBullet: {fileID: 5866539243986221368, guid: a1830defb592fe841ab1732fd18f73a1,
@@ -61,11 +62,6 @@ MonoBehaviour:
     type: 3}
   cameraTurret: {fileID: 6001025753464815805, guid: df6f1d8b9377ec346af4255abe290fbb,
     type: 3}
-  mannequins:
-  - {fileID: 2817243128983163806, guid: 4a442e968e3ddd3468104f4179c3b880, type: 3}
-  - {fileID: 4555134343764048990, guid: 72682f7503996bc4e988ed5ba93fb688, type: 3}
-  - {fileID: 6840018466224391531, guid: d7070c786deaa3a4082f9339da091b46, type: 3}
-  - {fileID: 6169104080419908266, guid: 420a4f921e52a4141b80a3eefcd511e6, type: 3}
-  - {fileID: 87051754405567689, guid: 2a2831d520acdd3408d8a04673423e2a, type: 3}
+  mannequin: {fileID: 0}
   player: {fileID: 494213313239918027, guid: 449b2ca4d925da541bb45c84b63aab98, type: 3}
   players: []

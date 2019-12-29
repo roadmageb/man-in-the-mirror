@@ -169,7 +169,7 @@ public class Map : MonoBehaviour
             Debug.Log("Wall already exists at : " + pos);
             if (wallGrid[pos].type == WallType.Normal && wallType == WallType.Mirror) // change to Mirror
             {
-                MapManager.inst.currentMap.ChangeToMirror(pos, isBreak);
+                MapManager.inst.currentMap.ChangeWall(pos, WallType.Mirror, isBreak);
             }
             else if (wallGrid[pos].type == WallType.Mirror && wallType == WallType.Normal)
             {
@@ -195,10 +195,10 @@ public class Map : MonoBehaviour
         }
     }
     /// <summary>
-    /// Change normal wall at position to mirror.
+    /// Change normal wall at position to wall having type.
     /// </summary>
     /// <param name="pos">Position of wall.</param>
-    public void ChangeToMirror(Vector2 pos, bool isBreak = true)
+    public void ChangeWall(Vector2 pos, WallType type, bool isBreak = true)
     {
         if (((int)pos.x >= 0 ? ((int)pos.x > maxMapSize / 2) : ((int)pos.x < -maxMapSize / 2)) || ((int)pos.y >= 0 ? ((int)pos.y > maxMapSize / 2) : ((int)pos.y < -maxMapSize / 2)))
         {
@@ -212,11 +212,27 @@ public class Map : MonoBehaviour
         }
         if (wallGrid.ContainsKey(pos))
         {
-            if (isBreak) (wallGrid[pos] as NormalWall).Break();
+            if (isBreak) (wallGrid[pos] as IBreakable).Break();
             RemoveWall(pos);
-            wallGrid.Add(pos, Instantiate(MapManager.inst.mirror, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
+            Wall wallObj;
+            switch(type)
+            {
+                case WallType.Mirror:
+                    wallObj = Instantiate(MapManager.inst.mirror, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>();
+                    break;
+                case WallType.Normal:
+                    wallObj = Instantiate(MapManager.inst.normalWall, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>();
+                    break;
+                case WallType.Glass:
+                    wallObj = Instantiate(MapManager.inst.glass, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>();
+                    break;
+                default:
+                    Debug.LogError("Unpredictable wall type");
+                    return;
+            }
+            wallGrid.Add(pos, wallObj);
             wallGrid[pos].mapPos = pos;
-            wallGrid[pos].type = WallType.Mirror;
+            wallGrid[pos].type = type;
             if (Mathf.Abs(pos.x * 10) % 10 == 5)
                 wallGrid[pos].transform.eulerAngles = new Vector3(0, 90, 0);
             else if (Mathf.Abs(pos.y * 10) % 10 == 5)

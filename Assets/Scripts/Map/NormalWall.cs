@@ -16,7 +16,7 @@ public class NormalWall : Wall, IBulletInteractor
     {
         if (bullet is MirrorBullet)
         {
-            MapManager.inst.currentMap.ChangeToMirror(mapPos);
+            MapManager.inst.currentMap.ChangeWall(mapPos, WallType.Mirror);
         }
     }
 }
