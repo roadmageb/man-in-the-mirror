@@ -26,10 +26,10 @@ public enum WallType
 
 public enum BulletCode
 {
+    NULL,
     True,
     False,
-    Mirror,
-    None
+    Mirror
 }
 
 public enum ObjType

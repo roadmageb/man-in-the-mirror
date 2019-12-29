@@ -50,8 +50,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
 
     public bool isLoaded = false;
     public GameObject[] tiles;
-    Transform walls, floors, objects, jacksons;
-    int startFloors = 0;
+    public Image[] bulletTiles;
+    Transform walls, floors, objects, jacksons, bullets;
     public Button stageSelectButton;
     GameObject currentTile = null, controlPanel, stageSelectPanel, stageSelectContent;
     bool isPanelOn = false;
@@ -82,6 +82,18 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         for (int i = 0; i < floors.childCount; i++) Destroy(floors.GetChild(i).gameObject);
         for (int i = 0; i < jacksons.childCount; i++) Destroy(jacksons.GetChild(i).gameObject);
         for (int i = 0; i < objects.childCount; i++) Destroy(objects.GetChild(i).gameObject);
+        for (int i = 0; i < bullets.childCount; i++) Destroy(bullets.GetChild(i).gameObject);
+    }
+    
+    public void AddBullet(int newBullet)
+    {
+        if (newBullet != (int)BulletCode.NULL)
+            Instantiate(bulletTiles[newBullet - 1], new Vector3(50 + bullets.childCount * 50, 50, 0), Quaternion.identity, bullets);
+        else if(bullets.childCount > 0)
+        {
+            Destroy(bullets.GetChild(0).gameObject);
+            for (int i = 0; i < bullets.childCount; i++) bullets.GetChild(i).transform.position -= new Vector3(50, 0, 0);
+        }
     }
 
     public void ChangeTileMode(int _tileMode)
@@ -216,11 +228,11 @@ public class MapEditor : SingletonBehaviour<MapEditor>
 
 
             /*for (int i = 0; i < currentMap.clearConditions.Count; i++)
-                mapSaveData.AddClears(currentMap.clearConditions[i].type, currentMap.clearConditions[i].goal);
-            for (int i = 0; i < currentMap.initialBullets.Count; i++)
-                mapSaveData.bullets.Add(currentMap.initialBullets[i]);
+                mapSaveData.AddClears(currentMap.clearConditions[i].type, currentMap.clearConditions[i].goal);*/
+            for (int i = 0; i < bullets.childCount; i++)
+                mapSaveData.bullets.Add(bullets.GetChild(i).GetComponent<MapEditorTile>().bulletCode);
 
-            mapSaveData.comments = currentMap.comments;*/
+            //mapSaveData.comments = currentMap.comments;
             return mapSaveData;
         }
     }
@@ -290,8 +302,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                 Instantiate(currentTile, tilePos + new Vector3(0, 1, 0), Quaternion.Euler(0, (int)tilePos.x == tilePos.x ? 0 : 90, 0), objects).
                     GetComponent<MapEditorTile>().mapPos = new Vector2(tilePos.x, tilePos.z);
         }
-        /*for (int i = 0; i < loadedMapData.bullets.Count; i++) currentMap.initialBullets.Add(loadedMapData.bullets[i]);
-        if (loadedMapData.comments != null) currentMap.comments = loadedMapData.comments;*/
+        for (int i = 0; i < loadedMapData.bullets.Count; i++) AddBullet((int)loadedMapData.bullets[i]);
+        //if (loadedMapData.comments != null) currentMap.comments = loadedMapData.comments;
     }
 
     public void LoadMap(Text text)
@@ -328,9 +340,9 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         floors = GameObject.Find("Floors").transform;
         objects = GameObject.Find("Objects").transform;
         jacksons = GameObject.Find("Jacksons").transform;
+        bullets = GameObject.Find("Bullets").transform;
         StageInfo.inst.isMapEditor = true;
         stageSelectPanel.SetActive(false);
-        Debug.Log(StageInfo.inst.selectedStage);
         for (int i = 0; i < tiles.Length; i++)
         {
             tiles[i] = Instantiate(tiles[i]);
@@ -403,7 +415,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                 }
             }
         }
-
+        if (Input.GetKeyDown(KeyCode.Space)) Camera.main.transform.position = new Vector3(0, 10, 0);
         if (Input.GetKeyDown(KeyCode.Tab)) isPanelOn = !isPanelOn;
         controlPanel.SetActive(isPanelOn);
     }

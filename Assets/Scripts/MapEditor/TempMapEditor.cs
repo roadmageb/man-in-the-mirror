@@ -332,7 +332,7 @@ public class TempMapEditor : SingletonBehaviour<MapEditor>
         GameManager.inst.ResetClearIndex();
         StartMap(currentMap);
         SwitchMode(0);
-        SwitchBulletMode((int)BulletCode.None);
+        SwitchBulletMode((int)BulletCode.NULL);
         goalDropdown.options.Clear();
         foreach(ClearType c in (ClearType[])System.Enum.GetValues(typeof(ClearType)))
         {

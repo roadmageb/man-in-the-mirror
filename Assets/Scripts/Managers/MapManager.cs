@@ -68,7 +68,7 @@ public class MapManager : SingletonBehaviour<MapManager>
                     currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.Mirror);
                     break;
                 case TileMode.NullCase:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.None);
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.NULL);
                     break;
                 case TileMode.Camera:
                     currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Camera);
