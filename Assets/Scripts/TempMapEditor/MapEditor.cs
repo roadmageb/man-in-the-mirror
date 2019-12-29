@@ -237,9 +237,9 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         }
     }
 
-    public void SaveMap()
+    public void SaveMap(InputField input)
     {
-        string mapName = "6_5";
+        string mapName = input.text;
         string localPath = "Assets/Resources/Stages/stage" + mapName + ".json";
         MapSaveData mapSaveData = SerializeMap();
         if(mapSaveData != null)
@@ -257,7 +257,6 @@ public class MapEditor : SingletonBehaviour<MapEditor>
 
     public void CheckLoadableStages()
     {
-        stageSelectPanel.SetActive(true);
         TextAsset[] newMaps = Resources.LoadAll<TextAsset>("Stages");
         RectTransform rt = stageSelectContent.GetComponent<RectTransform>();
         rt.sizeDelta = new Vector2(0, Mathf.Max(375, newMaps.Length * 90));
@@ -273,7 +272,6 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public void CancelMapLoad()
     {
         for (int i = 0; i < stageSelectContent.transform.childCount; i++) Destroy(stageSelectContent.transform.GetChild(i).gameObject);
-        stageSelectPanel.SetActive(false);
     }
 
     public void InstantiateMap(MapSaveData loadedMapData)
@@ -315,7 +313,6 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             InstantiateMap(JsonConvert.DeserializeObject<MapSaveData>(newMap.ToString()));
         }
         else Debug.Log("There is no map named " + text.text);
-        stageSelectPanel.SetActive(false);
         isPanelOn = false;
     }
 

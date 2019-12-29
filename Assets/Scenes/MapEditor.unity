@@ -748,7 +748,7 @@ PrefabInstance:
     - target: {fileID: 4032095987830287497, guid: fb84d5cfb75cbb14fae64b0b74541353,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0017204775
+      value: -0.000024511384
       objectReference: {fileID: 0}
     - target: {fileID: 4032095988072364782, guid: fb84d5cfb75cbb14fae64b0b74541353,
         type: 3}
@@ -835,29 +835,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5981345969238051589, guid: fb84d5cfb75cbb14fae64b0b74541353,
-        type: 3}
-      propertyPath: bulletTiles.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981345969238051589, guid: fb84d5cfb75cbb14fae64b0b74541353,
-        type: 3}
-      propertyPath: bulletTiles.Array.data[0]
-      value: 
-      objectReference: {fileID: 5106922719288334702, guid: c1fd45835d485f34faf7ff337980721f,
-        type: 3}
-    - target: {fileID: 5981345969238051589, guid: fb84d5cfb75cbb14fae64b0b74541353,
-        type: 3}
-      propertyPath: bulletTiles.Array.data[1]
-      value: 
-      objectReference: {fileID: 5371158569800722332, guid: 138a889080f33af448fc9a8df6387230,
-        type: 3}
-    - target: {fileID: 5981345969238051589, guid: fb84d5cfb75cbb14fae64b0b74541353,
-        type: 3}
-      propertyPath: bulletTiles.Array.data[2]
-      value: 
-      objectReference: {fileID: 4880261551315899548, guid: 6ab0b99b6316da941bb789081b824a88,
-        type: 3}
     - target: {fileID: 5981345969238051590, guid: fb84d5cfb75cbb14fae64b0b74541353,
         type: 3}
       propertyPath: m_Name
