@@ -53,10 +53,31 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public Image[] bulletTiles;
     Transform walls, floors, objects, jacksons, bullets;
     public Button stageSelectButton;
-    GameObject currentTile = null, controlPanel, stageSelectPanel, stageSelectContent;
-    bool isPanelOn = false;
-    bool isFloat = false, isAtPoint = false;
+    GameObject currentTile = null, controlPanel, stageSelectPanel, saveMapPanel, commentPanel, clearConditionPanel;
+    GameObject stageSelectContent, debugText, commentInputField;
+    public GameObject[] clearConditionButtons;
+    bool isPanelOn = false, isFloat = false, isAtPoint = false;
+    string comment = "";
     TileMode tileMode = 0;
+    Coroutine debugTextCoroutine;
+
+    public void PrintDebugText(string text)
+    {
+        if (debugTextCoroutine != null) StopCoroutine(debugTextCoroutine);
+        debugTextCoroutine = StartCoroutine(DebugCoroutine(text));
+        Debug.Log(text);
+    }
+    IEnumerator DebugCoroutine(string text)
+    {
+        debugText.GetComponent<Text>().text = text;
+        debugText.GetComponent<Text>().color = new Color(0, 0, 0, 1);
+        yield return new WaitForSeconds(1);
+        for (float timer = 0; timer < 1; timer += Time.deltaTime)
+        {
+            yield return null;
+            debugText.GetComponent<Text>().color = new Color(0, 0, 0, 1 - timer);
+        }
+    }
 
     Vector3 GetMousePoint()
     {
@@ -83,6 +104,9 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         for (int i = 0; i < jacksons.childCount; i++) Destroy(jacksons.GetChild(i).gameObject);
         for (int i = 0; i < objects.childCount; i++) Destroy(objects.GetChild(i).gameObject);
         for (int i = 0; i < bullets.childCount; i++) Destroy(bullets.GetChild(i).gameObject);
+        AddComment("");
+        for (int i = 0; i < clearConditionButtons.Length; i++) AddClearCondition(i, -1);
+        PrintDebugText("Reset stage");
     }
     
     public void AddBullet(int newBullet)
@@ -94,6 +118,25 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             Destroy(bullets.GetChild(0).gameObject);
             for (int i = 0; i < bullets.childCount; i++) bullets.GetChild(i).transform.position -= new Vector3(50, 0, 0);
         }
+    }
+
+    public void AddComment(string text)
+    {
+        comment = text;
+        commentInputField.GetComponent<InputField>().text = text;
+        PrintDebugText("Comment saved");
+    }
+    public void AddComment(InputField input)
+    {
+        AddComment(input.text);
+    }
+
+    public void AddClearCondition(int index, int goal)
+    {
+        if(index == (int)ClearType.AllCase || index == (int)ClearType.AllFloor || index == (int)ClearType.AllTurret)
+            clearConditionButtons[index].transform.Find("Toggle").GetComponent<Toggle>().isOn = goal == -1 ? false : true;
+        else clearConditionButtons[index].transform.Find("InputField").GetComponent<InputField>().text = goal.ToString();
+        PrintDebugText("Added clear condition " + (ClearType)index + " " + goal);
     }
 
     public void ChangeTileMode(int _tileMode)
@@ -116,6 +159,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             }
         }
         else currentTile = null;
+        PrintDebugText("Tile mode changed to " + (TileMode)_tileMode);
     }
     
     public bool CheckFloor(int x, int y)
@@ -163,7 +207,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
 
         if (jacksons.childCount == 0)
         {
-            Debug.Log("There is no start floor.");
+            PrintDebugText("There is no start floor");
             return null;
         }
         else
@@ -189,8 +233,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             for (int i = 0; i < floors.childCount; i++)
             {
                 MapEditorTile temp = floors.GetChild(i).GetComponent<MapEditorTile>();
-                mapSaveData.AddObject(TileMode.Floor, temp.mapPos);
-                if (temp.thisTile == TileMode.goalFloor) mapSaveData.AddObject(TileMode.goalFloor, temp.mapPos);
+                if (temp.thisTile == TileMode.GoalFloor) mapSaveData.AddObject(TileMode.GoalFloor, temp.mapPos);
+                else mapSaveData.AddObject(TileMode.Floor, temp.mapPos);
             }
             for (int i = 0; i < jacksons.childCount; i++)
             {
@@ -226,13 +270,16 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                 }
             }
 
-
-            /*for (int i = 0; i < currentMap.clearConditions.Count; i++)
-                mapSaveData.AddClears(currentMap.clearConditions[i].type, currentMap.clearConditions[i].goal);*/
-            for (int i = 0; i < bullets.childCount; i++)
-                mapSaveData.bullets.Add(bullets.GetChild(i).GetComponent<MapEditorTile>().bulletCode);
-
-            //mapSaveData.comments = currentMap.comments;
+            for (int i = 0; i < clearConditionButtons.Length; i++)
+            {
+                int goal = -1;
+                if (i == (int)ClearType.AllCase || i == (int)ClearType.AllFloor || i == (int)ClearType.AllTurret &&
+                    clearConditionButtons[i].transform.Find("Toggle").GetComponent<Toggle>().isOn) goal = 0;
+                else goal = int.Parse(clearConditionButtons[i].transform.Find("InputField").GetComponent<InputField>().text);
+                if (goal != -1) mapSaveData.AddClears((ClearType)i, goal);
+            }
+            for (int i = 0; i < bullets.childCount; i++) mapSaveData.bullets.Add(bullets.GetChild(i).GetComponent<MapEditorTile>().bulletCode);
+            mapSaveData.comments = comment;
             return mapSaveData;
         }
     }
@@ -251,7 +298,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             }
 
             File.WriteAllText(localPath, JsonConvert.SerializeObject(mapSaveData));
-            Debug.Log("Map saved at " + localPath);
+            PrintDebugText("Map saved at " + localPath);
         }
     }
 
@@ -263,9 +310,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         float y = rt.rect.height / 2 - 50;
         for (int i = 0; i < newMaps.Length; i++)
         {
-            TextAsset child = newMaps[i];
             Button temp = Instantiate(stageSelectButton, stageSelectContent.transform);
-            temp.transform.Find("Text").GetComponent<Text>().text = child.name;
+            temp.transform.Find("Text").GetComponent<Text>().text = newMaps[i].name;
             temp.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, y - 90 * i);
         }
     }
@@ -276,18 +322,17 @@ public class MapEditor : SingletonBehaviour<MapEditor>
 
     public void InstantiateMap(MapSaveData loadedMapData)
     {
-        /*for (int i = 0; i < loadedMapData.clears.Count; i++)
+        for (int i = 0; i < loadedMapData.clears.Count; i++)
         {
-            var temp = loadedMapData.clears[i];
-            currentMap.clearConditions.Add(new ClearCondition(temp.type, temp.goal));
-        }*/
+            AddClearCondition((int)loadedMapData.clears[i].type, loadedMapData.clears[i].goal);
+        }
         for (int i = 1; i < loadedMapData.objects.Count; i++)
         {
             ObjectData temp = loadedMapData.objects[i];
             ChangeTileMode((int)temp.tag);
             Vector3 tilePos = new Vector3(temp.xPos, 0, temp.yPos);
 
-            if (temp.tag == TileMode.Floor || temp.tag == TileMode.goalFloor)
+            if (temp.tag == TileMode.Floor || temp.tag == TileMode.GoalFloor)
                 Instantiate(currentTile, tilePos, Quaternion.identity, floors).
                     GetComponent<MapEditorTile>().mapPos = new Vector2(tilePos.x, tilePos.z);
             else if (temp.tag == TileMode.NormalWall || temp.tag == TileMode.Mirror)
@@ -301,7 +346,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                     GetComponent<MapEditorTile>().mapPos = new Vector2(tilePos.x, tilePos.z);
         }
         for (int i = 0; i < loadedMapData.bullets.Count; i++) AddBullet((int)loadedMapData.bullets[i]);
-        //if (loadedMapData.comments != null) currentMap.comments = loadedMapData.comments;
+        if (loadedMapData.comments != null) AddComment(loadedMapData.comments);
     }
 
     public void LoadMap(Text text)
@@ -311,8 +356,10 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         {
             DeleteAll();
             InstantiateMap(JsonConvert.DeserializeObject<MapSaveData>(newMap.ToString()));
+            PrintDebugText("Loaded " + text.text);
         }
-        else Debug.Log("There is no map named " + text.text);
+        else PrintDebugText("There is no map named " + text.text);
+
         isPanelOn = false;
     }
 
@@ -331,20 +378,30 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     private void Awake()
     {
         controlPanel = GameObject.Find("ControlPanel");
-        stageSelectPanel = GameObject.Find("StageSelectPanel");
         stageSelectContent = GameObject.Find("StageSelectContent");
+        stageSelectPanel = GameObject.Find("StageSelectPanel");
+        saveMapPanel = GameObject.Find("SaveMapPanel");
+        commentPanel = GameObject.Find("CommentPanel");
+        clearConditionPanel = GameObject.Find("ClearConditionPanel");
+        debugText = GameObject.Find("DebugText");
+        commentInputField = GameObject.Find("CommentInputField");
         walls = GameObject.Find("Walls").transform;
         floors = GameObject.Find("Floors").transform;
         objects = GameObject.Find("Objects").transform;
         jacksons = GameObject.Find("Jacksons").transform;
         bullets = GameObject.Find("Bullets").transform;
         StageInfo.inst.isMapEditor = true;
-        stageSelectPanel.SetActive(false);
+
         for (int i = 0; i < tiles.Length; i++)
         {
             tiles[i] = Instantiate(tiles[i]);
             tiles[i].SetActive(false);
         }
+        for (int i = 0; i < clearConditionButtons.Length; i++) AddClearCondition(i, -1);
+        stageSelectPanel.SetActive(false);
+        saveMapPanel.SetActive(false);
+        commentPanel.SetActive(false);
+        clearConditionPanel.SetActive(false);
     }
 
     private void Start()
@@ -366,7 +423,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                 currentTile.transform.rotation = Quaternion.Euler(0, (int)mousePoint.x == mousePoint.x ? 0 : 90, 0);
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (tileMode != TileMode.Floor && tileMode != TileMode.goalFloor)
+                    if (tileMode != TileMode.Floor && tileMode != TileMode.GoalFloor)
                     {
                         if (isFloat)
                         {
@@ -385,13 +442,13 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                     }
                     else isValid = true;
 
-                    if ((tileMode == TileMode.Floor || tileMode == TileMode.goalFloor) && CheckFloor((int)mousePoint.x, (int)mousePoint.z)) isValid = false;
+                    if ((tileMode == TileMode.Floor || tileMode == TileMode.GoalFloor) && CheckFloor((int)mousePoint.x, (int)mousePoint.z)) isValid = false;
                     else if (tileMode == TileMode.StartFloor && CheckJackson((int)mousePoint.x, (int)mousePoint.z)) isValid = false;
                     else if ((tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror) && CheckWall(mousePoint.x, mousePoint.z)) isValid = false;
                     else if (CheckObject(mousePoint.x, mousePoint.z)) isValid = false;
                     if (isValid)
                     {
-                        if (tileMode == TileMode.Floor || tileMode == TileMode.goalFloor) Instantiate(currentTile, mousePoint, currentTile.transform.rotation, floors).
+                        if (tileMode == TileMode.Floor || tileMode == TileMode.GoalFloor) Instantiate(currentTile, mousePoint, currentTile.transform.rotation, floors).
                                 GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
                         else if (tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror) Instantiate(currentTile, mousePoint, currentTile.transform.rotation, walls).
                                 GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
@@ -400,6 +457,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         else Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), currentTile.transform.rotation, objects).
                                 GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
                     }
+                    else PrintDebugText("Invalid position");
                 }
             }
             else

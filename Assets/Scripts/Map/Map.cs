@@ -84,33 +84,7 @@ public class Map : MonoBehaviour
             floorGrid[pos].RefreshGoal();   
         }
     }
-    /// <summary>
-    /// Create floor in rectangular area between pos1 and pos2. 
-    /// </summary>
-    /// <param name="pos1"></param>
-    /// <param name="pos2"></param>
-    public void CreateFloor(Vector2Int pos1, Vector2Int pos2)
-    {
-        int xMax = Mathf.Max(pos1.x, pos2.x);
-        int yMax = Mathf.Max(pos1.y, pos2.y);
-        int xMin = Mathf.Min(pos1.x, pos2.x);
-        int yMin = Mathf.Min(pos1.y, pos2.y);
-        for (int i = xMin; i <= xMax; i++)
-            for (int j = yMin; j <= yMax; j++)
-                CreateFloor(new Vector2Int(i, j));
-    }
 
-    /// <summary>
-    /// Create floor in rectangular area between pos1 and pos2. 
-    /// </summary>
-    /// <param name="pos1"></param>
-    /// <param name="pos2"></param>
-    public void SetGoalFloor(Vector2Int pos)
-    {
-        GetFloorAtPos(pos).isGoalFloor = true;
-        GetFloorAtPos(pos).RefreshGoal();
-        if (GameManager.aFloor >= 0) clearConditions[GameManager.aFloor].IsDone(0, 1);
-    }
     /// <summary>
     /// Remove floor at position.
     /// </summary>

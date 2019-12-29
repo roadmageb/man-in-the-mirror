@@ -79,8 +79,8 @@ public class MapManager : SingletonBehaviour<MapManager>
                 case TileMode.BMannequin:
                     currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Mannequin, false);
                     break;
-                case TileMode.goalFloor:
-                    currentMap.SetGoalFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos));
+                case TileMode.GoalFloor:
+                    currentMap.CreateFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos), true);
                     break;
                 default:
                     break;
