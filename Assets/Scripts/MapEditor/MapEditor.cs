@@ -56,7 +56,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     GameObject currentTile = null, controlPanel, stageSelectPanel, saveMapPanel, commentPanel, clearConditionPanel;
     GameObject stageSelectContent, debugText, commentInputField;
     public GameObject[] clearConditionButtons;
-    bool isPanelOn = false, isFloat = false, isAtPoint = false;
+    public bool isPanelOn = false;
+    bool isFloat = false, isAtPoint = false;
     string comment = "";
     TileMode tileMode = 0;
     Coroutine debugTextCoroutine;
@@ -439,13 +440,19 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                     }
                     else isValid = true;
 
-                    if ((tileMode == TileMode.Floor || tileMode == TileMode.GoalFloor) && CheckFloor((int)mousePoint.x, (int)mousePoint.z)) Destroy(CheckFloor((int)mousePoint.x, (int)mousePoint.z).gameObject);
+                    if (tileMode == TileMode.Floor || tileMode == TileMode.GoalFloor)
+                    {
+                        if (CheckFloor((int)mousePoint.x, (int)mousePoint.z)) Destroy(CheckFloor((int)mousePoint.x, (int)mousePoint.z).gameObject);
+                    }
                     else if (tileMode == TileMode.StartFloor)
                     {
                         if (CheckJackson((int)mousePoint.x, (int)mousePoint.z)) Destroy(CheckJackson((int)mousePoint.x, (int)mousePoint.z).gameObject);
                         else if (CheckObject(mousePoint.x, mousePoint.z)) Destroy(CheckObject(mousePoint.x, mousePoint.z).gameObject);
                     }
-                    else if ((tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror) && CheckWall(mousePoint.x, mousePoint.z)) Destroy(CheckWall(mousePoint.x, mousePoint.z).gameObject);
+                    else if (tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror)
+                    {
+                        if (CheckWall(mousePoint.x, mousePoint.z)) Destroy(CheckWall(mousePoint.x, mousePoint.z).gameObject);
+                    }
                     else if (CheckObject(mousePoint.x, mousePoint.z) || CheckJackson((int)mousePoint.x, (int)mousePoint.z))
                     {
                         if (CheckJackson((int)mousePoint.x, (int)mousePoint.z)) Destroy(CheckJackson((int)mousePoint.x, (int)mousePoint.z).gameObject);
@@ -481,6 +488,18 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                     if (Physics.Raycast(mouseRay, out hit)) Destroy(hit.transform.gameObject);
                 }
             }
+            if (Input.GetKeyDown(KeyCode.Z)) ChangeTileMode((int)TileMode.NormalWall);
+            else if (Input.GetKeyDown(KeyCode.X)) ChangeTileMode((int)TileMode.Floor);
+            else if (Input.GetKeyDown(KeyCode.C)) ChangeTileMode((int)TileMode.Mirror);
+            else if (Input.GetKeyDown(KeyCode.Q)) ChangeTileMode((int)TileMode.StartFloor);
+            else if (Input.GetKeyDown(KeyCode.E)) ChangeTileMode((int)TileMode.GoalFloor);
+            else if (Input.GetKeyDown(KeyCode.Alpha1)) ChangeTileMode((int)TileMode.TrueCase);
+            else if (Input.GetKeyDown(KeyCode.Alpha2)) ChangeTileMode((int)TileMode.FalseCase);
+            else if (Input.GetKeyDown(KeyCode.Alpha3)) ChangeTileMode((int)TileMode.MirrorCase);
+            else if (Input.GetKeyDown(KeyCode.Alpha4)) ChangeTileMode((int)TileMode.NullCase);
+            else if (Input.GetKeyDown(KeyCode.Alpha5)) ChangeTileMode((int)TileMode.Camera);
+            else if (Input.GetKeyDown(KeyCode.Alpha6)) ChangeTileMode((int)TileMode.WMannequin);
+            else if (Input.GetKeyDown(KeyCode.Alpha7)) ChangeTileMode((int)TileMode.BMannequin);
         }
         if (Input.GetKeyDown(KeyCode.Space)) Camera.main.transform.position = new Vector3(0, 10, 0);
         if (Input.GetKeyDown(KeyCode.Tab)) isPanelOn = !isPanelOn;

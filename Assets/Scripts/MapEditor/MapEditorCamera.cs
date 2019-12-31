@@ -13,7 +13,9 @@ public class MapEditorCamera : MonoBehaviour
     void CameraZoom()
     {
         float mouseWheel = -Input.GetAxis("Mouse ScrollWheel");
+        if(mouseWheel > 0 && Camera.main.orthographicSize < 10 || mouseWheel < 0 && Camera.main.orthographicSize > 2) 
         Camera.main.orthographicSize += mouseWheel * 2;
+        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 2, 10);
     }
 
     // Start is called before the first frame update
@@ -25,7 +27,10 @@ public class MapEditorCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CameraMove();
-        CameraZoom();
+        if (!MapEditor.inst.isPanelOn)
+        {
+            CameraMove();
+            CameraZoom();
+        }
     }
 }
