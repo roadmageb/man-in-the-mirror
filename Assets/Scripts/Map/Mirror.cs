@@ -272,17 +272,25 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 if (originFloor.objOnFloor != null || originFloor.isPlayerOn)
                 {
                     obj = originFloor.objOnFloor;
-                    for (int r = 0; r < parRay.Count; ++r)
+                    var pos = PointToParRay(stPos, originFloor.mapPos, true);
+                    if (IsInRay(parRay, pos))
                     {
-                        float radSq = originFloor.isPlayerOn ?
-                            PlayerController.inst.radius * PlayerController.inst.radius :
-                            obj.GetRadius() * obj.GetRadius();
-                        //Debug.Log("radSquare: " + radSq);
-                        if (radSq > PointToRayDistanceSquare(originFloor.mapPos, stPos, parRay[r].l) ||
-                            radSq > PointToRayDistanceSquare(originFloor.mapPos, stPos, parRay[r].r))
+                        isOriginObjVisible = true;
+                    }
+                    else
+                    {
+                        for (int r = 0; r < parRay.Count; ++r)
                         {
-                            isOriginObjVisible = true;
-                            break;
+                            float radSq = originFloor.isPlayerOn ?
+                                PlayerController.inst.radius * PlayerController.inst.radius :
+                                obj.GetRadius() * obj.GetRadius();
+                            //Debug.Log("radSquare: " + radSq);
+                            if (radSq > PointToRayDistanceSquare(originFloor.mapPos, stPos, parRay[r].l) ||
+                                radSq > PointToRayDistanceSquare(originFloor.mapPos, stPos, parRay[r].r))
+                            {
+                                isOriginObjVisible = true;
+                                break;
+                            }
                         }
                     }
                 }
