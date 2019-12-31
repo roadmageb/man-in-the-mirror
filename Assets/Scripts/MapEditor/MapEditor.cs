@@ -1,10 +1,10 @@
-﻿using System.Collections;
+﻿using Newtonsoft.Json;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using Newtonsoft.Json;
 using System.IO;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MapEditor : SingletonBehaviour<MapEditor>
 {
@@ -273,8 +273,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             for (int i = 0; i < clearConditionButtons.Length; i++)
             {
                 int goal = -1;
-                if (i == (int)ClearType.AllCase || i == (int)ClearType.AllFloor || i == (int)ClearType.AllTurret &&
-                    clearConditionButtons[i].transform.Find("Toggle").GetComponent<Toggle>().isOn) goal = 0;
+                if (i == (int)ClearType.AllCase || i == (int)ClearType.AllFloor || i == (int)ClearType.AllTurret)
+                    goal = clearConditionButtons[i].transform.Find("Toggle").GetComponent<Toggle>().isOn ? 0 : goal;
                 else goal = int.Parse(clearConditionButtons[i].transform.Find("InputField").GetComponent<InputField>().text);
                 if (goal != -1) mapSaveData.AddClears((ClearType)i, goal);
             }
