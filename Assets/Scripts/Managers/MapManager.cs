@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 
 public class MapManager : SingletonBehaviour<MapManager>
 {
-    public bool isMapEditingOn;
     public NavMeshSurface surface;
     public Map currentMap;
     public Map emptyMap;
@@ -27,9 +26,8 @@ public class MapManager : SingletonBehaviour<MapManager>
     /// Load and make a map by map data json file.
     /// </summary>
     /// <param name="_newMap">The json file of the map data to be created.</param>
-    public void LoadMap(TextAsset _newMap)
+    public void LoadMap(MapEditor.MapSaveData loadedMapData)
     {
-        var loadedMapData = JsonConvert.DeserializeObject<MapEditor.MapSaveData>(_newMap.ToString());
         currentMap = Instantiate(emptyMap, new Vector3(0, 0, 0), Quaternion.identity);
         currentMap.InitiateMap();
         GameManager.inst.ResetClearIndex();
@@ -43,7 +41,6 @@ public class MapManager : SingletonBehaviour<MapManager>
         }
         GameManager.inst.SetClearIndex(currentMap);
         GameManager.inst.uiGenerator.GenerateAllClearUI();
-        int casesIndex = 0;
         for(int i = 1; i < loadedMapData.objects.Count; i++)
         {
             var temp = loadedMapData.objects[i];
@@ -52,7 +49,7 @@ public class MapManager : SingletonBehaviour<MapManager>
                 case TileMode.Floor:
                     currentMap.CreateFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos));
                     break;
-                case TileMode.Normal:
+                case TileMode.NormalWall:
                     currentMap.CreateWall(new Vector2(temp.xPos, temp.yPos), WallType.Normal);
                     break;
                 case TileMode.Mirror:
@@ -61,8 +58,17 @@ public class MapManager : SingletonBehaviour<MapManager>
                 case TileMode.StartFloor:
                     currentMap.startFloors.Add(currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)));
                     break;
-                case TileMode.Briefcase:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, loadedMapData.cases[casesIndex++]);
+                case TileMode.TrueCase:
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.True);
+                    break;
+                case TileMode.FalseCase:
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.False);
+                    break;
+                case TileMode.MirrorCase:
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.Mirror);
+                    break;
+                case TileMode.NullCase:
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.NULL);
                     break;
                 case TileMode.Camera:
                     currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Camera);
@@ -73,9 +79,8 @@ public class MapManager : SingletonBehaviour<MapManager>
                 case TileMode.BMannequin:
                     currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Mannequin, false);
                     break;
-                case TileMode.goalFloor:
-                    currentMap.SetGoalFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos));
-                    //currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)).RefreshGoal();
+                case TileMode.GoalFloor:
+                    currentMap.CreateFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos), true);
                     break;
                 default:
                     break;

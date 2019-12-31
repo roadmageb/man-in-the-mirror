@@ -60,7 +60,7 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
             //Debug.Log(Position + " " + position);
             if (Position == position)
             {
-                if (dropBullet != BulletCode.None)
+                if (dropBullet != BulletCode.NULL)
                     PlayerController.inst.AddBullet(dropBullet);
                 if (GameManager.nCase >= 0)
                     MapManager.inst.currentMap.clearConditions[GameManager.nCase].IsDone(1);

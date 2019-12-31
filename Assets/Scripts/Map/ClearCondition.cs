@@ -20,23 +20,20 @@ public class ClearCondition
 
     public void IsDone(int _count = 0, int _goal = 0)
     {
-        if (!MapManager.inst.isMapEditingOn)
+        count += _count;
+        goal += _goal;
+        if (((type == ClearType.White || type == ClearType.Black || type == ClearType.NPlayer) ? goal == count : goal <= count) && !isDone)
         {
-            count += _count;
-            goal += _goal;
-            if (((type == ClearType.White || type == ClearType.Black || type == ClearType.NPlayer) ? goal == count : goal <= count) && !isDone)
-            {
-                GameManager.inst.clearCounter--;
-                isDone = true;
-                if (GameManager.inst.clearCounter == 0)
-                    GameManager.inst.StartCoroutine(GameManager.inst.ClearStage());
-            }
-            else if (((type == ClearType.White || type == ClearType.Black || type == ClearType.NPlayer) ? goal != count : goal > count) && isDone)
-            {
-                GameManager.inst.clearCounter++;
-                isDone = false;
-            }
-            assignedClearUI.RefreshClearCondition();
+            GameManager.inst.clearCounter--;
+            isDone = true;
+            if (GameManager.inst.clearCounter == 0)
+                GameManager.inst.StartCoroutine(GameManager.inst.ClearStage());
         }
+        else if (((type == ClearType.White || type == ClearType.Black || type == ClearType.NPlayer) ? goal != count : goal > count) && isDone)
+        {
+            GameManager.inst.clearCounter++;
+            isDone = false;
+        }
+        assignedClearUI.RefreshClearCondition();
     }
 }

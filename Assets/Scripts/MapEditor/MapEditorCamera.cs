@@ -8,7 +8,7 @@ public class MapEditorCamera : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
-        transform.position += new Vector3(horizontalInput / 2, 0, verticalInput / 2);
+        transform.position += new Vector3(horizontalInput / 4, 0, verticalInput / 4);
     }
     void CameraZoom()
     {
