@@ -96,6 +96,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 0}
   thisTile: 3
+  bulletCode: 0
 --- !u!65 &751929119793946565
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -105,7 +106,7 @@ BoxCollider:
   m_GameObject: {fileID: 2284365753777094025}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1.1, y: 1.0000002, z: 0.2}
   m_Center: {x: 0.000000044703494, y: 0.6, z: -0.0000021569435}
