@@ -6,6 +6,7 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 {
 	[SerializeField]
 	private Floor floor = null;
+    public float radius = 0.5f;
 	public Vector2Int Position { get { return floor != null ? floor.mapPos : throw new UnassignedReferenceException("Floor of Interactor is not assigned"); } }
 
     [Space(15)]
@@ -55,5 +56,10 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
     private void OnDestroy()
     {
         if(FindObjectOfType<PlayerController>() != null) PlayerController.inst.OnPlayerMove -= Interact;
+    }
+
+    public float GetRadius()
+    {
+        return radius;
     }
 }

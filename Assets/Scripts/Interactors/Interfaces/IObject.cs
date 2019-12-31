@@ -8,4 +8,5 @@ public interface IObject
     GameObject GetObject();
     Vector2Int GetPos();
     ObjType GetType();
+    float GetRadius();
 }

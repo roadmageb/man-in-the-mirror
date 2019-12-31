@@ -13,6 +13,7 @@ public class MapManager : SingletonBehaviour<MapManager>
     public Floor floor;
     public NormalWall normalWall;
     public Mirror mirror;
+    public Glass glass;
     public GameObject truthBullet, fakeBullet, mirrorBullet;
     public GameObject briefCase;
     public GameObject cameraTurret;

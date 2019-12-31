@@ -9,6 +9,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     [SerializeField] private Floor floor;
     private Color _color;
 
+    public float radius = 0.5f;
     [Space(15)]
     public GameObject scatteredWhite;
     public GameObject scatteredBlack;
@@ -112,6 +113,11 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     ObjType IObject.GetType()
     {
         return ObjType.Mannequin;
+    }
+
+    public float GetRadius()
+    {
+        return radius;
     }
     #endregion
 }

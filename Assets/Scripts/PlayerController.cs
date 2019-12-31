@@ -8,6 +8,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 {
     public Player currentPlayer;
     public List<BulletCode> bulletList = new List<BulletCode>();
+    public float radius = 0.4f;
     private Vector2Int prePos;
     public Vector2Int MapPos
     {

@@ -21,7 +21,8 @@ public enum WallType
 {
     NULL,
     Normal,
-    Mirror
+    Mirror,
+    Glass
 }
 
 public enum BulletCode

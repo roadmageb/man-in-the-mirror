@@ -8,6 +8,8 @@ public class MirrorMaterial : MonoBehaviour
     [SerializeField] public static int count = 0;
     public int number;
     public Renderer mirrorReflect;
+    public GameObject mirrorCam;
+    public GameObject mirrorRef;
 
     // Start is called before the first frame update
     void Awake()
@@ -15,5 +17,19 @@ public class MirrorMaterial : MonoBehaviour
         number = count++;
         mat = new Material(Shader.Find("Custom/Mirror"));
         mirrorReflect.materials[0] = mat;
+    }
+
+    private void Update()
+    {
+        if (Vector3.Dot(Camera.main.transform.forward, transform.forward) <= 0)
+        {
+            mirrorCam.SetActive(false);
+            mirrorRef.SetActive(false);
+        }
+        else
+        {
+            mirrorCam.SetActive(true);
+            mirrorRef.SetActive(true);
+        }
     }
 }
