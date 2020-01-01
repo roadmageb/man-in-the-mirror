@@ -169,8 +169,8 @@ public class GameManager : SingletonBehaviour<GameManager>
 
     void AdjustSettings()
     {
-        FindObjectOfType<PostProcessVolume>().enabled = StageSelector.inst.gameSettings["postProcessing"];
-        Camera.main.GetComponent<PostProcessLayer>().enabled = StageSelector.inst.gameSettings["postProcessing"];
+        FindObjectOfType<PostProcessVolume>().enabled = StageSelector.inst.gameSettings["postProcessing"] && !StageInfo.inst.isMapEditor;
+        Camera.main.GetComponent<PostProcessLayer>().enabled = StageSelector.inst.gameSettings["postProcessing"] && !StageInfo.inst.isMapEditor;
     }
 
     // Start is called before the first frame update
@@ -182,8 +182,8 @@ public class GameManager : SingletonBehaviour<GameManager>
         {
             currentStage = Resources.Load<TextAsset>("Stages/" + "stage" + StageInfo.inst.selectedStage);
             if (MapManager.inst.emptyMap != null) StartStage();
-            AdjustSettings();
         }
         else StartStage(StageInfo.inst.testMap);
+        AdjustSettings();
     }
 }
