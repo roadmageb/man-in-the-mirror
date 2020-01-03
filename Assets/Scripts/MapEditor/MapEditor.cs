@@ -12,9 +12,10 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     {
         public TileMode tag;
         public float xPos, yPos;
-        public ObjectData(TileMode _tag, Vector2 _pos)
+        public int angle;
+        public ObjectData(TileMode _tag, Vector2 _pos, int _angle)
         {
-            tag = _tag; xPos = _pos.x; yPos = _pos.y;
+            tag = _tag; xPos = _pos.x; yPos = _pos.y; angle = _angle;
         }
     }
     public class ClearData
@@ -38,9 +39,9 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             clears = new List<ClearData>();
             bullets = new List<BulletCode>();
         }
-        public void AddObject(TileMode _tag, Vector2 _pos)
+        public void AddObject(TileMode _tag, Vector2 _pos, int _angle = 0)
         {
-            objects.Add(new ObjectData(_tag, _pos));
+            objects.Add(new ObjectData(_tag, _pos, _angle));
         }
         public void AddClears(ClearType _type, int _goal)
         {
@@ -226,7 +227,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             for (int i = 0; i < walls.childCount; i++)
             {
                 MapEditorTile temp = walls.GetChild(i).GetComponent<MapEditorTile>();
-                mapSaveData.AddObject(temp.thisTile, temp.mapPos);
+                mapSaveData.AddObject(temp.thisTile, temp.mapPos, (int)temp.transform.eulerAngles.y);
             }
             for (int i = 0; i < floors.childCount; i++)
             {
@@ -241,7 +242,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             for (int i = 0; i < objects.childCount; i++)
             {
                 MapEditorTile temp = objects.GetChild(i).GetComponent<MapEditorTile>();
-                mapSaveData.AddObject(temp.thisTile, temp.mapPos);
+                Debug.Log((int)temp.transform.eulerAngles.y);
+                mapSaveData.AddObject(temp.thisTile, temp.mapPos, (int)temp.transform.eulerAngles.y);
             }
 
             for (int i = 0; i < clearConditionButtons.Length; i++)
@@ -307,9 +309,9 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             Vector3 tilePos = new Vector3(temp.xPos, 0, temp.yPos);
             GameObject newTile;
             if (temp.tag == TileMode.Floor || temp.tag == TileMode.GoalFloor) newTile = Instantiate(currentTile, tilePos, Quaternion.identity, floors);
-            else if (temp.tag == TileMode.NormalWall || temp.tag == TileMode.Mirror) newTile = Instantiate(currentTile, tilePos, Quaternion.Euler(0, (int)tilePos.x == tilePos.x ? 0 : 90, 0), walls);
+            else if (temp.tag == TileMode.NormalWall || temp.tag == TileMode.Mirror || temp.tag == TileMode.Glass) newTile = Instantiate(currentTile, tilePos, Quaternion.Euler(0, temp.angle, 0), walls);
             else if (temp.tag == TileMode.StartFloor) newTile = Instantiate(currentTile, tilePos + new Vector3(0, 1, 0), Quaternion.identity, jacksons);
-            else newTile = Instantiate(currentTile, tilePos + new Vector3(0, 1, 0), Quaternion.Euler(0, (int)tilePos.x == tilePos.x ? 0 : 90, 0), objects);
+            else newTile = Instantiate(currentTile, tilePos + new Vector3(0, 1, 0), Quaternion.Euler(0, temp.angle, 0), objects);
             newTile.GetComponent<MapEditorTile>().mapPos = new Vector2(tilePos.x, tilePos.z);
             newTile.GetComponent<BoxCollider>().enabled = true;
         }
@@ -386,59 +388,66 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         if (!isPanelOn)
         {
             Vector3 mousePoint = GetMousePoint();
-            if(prevMousePoint != mousePoint)
+            if (currentTile != null && tileMode != 0)
             {
-                if (currentTile != null && tileMode != 0)
+                isValid = false;
+                currentTile.transform.position = mousePoint;
+                if (isFloat) currentTile.transform.rotation = Quaternion.Euler(0, (int)mousePoint.x == mousePoint.x ? 0 : 90, 0);
+                if(prevMousePoint != mousePoint)
                 {
-                    isValid = false;
-                    currentTile.transform.position = mousePoint;
-                    if (isFloat) currentTile.transform.rotation = Quaternion.Euler(0, (int)mousePoint.x == mousePoint.x ? 0 : 90, 0);
                     if (Input.GetMouseButton(0))
                     {
-                        if (tileMode != TileMode.Floor && tileMode != TileMode.GoalFloor)
-                        {
-                            if (isFloat)
-                            {
-                                if (isAtPoint && CheckFloor((int)(mousePoint.x + 0.5f), (int)(mousePoint.z + 0.5f)) || CheckFloor((int)(mousePoint.x + 0.5f), (int)(mousePoint.z - 0.5f)) ||
-                                        CheckFloor((int)(mousePoint.x - 0.5f), (int)(mousePoint.z + 0.5f)) || CheckFloor((int)(mousePoint.x - 0.5f), (int)(mousePoint.z - 0.5f)))
-                                    isValid = true;
-                                else
-                                {
-                                    if ((int)mousePoint.x != mousePoint.x && CheckFloor((int)(mousePoint.x + 0.5f), (int)mousePoint.z) || CheckFloor((int)(mousePoint.x + 0.5f), (int)mousePoint.z))
-                                        isValid = true;
-                                    else if (CheckFloor((int)mousePoint.x, (int)(mousePoint.z + 0.5f)) || CheckFloor((int)mousePoint.x, (int)(mousePoint.z - 0.5f)))
-                                        isValid = true;
-                                }
-                            }
-                            else if (CheckFloor((int)mousePoint.x, (int)mousePoint.z)) isValid = true;
-                        }
-                        else isValid = true;
-
-                        if (tileMode == TileMode.Floor || tileMode == TileMode.GoalFloor)
-                        {
-                            if (CheckFloor((int)mousePoint.x, (int)mousePoint.z)) Destroy(CheckFloor((int)mousePoint.x, (int)mousePoint.z).gameObject);
-                        }
-                        else if (tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror || tileMode == TileMode.Glass || tileMode == TileMode.LightPole || tileMode == TileMode.LightGetter)
-                        {
-                            if (CheckWall(mousePoint.x, mousePoint.z)) Destroy(CheckWall(mousePoint.x, mousePoint.z).gameObject);
-                            else if (CheckObject(mousePoint.x, mousePoint.z)) Destroy(CheckObject(mousePoint.x, mousePoint.z).gameObject);
-                        }
+                        if (tileMode == TileMode.LightPole && CheckObject(mousePoint.x, mousePoint.z) && CheckObject(mousePoint.x, mousePoint.z).thisTile == TileMode.LightPole)
+                            CheckObject(mousePoint.x, mousePoint.z).transform.rotation = Quaternion.Euler(0, CheckObject(mousePoint.x, mousePoint.z).transform.eulerAngles.y + 90, 0);
                         else
                         {
-                            if (CheckJackson((int)mousePoint.x, (int)mousePoint.z)) Destroy(CheckJackson((int)mousePoint.x, (int)mousePoint.z).gameObject);
-                            else if (CheckObject(mousePoint.x, mousePoint.z)) Destroy(CheckObject(mousePoint.x, mousePoint.z).gameObject);
+                            if (tileMode != TileMode.Floor && tileMode != TileMode.GoalFloor)
+                            {
+                                if (isFloat)
+                                {
+                                    if (isAtPoint && CheckFloor((int)(mousePoint.x + 0.5f), (int)(mousePoint.z + 0.5f)) || CheckFloor((int)(mousePoint.x + 0.5f), (int)(mousePoint.z - 0.5f)) ||
+                                            CheckFloor((int)(mousePoint.x - 0.5f), (int)(mousePoint.z + 0.5f)) || CheckFloor((int)(mousePoint.x - 0.5f), (int)(mousePoint.z - 0.5f)))
+                                        isValid = true;
+                                    else
+                                    {
+                                        if ((int)mousePoint.x != mousePoint.x && CheckFloor((int)(mousePoint.x + 0.5f), (int)mousePoint.z) || CheckFloor((int)(mousePoint.x + 0.5f), (int)mousePoint.z))
+                                            isValid = true;
+                                        else if (CheckFloor((int)mousePoint.x, (int)(mousePoint.z + 0.5f)) || CheckFloor((int)mousePoint.x, (int)(mousePoint.z - 0.5f)))
+                                            isValid = true;
+                                    }
+                                }
+                                else if (CheckFloor((int)mousePoint.x, (int)mousePoint.z)) isValid = true;
+                            }
+                            else isValid = true;
+
+                            if (tileMode == TileMode.Floor || tileMode == TileMode.GoalFloor)
+                            {
+                                if (CheckFloor((int)mousePoint.x, (int)mousePoint.z)) Destroy(CheckFloor((int)mousePoint.x, (int)mousePoint.z).gameObject);
+                            }
+                            else if (tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror || tileMode == TileMode.Glass || tileMode == TileMode.LightPole || tileMode == TileMode.LightGetter)
+                            {
+                                if (CheckWall(mousePoint.x, mousePoint.z)) Destroy(CheckWall(mousePoint.x, mousePoint.z).gameObject);
+                                else if (CheckObject(mousePoint.x, mousePoint.z)) Destroy(CheckObject(mousePoint.x, mousePoint.z).gameObject);
+                            }
+                            else
+                            {
+                                if (CheckJackson((int)mousePoint.x, (int)mousePoint.z)) Destroy(CheckJackson((int)mousePoint.x, (int)mousePoint.z).gameObject);
+                                else if (CheckObject(mousePoint.x, mousePoint.z)) Destroy(CheckObject(mousePoint.x, mousePoint.z).gameObject);
+                            }
+                            if (isValid)
+                            {
+                                GameObject newTile;
+                                if (tileMode == TileMode.Floor || tileMode == TileMode.GoalFloor) newTile = Instantiate(currentTile, mousePoint, currentTile.transform.rotation, floors);
+                                else if (tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror || tileMode == TileMode.Glass)
+                                    newTile = Instantiate(currentTile, mousePoint, currentTile.transform.rotation, walls);
+                                else if (tileMode == TileMode.StartFloor) newTile = Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), Quaternion.identity, jacksons);
+                                else if (tileMode == TileMode.LightPole) newTile = Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), Quaternion.Euler(0, 45, 0), objects);
+                                else newTile = Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), currentTile.transform.rotation, objects);
+                                newTile.GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
+                                newTile.GetComponent<BoxCollider>().enabled = true;
+                            }
+                            else PrintDebugText("Invalid position");
                         }
-                        if (isValid)
-                        {
-                            GameObject newTile;
-                            if (tileMode == TileMode.Floor || tileMode == TileMode.GoalFloor) newTile = Instantiate(currentTile, mousePoint, currentTile.transform.rotation, floors);
-                            else if (tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror) newTile = Instantiate(currentTile, mousePoint, currentTile.transform.rotation, walls);
-                            else if (tileMode == TileMode.StartFloor) newTile = Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), Quaternion.identity, jacksons);
-                            else newTile = Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), currentTile.transform.rotation, objects);
-                            newTile.GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
-                            newTile.GetComponent<BoxCollider>().enabled = true;
-                        }
-                        else PrintDebugText("Invalid position");
                         prevMousePoint = mousePoint;
                     }
                     else if (Input.GetMouseButton(1))
@@ -449,18 +458,18 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         prevMousePoint = mousePoint;
                     }
                 }
-                else
+            }
+            else if(prevMousePoint != mousePoint)
+            {
+                if (Input.GetMouseButton(0))
                 {
-                    if (Input.GetMouseButton(0))
-                    {
-                        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-                        RaycastHit hit;
-                        if (Physics.Raycast(mouseRay, out hit)) Destroy(hit.transform.gameObject);
-                        prevMousePoint = mousePoint;
-                    }
+                    Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    RaycastHit hit;
+                    if (Physics.Raycast(mouseRay, out hit)) Destroy(hit.transform.gameObject);
+                    prevMousePoint = mousePoint;
                 }
             }
-            
+
             if (Input.GetKeyDown(KeyCode.Z)) ChangeTileMode((int)TileMode.Floor);
             else if (Input.GetKeyDown(KeyCode.X)) ChangeTileMode((int)TileMode.NormalWall);
             else if (Input.GetKeyDown(KeyCode.C)) ChangeTileMode((int)TileMode.Mirror);
@@ -479,6 +488,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         }
         if (Input.GetKeyDown(KeyCode.Space)) Camera.main.transform.position = new Vector3(0, 10, 0);
         if (Input.GetKeyDown(KeyCode.Tab)) isPanelOn = !isPanelOn;
+        if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1)) prevMousePoint = new Vector3(0, -1, 0);
         controlPanel.SetActive(isPanelOn);
     }
 }

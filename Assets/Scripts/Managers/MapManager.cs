@@ -19,6 +19,7 @@ public class MapManager : SingletonBehaviour<MapManager>
     public GameObject cameraTurret;
     public GameObject mannequin;
     public GameObject player;
+    public GameObject lightPole, lightGetter;
     [Header("All players")]
     public List<GameObject> players;
     public BulletFactory bulletFactory;
