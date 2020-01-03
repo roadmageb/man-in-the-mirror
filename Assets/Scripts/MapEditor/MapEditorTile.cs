@@ -7,4 +7,5 @@ public class MapEditorTile : MonoBehaviour
     public Vector2 mapPos;
     public TileMode thisTile;
     public BulletCode bulletCode;
+    public float angle = 0;
 }

@@ -83,6 +83,15 @@ public class MapManager : SingletonBehaviour<MapManager>
                 case TileMode.GoalFloor:
                     currentMap.CreateFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos), true);
                     break;
+                case TileMode.Glass:
+                    Debug.Log("Created Glass at " + temp.xPos + " " + temp.yPos);
+                    break;
+                case TileMode.LightPole:
+                    Debug.Log("Created LightPole at " + temp.xPos + " " + temp.yPos);
+                    break;
+                case TileMode.LightGetter:
+                    Debug.Log("Created LightGetter at " + temp.xPos + " " + temp.yPos);
+                    break;
                 default:
                     break;
             }
