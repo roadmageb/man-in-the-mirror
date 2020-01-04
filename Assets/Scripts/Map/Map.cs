@@ -10,7 +10,7 @@ public class Map : MonoBehaviour
     public Vector2Int maxBorder, minBorder;
     public Dictionary<Vector2Int, Floor> floorGrid;
     public Dictionary<Vector2, Wall> wallGrid;
-    public Dictionary<Vector2Int, IObject> objectGrid;
+    public Dictionary<Vector2, IObject> objectGrid;
     public GameObject floors;
     public GameObject walls;
     public GameObject objects;
@@ -20,6 +20,9 @@ public class Map : MonoBehaviour
     public List<BulletCode> initialBullets;
     public string comments;
     public List<ClearCondition> clearConditions;
+
+    Vector2 ConvertVector2(Vector2Int vector) { return new Vector2(vector.x, vector.y); }
+    Vector2Int ConvertVector2(Vector2 vector) { return new Vector2Int((int)vector.x, (int)vector.y); }
 
     /// <summary>
     /// Get floor at position.
@@ -48,7 +51,7 @@ public class Map : MonoBehaviour
     /// </summary>
     /// <param name="pos">Position of object.</param>
     /// <returns></returns>
-    public IObject GetObjectAtPos(Vector2Int pos)
+    public IObject GetObjectAtPos(Vector2 pos)
     {
         return objectGrid.ContainsKey(pos) ? objectGrid[pos] : null;
     }
@@ -213,8 +216,7 @@ public class Map : MonoBehaviour
                 wallGrid[pos].transform.eulerAngles = new Vector3(0, 0, 0);
             StartCoroutine(MapManager.inst.Rebaker());
         }
-        else
-            Debug.Log("Wall already exists at : " + pos);
+        else Debug.Log("Wall already exists at : " + pos);
     }
     /// <summary>
     /// Remove wall at position.
@@ -228,15 +230,14 @@ public class Map : MonoBehaviour
             wallGrid.Remove(pos);
             StartCoroutine(MapManager.inst.Rebaker());
         }
-        else
-            Debug.Log("Wall doesn't exists between : " + pos);
+        else Debug.Log("Wall doesn't exists between : " + pos);
     }
     /// <summary>
     /// Create object at position.
     /// </summary>
     /// <param name="pos">Position of object.</param>
     /// <param name="objType">Type of object.</param>
-    public void CreateObject(Vector2Int pos, ObjType objType, bool isWhite = true)
+    public void CreateObject(Vector2 pos, ObjType objType, float angle, bool isWhite = true)
     {
         if ((pos.x >= 0 ? (pos.x > maxMapSize / 2) : (pos.x < -maxMapSize / 2)) || (pos.y >= 0 ? (pos.y > maxMapSize / 2) : (pos.y < -maxMapSize / 2)))
         {
@@ -249,37 +250,36 @@ public class Map : MonoBehaviour
             {
                 case ObjType.Briefcase:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.briefCase, new Vector3(pos.x, 0.5f, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
-                    objectGrid[pos].Init(GetFloorAtPos(pos));
+                    objectGrid[pos].Init(GetFloorAtPos(ConvertVector2(pos)));
                     break;
                 case ObjType.Camera:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.cameraTurret, new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
-                    objectGrid[pos].Init(GetFloorAtPos(pos));
+                    objectGrid[pos].Init(GetFloorAtPos(ConvertVector2(pos)));
                     break;
                 case ObjType.Mannequin:
                     objectGrid.Add(pos, Instantiate(MapManager.inst.mannequin, new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
-                    objectGrid[pos].Init(GetFloorAtPos(pos));
+                    objectGrid[pos].Init(GetFloorAtPos(ConvertVector2(pos)));
                     objectGrid[pos].GetObject().GetComponent<Mannequin>().SetColor(isWhite);
                     break;
             }
             StartCoroutine(MapManager.inst.Rebaker());
         }
-        else
-            Debug.Log("Object already exists at : (" + pos.x + ", " + pos.y + ")");
+        else Debug.Log("Object already exists at : (" + pos.x + ", " + pos.y + ")");
     }
-    public void CreateObject(Vector2Int pos, ObjType objType, BulletCode _dropBullet)
+
+    public void CreateObject(Vector2 pos, ObjType objType, float angle, BulletCode _dropBullet)
     {
-        CreateObject(pos, objType);
+        CreateObject(pos, objType, angle);
         GetObjectAtPos(pos).GetObject().GetComponent<Briefcase>().SetBullet(_dropBullet);
     }
     /// <summary>
     /// Remove Object at position.
     /// </summary>
     /// <param name="pos">Position of object.</param>
-    public void RemoveObject(Vector2Int pos)
+    public void RemoveObject(Vector2 pos)
     {
         if (objectGrid.ContainsKey(pos))
         {
-            //Debug.Log(pos + " Remove Obj, " + objectGrid[pos].GetType());
             switch (objectGrid[pos].GetType())
             {
                 case ObjType.Camera:
@@ -307,15 +307,14 @@ public class Map : MonoBehaviour
             floorGrid[pos].objOnFloor = null;
             StartCoroutine(MapManager.inst.Rebaker());
         }
-        else
-            Debug.Log("Object doesn't exists between : " + pos);
+        else Debug.Log("Object doesn't exists between : " + pos);
     }
 
     public void InitiateMap()
     {
         floorGrid = new Dictionary<Vector2Int, Floor>();
         wallGrid = new Dictionary<Vector2, Wall>();
-        objectGrid = new Dictionary<Vector2Int, IObject>();
+        objectGrid = new Dictionary<Vector2, IObject>();
         startFloors = new List<Floor>();
     }
 }

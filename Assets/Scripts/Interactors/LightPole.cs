@@ -87,7 +87,7 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
         throw new System.NotImplementedException();
     }
 
-    public Vector2Int GetPos()
+    public Vector2 GetPos()
     {
         throw new System.NotImplementedException();
     }

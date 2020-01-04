@@ -39,5 +39,7 @@ public enum ObjType
     NULL,
     Briefcase,
     Camera,
-    Mannequin
+    Mannequin,
+    LightPole,
+    LightGetter
 }

@@ -6,7 +6,7 @@ public interface IObject
 {
     void Init(Floor floor);
     GameObject GetObject();
-    Vector2Int GetPos();
+    Vector2 GetPos();
     ObjType GetType();
     float GetRadius();
 }
