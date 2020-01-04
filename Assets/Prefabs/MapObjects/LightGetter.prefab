@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7767097795759574611}
   - component: {fileID: 6915361472690385184}
   - component: {fileID: 1687051338774176341}
+  - component: {fileID: 2203862316253428687}
   m_Layer: 0
   m_Name: RotateObject
   m_TagString: Untagged
@@ -79,6 +80,22 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!111 &2203862316253428687
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135311013404041492}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: bb598e46a40567a4fbe7eff973b48ef5, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: bb598e46a40567a4fbe7eff973b48ef5, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &2186590399469234314
 GameObject:
   m_ObjectHideFlags: 0
