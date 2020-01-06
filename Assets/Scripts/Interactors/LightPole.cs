@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightPole : MIMObject, IBulletInteractor
+public class LightPole : MonoBehaviour, IObject, IBulletInteractor
 {
     private Transform shootPoint;
     private LineRenderer rayRenderer; 
@@ -76,11 +76,30 @@ public class LightPole : MIMObject, IBulletInteractor
         SetRayActive(true);
     }
 
-    #region MIMObject override
-    public override void Init()
+    #region IObject
+    public void Init(Floor floor)
     {
-        base.Init();
-        // Do something
+        throw new System.NotImplementedException();
+    }
+
+    public GameObject GetObject()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Vector2Int GetPos()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    ObjType IObject.GetType()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public float GetRadius()
+    {
+        throw new System.NotImplementedException();
     }
     #endregion
 

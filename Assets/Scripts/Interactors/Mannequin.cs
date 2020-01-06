@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mannequin : MIMObject, IBulletInteractor
+public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
 {
     [SerializeField] private SkinnedMeshRenderer[] renderers = new SkinnedMeshRenderer[2];
     [SerializeField] private Material[] mannequinMaterial = new Material[2];
     [SerializeField] private Floor floor;
     private Color _color;
 
+    public float radius = 0.5f;
     [Space(15)]
     public GameObject scatteredWhite;
     public GameObject scatteredBlack;
@@ -80,11 +81,10 @@ public class Mannequin : MIMObject, IBulletInteractor
         }
     }
 
-    public override void Init()
+    public void Init(Floor floor)
     {
-        base.Init();
-        //this.floor = floor;
-        //floor.objOnFloor = this;
+        this.floor = floor;
+        floor.objOnFloor = this;
         transform.Rotate(new Vector3(0, Random.Range(0, 4) * 90, 0));
         isWhite = true;
         Color = Color.white;
@@ -98,4 +98,26 @@ public class Mannequin : MIMObject, IBulletInteractor
         if (GameManager.black >= 0 && !isWhite) MapManager.inst.currentMap.clearConditions[GameManager.black].IsDone(1);
         else if (GameManager.white >= 0 && isWhite) MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(1);
     }
+
+    #region IObject Override
+    public GameObject GetObject()
+    {
+        return gameObject;
+    }
+
+    public Vector2Int GetPos()
+    {
+        return new Vector2Int((int)transform.position.x, (int)transform.position.z);
+    }
+
+    ObjType IObject.GetType()
+    {
+        return ObjType.Mannequin;
+    }
+
+    public float GetRadius()
+    {
+        return radius;
+    }
+    #endregion
 }
