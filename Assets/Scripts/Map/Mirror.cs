@@ -272,17 +272,25 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 if (originFloor.objOnFloor != null || originFloor.isPlayerOn)
                 {
                     obj = originFloor.objOnFloor;
-                    for (int r = 0; r < parRay.Count; ++r)
+                    var pos = PointToParRay(stPos, originFloor.mapPos, true);
+                    if (IsInRay(parRay, pos))
                     {
-                        float radSq = originFloor.isPlayerOn ?
-                            PlayerController.inst.radius * PlayerController.inst.radius :
-                            obj.GetRadius() * obj.GetRadius();
-                        //Debug.Log("radSquare: " + radSq);
-                        if (radSq > PointToRayDistanceSquare(originFloor.mapPos, stPos, parRay[r].l) ||
-                            radSq > PointToRayDistanceSquare(originFloor.mapPos, stPos, parRay[r].r))
+                        isOriginObjVisible = true;
+                    }
+                    else
+                    {
+                        for (int r = 0; r < parRay.Count; ++r)
                         {
-                            isOriginObjVisible = true;
-                            break;
+                            float radSq = originFloor.isPlayerOn ?
+                                PlayerController.inst.radius * PlayerController.inst.radius :
+                                obj.GetRadius() * obj.GetRadius();
+                            //Debug.Log("radSquare: " + radSq);
+                            if (radSq > PointToRayDistanceSquare(originFloor.mapPos, stPos, parRay[r].l) ||
+                                radSq > PointToRayDistanceSquare(originFloor.mapPos, stPos, parRay[r].r))
+                            {
+                                isOriginObjVisible = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -321,19 +329,26 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     }
                 }
                 else if (oppoFloor != null && oppoFloor.objOnFloor != null)
-                {
+                { // obj가 없거나 보이지 않으므로, 가만히 두거나, 거울이 없어졌을때 보인다면 없애야한다.
                     obj = oppoFloor.objOnFloor;
-                    for (int r = 0; r < parRay.Count; ++r)
+                    if (IsInRay(parRay, PointToParRay(stPos, oppoFloor.mapPos, false)))
                     {
-                        float radSq = oppoFloor.isPlayerOn ?
-                            PlayerController.inst.radius * PlayerController.inst.radius :
-                            obj.GetRadius() * obj.GetRadius();
-                        //Debug.Log("radSquare: " + radSq);
-                        if (radSq > PointToRayDistanceSquare(oppoFloor.mapPos, stPos, parRay[r].l) ||
-                            radSq > PointToRayDistanceSquare(oppoFloor.mapPos, stPos, parRay[r].r))
+                        isOppoObjVisible = true;
+                    }
+                    else
+                    {
+                        for (int r = 0; r < parRay.Count; ++r)
                         {
-                            isOppoObjVisible = true;
-                            break;
+                            float radSq = oppoFloor.isPlayerOn ?
+                                PlayerController.inst.radius * PlayerController.inst.radius :
+                                obj.GetRadius() * obj.GetRadius();
+                            //Debug.Log("radSquare: " + radSq);
+                            if (radSq > PointToRayDistanceSquare(oppoFloor.mapPos, stPos, parRay[r].l, false) ||
+                                radSq > PointToRayDistanceSquare(oppoFloor.mapPos, stPos, parRay[r].r, false))
+                            {
+                                isOppoObjVisible = true;
+                                break;
+                            }
                         }
                     }
                     if (isOppoObjVisible)
@@ -348,8 +363,8 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 Floor oppoFloor = MapManager.inst.currentMap.GetFloorAtPos(oppoPos);
                 if (oppoFloor != null)
                 {
-                    PlayerController.inst.RemovePlayer(oppoFloor);
-                    MapManager.inst.currentMap.RemoveObject(oppoPos);
+                    if (oppoFloor.isPlayerOn) PlayerController.inst.RemovePlayer(oppoFloor);
+                    if (oppoFloor.objOnFloor != null) MapManager.inst.currentMap.RemoveObject(oppoPos);
                     MapManager.inst.currentMap.RemoveFloor(oppoPos);
                 }
             }
@@ -500,9 +515,9 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         }
     }
 
-    float PointToRayDistanceSquare(Vector2Int point, Vector2 stPos, float ray)
+    float PointToRayDistanceSquare(Vector2Int point, Vector2 stPos, float ray, bool useOpposite = true)
     {
-        point = GetOpposite(point);
+        if (useOpposite) point = GetOpposite(point);
         Vector2 realPos = dir ? mapPos + new Vector2(ray, 0) : mapPos + new Vector2(0, ray);
         // ax + by + c = 0
         float a = realPos.x - stPos.x;
