@@ -11,9 +11,7 @@ public class Map : MonoBehaviour
     public Dictionary<Vector2Int, Floor> floorGrid;
     public Dictionary<Vector2, Wall> wallGrid;
     public Dictionary<Vector2, IObject> objectGrid;
-    public GameObject floors;
-    public GameObject walls;
-    public GameObject objects;
+    public GameObject floors, walls, objects;
 
     [Header("Stage Data")]
     public List<Floor> startFloors;
@@ -304,7 +302,7 @@ public class Map : MonoBehaviour
             }
             Destroy(objectGrid[pos].GetObject());
             objectGrid.Remove(pos);
-            floorGrid[pos].objOnFloor = null;
+            floorGrid[ConvertVector2(pos)].objOnFloor = null;
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else Debug.Log("Object doesn't exists between : " + pos);

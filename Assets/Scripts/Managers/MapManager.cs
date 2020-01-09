@@ -61,25 +61,25 @@ public class MapManager : SingletonBehaviour<MapManager>
                     currentMap.startFloors.Add(currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)));
                     break;
                 case TileMode.TrueCase:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.True);
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, temp.angle, BulletCode.True);
                     break;
                 case TileMode.FalseCase:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.False);
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, temp.angle, BulletCode.False);
                     break;
                 case TileMode.MirrorCase:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.Mirror);
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, temp.angle, BulletCode.Mirror);
                     break;
                 case TileMode.NullCase:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.NULL);
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, temp.angle, BulletCode.NULL);
                     break;
                 case TileMode.Camera:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Camera);
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Camera, temp.angle);
                     break;
                 case TileMode.WMannequin:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Mannequin, true);
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Mannequin, temp.angle, true);
                     break;
                 case TileMode.BMannequin:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Mannequin, false);
+                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Mannequin, temp.angle, false);
                     break;
                 case TileMode.GoalFloor:
                     currentMap.CreateFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos), true);

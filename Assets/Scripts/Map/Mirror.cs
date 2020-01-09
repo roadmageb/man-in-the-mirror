@@ -300,7 +300,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         switch (obj.GetType())
                         {
                             case ObjType.Mannequin:
-                                MapManager.inst.currentMap.CreateObject(oppoPos, ObjType.Mannequin, (obj as Mannequin).isWhite);
+                                MapManager.inst.currentMap.CreateObject(oppoPos, ObjType.Mannequin, 0, (obj as Mannequin).isWhite);
                                 GameObject tempMann = MapManager.inst.currentMap.GetObjectAtPos(floorCount.Key).GetObject();
                                 GameObject oppoMann = MapManager.inst.currentMap.GetObjectAtPos(oppoPos).GetObject();
                                 Quaternion mirroredRotation = tempMann.transform.rotation;
@@ -312,10 +312,10 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                                 oppoMann.transform.localScale = mirroredScale;
                                 break;
                             case ObjType.Briefcase:
-                                MapManager.inst.currentMap.CreateObject(oppoPos, ObjType.Briefcase, (obj as Briefcase).dropBullet);
+                                MapManager.inst.currentMap.CreateObject(oppoPos, ObjType.Briefcase, 0, (obj as Briefcase).dropBullet);
                                 break;
                             default:
-                                MapManager.inst.currentMap.CreateObject(oppoPos, obj.GetType());
+                                MapManager.inst.currentMap.CreateObject(oppoPos, obj.GetType(), 0);
                                 break;
                         }
                     }
