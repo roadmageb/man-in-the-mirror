@@ -11,9 +11,8 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 
     [Space(15)]
     public GameObject scatteredTurret;
-    public void Init(Floor floor)
+    public void Init(Vector2 pos, params object[] additonal)
     {
-		this.floor = floor;
         floor.objOnFloor = this;
 		PlayerController.inst.OnPlayerMove += Interact;
         if (GameManager.aTurret >= 0) MapManager.inst.currentMap.clearConditions[GameManager.aTurret].IsDone(0, 1);
@@ -61,5 +60,10 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
     public float GetRadius()
     {
         return radius;
+    }
+
+    Vector2 IObject.GetPos()
+    {
+        return Position;
     }
 }

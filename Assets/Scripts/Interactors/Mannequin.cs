@@ -81,9 +81,10 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
         }
     }
 
-    public void Init(Floor floor)
+    /// <param name="pos">position</param>
+    /// <param name="additional">0: color</param>
+    public void Init(Vector2 pos, params object[] additional)
     {
-        this.floor = floor;
         floor.objOnFloor = this;
         transform.Rotate(new Vector3(0, Random.Range(0, 4) * 90, 0));
         isWhite = true;
@@ -105,7 +106,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
         return gameObject;
     }
 
-    public Vector2Int GetPos()
+    public Vector2 GetPos()
     {
         return new Vector2Int((int)transform.position.x, (int)transform.position.z);
     }

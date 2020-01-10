@@ -77,17 +77,13 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
     }
 
     #region IObject
-    public void Init(Floor floor)
-    {
-        throw new System.NotImplementedException();
-    }
 
     public GameObject GetObject()
     {
         throw new System.NotImplementedException();
     }
 
-    public Vector2Int GetPos()
+    public Vector2 GetPos()
     {
         throw new System.NotImplementedException();
     }
@@ -98,6 +94,11 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
     }
 
     public float GetRadius()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Init(Vector2 pos, params object[] additonal)
     {
         throw new System.NotImplementedException();
     }

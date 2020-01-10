@@ -21,14 +21,13 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
         return new Vector2Int((int)transform.position.x, (int)transform.position.z);
     }
 
-    public void Init(Floor floor)
-	{
+    public void Init(Vector2 pos, params object[] additonal)
+    {
         if (GameManager.aCase >= 0)
         {
             MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone(0, 1);
             //Debug.Log("init brief");
         }
-        this.floor = floor;
         floor.objOnFloor = this;
 		PlayerController.inst.OnPlayerMove += Interact;
 	}
@@ -85,5 +84,10 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
     public float GetRadius()
     {
         return radius;
+    }
+
+    Vector2 IObject.GetPos()
+    {
+        return Position;
     }
 }
