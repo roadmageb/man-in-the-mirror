@@ -30,12 +30,12 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
             isRayActive = isActive;
             if (isActive)
             { // turn on ray
-                rayRenderer.enabled = true;
-                ShootRay();
+                //rayRenderer.enabled = true;
+                //ShootRay();
             }
             else
             { // turn off ray
-                rayRenderer.enabled = false;
+                //rayRenderer.enabled = false;
             }
         }
     }
@@ -105,7 +105,6 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
     public void Init(Vector2 pos, params object[] additonal)
     {
         position = pos;
-        transform.Rotate(0, (float)additonal[0], 0);
         SetRayActive(true);
     }
     #endregion

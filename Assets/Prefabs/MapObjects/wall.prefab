@@ -58,6 +58,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -125,7 +126,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 0}
   len: 1
-  type: 1
+  type: 0
   scatteredWall: {fileID: 6821036335413188318, guid: d698ba4b8908f6a43b45d3a4f076ef4a,
     type: 3}
 --- !u!114 &-2954462191445861457

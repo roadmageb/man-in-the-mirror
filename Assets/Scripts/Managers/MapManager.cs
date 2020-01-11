@@ -11,11 +11,10 @@ public class MapManager : SingletonBehaviour<MapManager>
     public Map emptyMap;
     [Header("Instances")]
     public Floor floor;
-    public NormalWall normalWall;
-    public Mirror mirror;
-    public Glass glass;
     public GameObject truthBullet, fakeBullet, mirrorBullet;
+    public GameObject[] walls;
     public GameObject[] IObjects;
+    public GameObject[] mannequins;
     public GameObject player;
     [Header("All players")]
     public List<GameObject> players;
@@ -73,22 +72,22 @@ public class MapManager : SingletonBehaviour<MapManager>
                     currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.Camera, temp.angle);
                     break;
                 case TileMode.WMannequin:
-                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.Mannequin, temp.angle, true);
+                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.Mannequin, temp.angle, true, true);
                     break;
                 case TileMode.BMannequin:
-                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.Mannequin, temp.angle, false);
+                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.Mannequin, temp.angle, false, true);
                     break;
                 case TileMode.GoalFloor:
                     currentMap.CreateFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos), true);
                     break;
                 case TileMode.Glass:
-                    Debug.Log("Created Glass at " + temp.xPos + " " + temp.yPos);
+                    currentMap.CreateWall(new Vector2(temp.xPos, temp.yPos), WallType.Glass);
                     break;
                 case TileMode.LightPole:
-                    Debug.Log("Created LightPole at " + temp.xPos + " " + temp.yPos);
+                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.LightPole, temp.angle);
                     break;
                 case TileMode.LightGetter:
-                    Debug.Log("Created LightGetter at " + temp.xPos + " " + temp.yPos);
+                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.LightGetter, temp.angle);
                     break;
                 default:
                     break;

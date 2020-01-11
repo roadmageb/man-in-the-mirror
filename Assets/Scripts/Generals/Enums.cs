@@ -20,7 +20,6 @@ public enum ClearType
 
 public enum WallType
 {
-    NULL,
     Normal,
     Mirror,
     Glass

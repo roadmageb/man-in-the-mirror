@@ -47,21 +47,27 @@ MonoBehaviour:
   currentMap: {fileID: 0}
   emptyMap: {fileID: 630498074781569474, guid: 759f352c81f1b5a40b2d8d241cdf273b, type: 3}
   floor: {fileID: 19711883686801522, guid: 71931eea896a59a4683986cfd369b8ee, type: 3}
-  normalWall: {fileID: 2953616027608884528, guid: a4dcd71ec9f819f4e88c7b5ac24f4b0d,
-    type: 3}
-  mirror: {fileID: 17874052963739924, guid: 90282f1c82fff7545962b5ca66f1a102, type: 3}
-  glass: {fileID: 4309373473407055835, guid: 32346cd51c4e91649a3cb454f2f80edb, type: 3}
   truthBullet: {fileID: 7554112578236620015, guid: 356d6cdfb01c9a24bb36c0871000d504,
     type: 3}
   fakeBullet: {fileID: 5866539243986221368, guid: a1830defb592fe841ab1732fd18f73a1,
     type: 3}
   mirrorBullet: {fileID: 3200095709359611570, guid: bb70103aa487bc346a6df423335477a2,
     type: 3}
+  walls:
+  - {fileID: 337530617404887312, guid: a4dcd71ec9f819f4e88c7b5ac24f4b0d, type: 3}
+  - {fileID: 1244481854748732982, guid: 90282f1c82fff7545962b5ca66f1a102, type: 3}
+  - {fileID: 2347820117553804485, guid: 32346cd51c4e91649a3cb454f2f80edb, type: 3}
   IObjects:
   - {fileID: 2534561534465535505, guid: 0b323beb318071144aef94132be66541, type: 3}
   - {fileID: 6001025753464815805, guid: df6f1d8b9377ec346af4255abe290fbb, type: 3}
   - {fileID: 33432975985984805, guid: ec20e06c4a993924791d02d7a4c9375c, type: 3}
   - {fileID: 359288006827046117, guid: 8f2c40d0421fcf841bf06628a62780e6, type: 3}
   - {fileID: 5242670655668408000, guid: ea43e419337cb334da5cb8ab0256ca13, type: 3}
+  mannequins:
+  - {fileID: 2817243128983163806, guid: 4a442e968e3ddd3468104f4179c3b880, type: 3}
+  - {fileID: 4555134343764048990, guid: 72682f7503996bc4e988ed5ba93fb688, type: 3}
+  - {fileID: 6840018466224391531, guid: d7070c786deaa3a4082f9339da091b46, type: 3}
+  - {fileID: 6169104080419908266, guid: 420a4f921e52a4141b80a3eefcd511e6, type: 3}
+  - {fileID: 87051754405567689, guid: 2a2831d520acdd3408d8a04673423e2a, type: 3}
   player: {fileID: 494213313239918027, guid: 449b2ca4d925da541bb45c84b63aab98, type: 3}
   players: []

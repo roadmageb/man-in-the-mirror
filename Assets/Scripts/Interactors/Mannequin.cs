@@ -99,7 +99,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     {
         position = pos;
         if ((bool)additional[1])
-        {
+        {  
             transform.Rotate(new Vector3(0, Random.Range(0, 4) * 90, 0)); // random rotate
         }
         SetColor((bool)additional[0]);

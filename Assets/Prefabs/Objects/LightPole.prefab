@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3649933650124670710}
   - component: {fileID: 5172493414003770118}
+  - component: {fileID: 3418832989913024412}
   m_Layer: 0
   m_Name: LightPole
   m_TagString: Untagged
@@ -47,6 +48,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bf773f054e24754f8111ee7e600a149, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  position: {x: 0, y: 0}
+  radius: 0.5
+--- !u!208 &3418832989913024412
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359288006827046117}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.1, y: 0.4875, z: 0.1}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.5, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &381591011364745768
 GameObject:
   m_ObjectHideFlags: 0

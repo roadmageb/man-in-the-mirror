@@ -70,31 +70,31 @@ public class Map : MonoBehaviour
         {
             if((int)pos.x != pos.x)
             {
-                if (GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y + 0.5f))))
+                if (GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)pos.y)))
                 {
-                    if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y + 0.5f))).adjacentObject.Add(pos, iObject);
-                    else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y + 0.5f))).adjacentObject.Remove(pos);
+                    if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)pos.y)).adjacentObject.Add(pos, iObject);
+                    else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)pos.y)).adjacentObject.Remove(pos);
                     else return true;
                 }
-                if (GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y - 0.5f))))
+                if (GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)pos.y)))
                 {
-                    if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y - 0.5f))).adjacentObject.Add(pos, iObject);
-                    else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y - 0.5f))).adjacentObject.Remove(pos);
+                    if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)pos.y)).adjacentObject.Add(pos, iObject);
+                    else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)pos.y)).adjacentObject.Remove(pos);
                     else return true;
                 }
             }
             else
             {
-                if (GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y + 0.5f))))
+                if (GetFloorAtPos(new Vector2Int((int)pos.x, (int)(pos.y + 0.5f))))
                 {
-                    if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y + 0.5f))).adjacentObject.Add(pos, iObject);
-                    else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y + 0.5f))).adjacentObject.Remove(pos);
+                    if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)pos.x, (int)(pos.y + 0.5f))).adjacentObject.Add(pos, iObject);
+                    else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)pos.x, (int)(pos.y + 0.5f))).adjacentObject.Remove(pos);
                     else return true;
                 }
-                if (GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y - 0.5f))))
+                if (GetFloorAtPos(new Vector2Int((int)pos.x, (int)(pos.y - 0.5f))))
                 {
-                    if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y - 0.5f))).adjacentObject.Add(pos, iObject);
-                    else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y - 0.5f))).adjacentObject.Remove(pos);
+                    if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)pos.x, (int)(pos.y - 0.5f))).adjacentObject.Add(pos, iObject);
+                    else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)pos.x, (int)(pos.y - 0.5f))).adjacentObject.Remove(pos);
                     else return true;
                 }
             }
@@ -208,16 +208,10 @@ public class Map : MonoBehaviour
         }
         if (!wallGrid.ContainsKey(pos))
         {
-            if (wallType == WallType.Normal)
-                wallGrid.Add(pos, Instantiate(MapManager.inst.normalWall, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
-            else if (wallType == WallType.Mirror)
-                wallGrid.Add(pos, Instantiate(MapManager.inst.mirror, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>());
+            wallGrid.Add(pos, Instantiate(MapManager.inst.walls[Random.Range(0, MapManager.inst.walls.Length)], new Vector3(pos.x, 0, pos.y),
+                Quaternion.Euler(0, (int)pos.x != pos.x ? 90 : 0, 0), walls.transform).GetComponent<Wall>());
             wallGrid[pos].mapPos = pos;
             wallGrid[pos].type = wallType;
-            if (Mathf.Abs(pos.x * 10) % 10 == 5)
-                wallGrid[pos].transform.eulerAngles = new Vector3(0, 90, 0);
-            else if (Mathf.Abs(pos.y * 10) % 10 == 5)
-                wallGrid[pos].transform.eulerAngles = new Vector3(0, 0, 0);
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
@@ -234,22 +228,7 @@ public class Map : MonoBehaviour
             }
         }
     }
-    /// <summary>
-    /// Create walls from two floors, toward dir's direction. 
-    /// </summary>
-    /// <param name="pos">Start position of wall.</param>
-    /// <param name="dir">Direction of walls.</param>
-    /// <param name="length">Amount of walls.</param>
-    /// <param name="wallType">Type of walls.</param>
-    public void CreateWall(Vector2 pos, Vector2 dir, int length, WallType wallType)
-    {
-        Vector2 wallPos = pos;
-        for (int i = 0; i < length; i++)
-        {
-            CreateWall(wallPos, wallType);
-            wallPos += new Vector2((int)dir.x, (int)dir.y);
-        }
-    }
+
     /// <summary>
     /// Change normal wall at position to wall having type.
     /// </summary>
@@ -266,29 +245,15 @@ public class Map : MonoBehaviour
         {
             if (isBreak) (wallGrid[pos] as IBreakable).Break();
             RemoveWall(pos);
-            Wall wallObj;
-            switch(type)
-            {
-                case WallType.Mirror:
-                    wallObj = Instantiate(MapManager.inst.mirror, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>();
-                    break;
-                case WallType.Normal:
-                    wallObj = Instantiate(MapManager.inst.normalWall, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>();
-                    break;
-                case WallType.Glass:
-                    wallObj = Instantiate(MapManager.inst.glass, new Vector3(pos.x, 0, pos.y), Quaternion.identity, walls.transform).GetComponent<Wall>();
-                    break;
-                default:
-                    Debug.LogError("Unpredictable wall type");
-                    return;
-            }
+
+            /*Wall wallObj;
+            wallObj = Instantiate(MapManager.inst.walls[Random.Range(0, MapManager.inst.walls.Length)], new Vector3(pos.x, 0, pos.y), 
+                Quaternion.Euler(0, (int)pos.x != pos.x ? 90 : 0, 0), walls.transform).GetComponent<Wall>();
             wallGrid.Add(pos, wallObj);
             wallGrid[pos].mapPos = pos;
-            wallGrid[pos].type = type;
-            if (Mathf.Abs(pos.x * 10) % 10 == 5)
-                wallGrid[pos].transform.eulerAngles = new Vector3(0, 90, 0);
-            else if (Mathf.Abs(pos.y * 10) % 10 == 5)
-                wallGrid[pos].transform.eulerAngles = new Vector3(0, 0, 0);
+            wallGrid[pos].type = type;*/
+
+            CreateWall(pos, type, isBreak);
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else Debug.LogError("Wall already exists at : " + pos);
@@ -307,41 +272,6 @@ public class Map : MonoBehaviour
         }
         else Debug.LogError("Wall doesn't exists between : " + pos);
     }
-    /// <summary>
-    /// Create object at position.
-    /// </summary>
-    /// <param name="pos">Position of object.</param>
-    /// <param name="objType">Type of object.</param>
-    /*public void CreateObject(Vector2 pos, ObjType objType, float angle, bool isWhite = true)
-    {
-        if ((pos.x >= 0 ? (pos.x > maxMapSize / 2) : (pos.x < -maxMapSize / 2)) || (pos.y >= 0 ? (pos.y > maxMapSize / 2) : (pos.y < -maxMapSize / 2)))
-        {
-            Debug.Log("Input size exceeds map's max size.");
-            return;
-        }
-        if (!objectGrid.ContainsKey(pos))
-        {
-            switch (objType)
-            {
-                case ObjType.Briefcase:
-                    objectGrid.Add(pos, Instantiate(MapManager.inst.briefCase, new Vector3(pos.x, 0.5f, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
-                    (objectGrid[pos] as Briefcase).Init(pos);
-                    break;
-                case ObjType.Camera:
-                    objectGrid.Add(pos, Instantiate(MapManager.inst.cameraTurret, new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
-                    objectGrid[pos].Init(pos);
-                    break;
-                case ObjType.Mannequin:
-                    objectGrid.Add(pos, Instantiate(MapManager.inst.mannequin, new Vector3(pos.x, 0, pos.y), Quaternion.identity, objects.transform).GetComponent<IObject>());
-                    (objectGrid[pos] as Mannequin).Init(pos, isWhite);
-                    break;
-            }
-            CheckAdjacentFloor(pos, objectGrid[pos], true);
-            StartCoroutine(MapManager.inst.Rebaker());
-        }
-        else Debug.Log("Object already exists at : (" + pos.x + ", " + pos.y + ")");
-    }*/
-
 
     public void CreateObject(Vector2 pos, ObjType objType, float angle, params object[] additional)
     {
@@ -357,11 +287,11 @@ public class Map : MonoBehaviour
         }
         if (!objectGrid.ContainsKey(pos))
         {
-            Vector3 objectPos = new Vector3(pos.x, objType == ObjType.Briefcase ? 0.5f : 0, pos.y);
-            objectGrid.Add(pos, Instantiate(MapManager.inst.IObjects[(int)objType], objectPos, Quaternion.Euler(0, angle, 0), 
-                objects.transform).GetComponent<IObject>());
+            Vector3 objectPos = new Vector3(pos.x, objType == ObjType.Briefcase ? 0.5f : objType == ObjType.Mannequin ? 0.1f : 0, pos.y);
+            objectGrid.Add(pos, Instantiate(objType == ObjType.Mannequin ? MapManager.inst.mannequins[Random.Range(0, MapManager.inst.mannequins.Length)] : 
+                MapManager.inst.IObjects[(int)objType], objectPos, Quaternion.Euler(0, angle, 0), objects.transform).GetComponent<IObject>());
             if(additional.Length == 0) objectGrid[pos].Init(pos);
-            else objectGrid[pos].Init(pos, additional[0]);
+            else objectGrid[pos].Init(pos, additional);
             CheckAdjacentFloor(pos, objectGrid[pos], FloorChkMode.Add);
             StartCoroutine(MapManager.inst.Rebaker());
         }
