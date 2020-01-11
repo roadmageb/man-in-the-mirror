@@ -36,10 +36,16 @@ public enum BulletCode
 
 public enum ObjType
 {
-    NULL,
     Briefcase,
     Camera,
     Mannequin,
     LightPole,
     LightGetter
+}
+
+public enum FloorChkMode
+{
+    Check,
+    Add,
+    Remove
 }

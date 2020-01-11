@@ -13,7 +13,7 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
     public GameObject scatteredTurret;
     public void Init(Vector2 pos, params object[] additonal)
     {
-        floor.objOnFloor = this;
+        //floor.objOnFloor = this;
 		PlayerController.inst.OnPlayerMove += Interact;
         if (GameManager.aTurret >= 0) MapManager.inst.currentMap.clearConditions[GameManager.aTurret].IsDone(0, 1);
     }

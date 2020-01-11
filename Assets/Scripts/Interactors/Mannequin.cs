@@ -85,7 +85,7 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     /// <param name="additional">0: color</param>
     public void Init(Vector2 pos, params object[] additional)
     {
-        floor.objOnFloor = this;
+        //floor.objOnFloor = this;
         transform.Rotate(new Vector3(0, Random.Range(0, 4) * 90, 0));
         isWhite = true;
         Color = Color.white;

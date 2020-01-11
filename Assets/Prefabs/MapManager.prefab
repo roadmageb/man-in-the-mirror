@@ -43,7 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c46ee6a780f2c3428a79748eadabea8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMapEditingOn: 0
   surface: {fileID: 0}
   currentMap: {fileID: 0}
   emptyMap: {fileID: 630498074781569474, guid: 759f352c81f1b5a40b2d8d241cdf273b, type: 3}
@@ -58,10 +57,11 @@ MonoBehaviour:
     type: 3}
   mirrorBullet: {fileID: 3200095709359611570, guid: bb70103aa487bc346a6df423335477a2,
     type: 3}
-  briefCase: {fileID: 2534561534465535505, guid: 0b323beb318071144aef94132be66541,
-    type: 3}
-  cameraTurret: {fileID: 6001025753464815805, guid: df6f1d8b9377ec346af4255abe290fbb,
-    type: 3}
-  mannequin: {fileID: 0}
+  IObjects:
+  - {fileID: 2534561534465535505, guid: 0b323beb318071144aef94132be66541, type: 3}
+  - {fileID: 6001025753464815805, guid: df6f1d8b9377ec346af4255abe290fbb, type: 3}
+  - {fileID: 33432975985984805, guid: ec20e06c4a993924791d02d7a4c9375c, type: 3}
+  - {fileID: 359288006827046117, guid: 8f2c40d0421fcf841bf06628a62780e6, type: 3}
+  - {fileID: 5242670655668408000, guid: ea43e419337cb334da5cb8ab0256ca13, type: 3}
   player: {fileID: 494213313239918027, guid: 449b2ca4d925da541bb45c84b63aab98, type: 3}
   players: []

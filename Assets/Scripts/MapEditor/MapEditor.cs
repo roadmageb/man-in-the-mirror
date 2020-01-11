@@ -242,7 +242,6 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             for (int i = 0; i < objects.childCount; i++)
             {
                 MapEditorTile temp = objects.GetChild(i).GetComponent<MapEditorTile>();
-                Debug.Log((int)temp.transform.eulerAngles.y);
                 mapSaveData.AddObject(temp.thisTile, temp.mapPos, (int)temp.transform.eulerAngles.y);
             }
 
