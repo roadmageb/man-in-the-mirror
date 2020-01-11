@@ -12,16 +12,12 @@ public class Floor : MonoBehaviour
     public IObject objOnFloor = null;
     public bool isPlayerOn = false;
 
+    public Dictionary<Vector2, IObject> adjacentObject;
+
     [Header("Goal Floor Settings")]
     public SpriteRenderer spriteRenderer;
     public Sprite goalSpriteOn;
     public Sprite goalSpriteOff;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     public void RefreshGoal()
     {

@@ -19,8 +19,19 @@ public class Map : MonoBehaviour
     public string comments;
     public List<ClearCondition> clearConditions;
 
-    Vector2 ConvertVector2(Vector2Int vector) { return new Vector2(vector.x, vector.y); }
-    Vector2Int ConvertVector2(Vector2 vector) { return new Vector2Int((int)vector.x, (int)vector.y); }
+    public Vector2Int ConvertVector2(Vector2 vector) { return new Vector2Int((int)vector.x, (int)vector.y); }
+
+    public void CheckAdjacentFloor(Vector2 pos, IObject iObject)
+    {
+        if((int)pos.x == pos.x && (int)pos.y == pos.y)
+        {
+            if (GetFloorAtPos(ConvertVector2(pos)))
+            {
+                GetFloorAtPos(ConvertVector2(pos)).adjacentObject.Add(pos, iObject);
+            }
+            //추가해야함
+        }
+    }
 
     /// <summary>
     /// Get floor at position.
@@ -277,6 +288,7 @@ public class Map : MonoBehaviour
     {
         if (objectGrid.ContainsKey(pos))
         {
+            //Debug.Log(pos + " Remove Obj, " + objectGrid[pos].GetType());
             switch (objectGrid[pos].GetType())
             {
                 case ObjType.Camera:
@@ -304,7 +316,8 @@ public class Map : MonoBehaviour
             floorGrid[ConvertVector2(pos)].objOnFloor = null;
             StartCoroutine(MapManager.inst.Rebaker());
         }
-        else Debug.Log("Object doesn't exists between : " + pos);
+        else
+            Debug.Log("Object doesn't exists between : " + pos);
     }
 
     public void InitiateMap()
