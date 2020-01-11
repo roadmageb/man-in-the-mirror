@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class LightPole : MonoBehaviour, IObject, IBulletInteractor
 {
+    public Vector2 position;
+    public float radius = 0.5f;
+
     private Transform shootPoint;
     private LineRenderer rayRenderer; 
 
@@ -18,8 +21,6 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
         rayRenderer.SetPosition(0, shootPoint.position);
         rayRenderer.SetPosition(1, shootPoint.position);
         rayHeight = shootPoint.localPosition.y;
-
-        SetRayActive(true);
     }
 
     public void SetRayActive(bool isActive)
@@ -80,27 +81,32 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
 
     public GameObject GetObject()
     {
-        throw new System.NotImplementedException();
+        return gameObject;
     }
 
     public Vector2 GetPos()
     {
-        throw new System.NotImplementedException();
+        return position;
     }
 
     ObjType IObject.GetType()
     {
-        throw new System.NotImplementedException();
+        return ObjType.LightPole;
     }
 
     public float GetRadius()
     {
-        throw new System.NotImplementedException();
+        return radius;
     }
 
+    /// <param name="additonal">
+    /// <br/>0: (float)angle to rotate
+    /// </param>
     public void Init(Vector2 pos, params object[] additonal)
     {
-        throw new System.NotImplementedException();
+        position = pos;
+        transform.Rotate(0, (float)additonal[0], 0);
+        SetRayActive(true);
     }
     #endregion
 

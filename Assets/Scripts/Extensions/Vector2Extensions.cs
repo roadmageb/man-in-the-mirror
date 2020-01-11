@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class Vector2IntExtensions
+public static class Vector2Extensions
 {
-    public static bool IsInAdjacentArea(this Vector2Int a, Vector2Int b, int size)
+    public static bool IsInAdjacentArea(this Vector2 a, Vector2 b, int size)
     {
         return (a - b).magnitude <= size;
     }
-    public static int ManhattanDistance(this Vector2Int a, Vector2Int b)
+    public static float ManhattanDistance(this Vector2 a, Vector2 b)
     {
         return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
     }
