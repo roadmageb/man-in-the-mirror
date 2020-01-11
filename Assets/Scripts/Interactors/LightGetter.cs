@@ -2,17 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightGetter : MonoBehaviour
+public class LightGetter : MonoBehaviour, IObject
 {
-    // Start is called before the first frame update
-    void Start()
+    public Vector2 position;
+    public float radius;
+
+    #region IObject
+    public GameObject GetObject()
     {
-        
+        return gameObject;
     }
 
-    // Update is called once per frame
-    void Update()
+    public Vector2 GetPos()
     {
-        
+        return position;
     }
+
+    public float GetRadius()
+    {
+        return radius;
+    }
+
+    /// <param name="additonal">
+    /// <br/>No additional data
+    /// </param>
+    public void Init(Vector2 pos, params object[] additonal)
+    {
+        position = pos;
+    }
+
+    ObjType IObject.GetType()
+    {
+        return ObjType.LightGetter;
+    }
+    #endregion
 }

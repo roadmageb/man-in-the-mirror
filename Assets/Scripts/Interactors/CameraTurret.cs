@@ -5,46 +5,29 @@ using UnityEngine;
 public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteractor
 {
 	[SerializeField]
-	private Floor floor = null;
     public float radius = 0.5f;
-	public Vector2Int Position { get { return floor != null ? floor.mapPos : throw new UnassignedReferenceException("Floor of Interactor is not assigned"); } }
-
+    public Vector2 position;
     [Space(15)]
     public GameObject scatteredTurret;
+
+    /// <param name="additonal">
+    /// <br/>No additional data
+    /// </param>
+    #region IObject
     public void Init(Vector2 pos, params object[] additonal)
     {
-        floor.objOnFloor = this;
+        position = pos;
 		PlayerController.inst.OnPlayerMove += Interact;
         if (GameManager.aTurret >= 0) MapManager.inst.currentMap.clearConditions[GameManager.aTurret].IsDone(0, 1);
     }
-
-    public void Break()
-    {
-        Instantiate(scatteredTurret, transform.position + new Vector3(0, 0.3f), transform.rotation);
-        if (GameManager.nTurret >= 0) MapManager.inst.currentMap.clearConditions[GameManager.nTurret].IsDone(1);
-        MapManager.inst.currentMap.RemoveObject(Position);
-    }
-
-    public void Interact(Vector2Int pos)
-    {
-        if(!GameManager.inst.isGameOver && PlayerController.inst.currentPlayer != null)
-        {
-            if (Position.IsInAdjacentArea(pos, 1) && MapManager.inst.currentMap.GetWallAtPos((Vector2)(Position + pos) / 2) == null)
-            {
-                GameManager.inst.GameOver();
-                //TODO : Restart Level
-            }
-        }
-    }
-
     public GameObject GetObject()
     {
         return gameObject;
     }
 
-    public Vector2Int GetPos()
+    public Vector2 GetPos()
     {
-        return new Vector2Int((int)transform.position.x, (int)transform.position.z);
+        return position;
     }
 
     ObjType IObject.GetType()
@@ -52,18 +35,40 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
         return ObjType.Camera;
     }
 
-    private void OnDestroy()
-    {
-        if(FindObjectOfType<PlayerController>() != null) PlayerController.inst.OnPlayerMove -= Interact;
-    }
-
     public float GetRadius()
     {
         return radius;
     }
+    #endregion
 
-    Vector2 IObject.GetPos()
+    #region IBreakable
+    public void Break()
     {
-        return Position;
+        Instantiate(scatteredTurret, transform.position + new Vector3(0, 0.3f), transform.rotation);
+        if (GameManager.nTurret >= 0) MapManager.inst.currentMap.clearConditions[GameManager.nTurret].IsDone(1);
+        MapManager.inst.currentMap.RemoveObject(position);
+    }
+    #endregion
+
+    #region IPlayerInteractor
+    public void Interact(Vector2Int pos)
+    {
+        if(!GameManager.inst.isGameOver && PlayerController.inst.currentPlayer != null)
+        {
+            if (position.IsInAdjacentArea(pos, 1) && MapManager.inst.currentMap.GetWallAtPos((Vector2)(position + pos) / 2) == null)
+            {
+                GameManager.inst.GameOver();
+                //TODO : Restart Level
+            }
+        }
+    }
+    #endregion
+
+    private void OnDestroy()
+    {
+        if (FindObjectOfType<PlayerController>() != null)
+        {
+            PlayerController.inst.OnPlayerMove -= Interact;
+        }
     }
 }
