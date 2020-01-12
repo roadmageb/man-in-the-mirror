@@ -4,9 +4,9 @@ using UnityEngine;
 
 public interface IObject
 {
-    void Init(Floor floor);
+    void Init(Vector2 pos, params object[] additonal);
     GameObject GetObject();
-    Vector2Int GetPos();
+    Vector2 GetPos();
     ObjType GetType();
     float GetRadius();
 }

@@ -104,8 +104,7 @@ public class CameraController : MonoBehaviour
         for (i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
-            if (!StageSelector.inst.gameSettings["zoomAnim"])
-                break;
+            if (StageInfo.inst.isMapEditor || !StageSelector.inst.gameSettings["zoomAnim"]) break;
             transform.position += posDiff;
             transform.eulerAngles += new Vector3(angleDiff, 0, 0);
             Camera.main.fieldOfView = Mathf.Lerp(mapFov, shootingFov, i / cameraMoveDuration);
@@ -153,8 +152,7 @@ public class CameraController : MonoBehaviour
         for (i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
-            if (!StageSelector.inst.gameSettings["zoomAnim"])
-                break;
+            if (StageInfo.inst.isMapEditor || !StageSelector.inst.gameSettings["zoomAnim"]) break;
             transform.position += posDiff;
             transform.eulerAngles += angleDiff;
             Camera.main.fieldOfView = Mathf.Lerp(shootingFov, mapFov, i / cameraMoveDuration);

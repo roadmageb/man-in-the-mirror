@@ -4,34 +4,11 @@ using UnityEngine;
 
 public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
 {
-	[SerializeField]
-	private Floor floor = null;
+    [SerializeField]
+    public Vector2 position;
+    public float radius = 0.5f;
     public BulletCode dropBullet;
     public GameObject table;
-    public float radius = 0.5f;
-	public Vector2Int Position { get { return floor != null ? floor.mapPos : throw new UnassignedReferenceException("Floor of Interactor is not assigned"); } }
-
-    public GameObject GetObject()
-    {
-        return gameObject;
-    }
-
-    public Vector2Int GetPos()
-    {
-        return new Vector2Int((int)transform.position.x, (int)transform.position.z);
-    }
-
-    public void Init(Floor floor)
-	{
-        if (GameManager.aCase >= 0)
-        {
-            MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone(0, 1);
-            //Debug.Log("init brief");
-        }
-        this.floor = floor;
-        floor.objOnFloor = this;
-		PlayerController.inst.OnPlayerMove += Interact;
-	}
 
     public void SetBullet(BulletCode _dropBullet)
     {
@@ -54,36 +31,64 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
         }
     }
 
+    #region IPlayerInteractor
     public void Interact(Vector2Int position)
 	{
         if(!GameManager.inst.isGameOver)
         {
             //Debug.Log(Position + " " + position);
-            if (Position == position)
+            if (this.position == position)
             {
                 if (dropBullet != BulletCode.NULL)
                     PlayerController.inst.AddBullet(dropBullet);
                 if (GameManager.nCase >= 0)
                     MapManager.inst.currentMap.clearConditions[GameManager.nCase].IsDone(1);
-                floor.objOnFloor = null;
-                MapManager.inst.currentMap.RemoveObject(Position);
+                MapManager.inst.currentMap.RemoveObject(position);
             }
         }
-
 	}
 
-    ObjType IObject.GetType()
-    {
-        return ObjType.Briefcase;
-    }
+    #endregion
 
     private void OnDestroy()
     {
         if (FindObjectOfType<PlayerController>() != null) PlayerController.inst.OnPlayerMove -= Interact;
     }
 
+    #region IObject
+    /// <param name="additonal">
+    /// <br/>0: (BulletCode) bullet type to drop
+    /// </param>
+    public void Init(Vector2 pos, params object[] additonal)
+    {
+        if (GameManager.aCase >= 0)
+        {
+            MapManager.inst.currentMap.clearConditions[GameManager.aCase].IsDone(0, 1);
+            //Debug.Log("init brief");
+        }
+        position = pos;
+        SetBullet((BulletCode)additonal[0]);
+        PlayerController.inst.OnPlayerMove += Interact;
+    }
+
+    public GameObject GetObject()
+    {
+        return gameObject;
+    }
+
+    public Vector2 GetPos()
+    {
+        return position;
+    }
+
+    ObjType IObject.GetType()
+    {
+        return ObjType.Briefcase;
+    }
+
     public float GetRadius()
     {
         return radius;
     }
+    #endregion
 }

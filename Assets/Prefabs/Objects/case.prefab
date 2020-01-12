@@ -174,7 +174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821171481de43df46b274296d8061cb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floor: {fileID: 0}
-  dropBullet: 3
-  table: {fileID: 256812563257164782}
+  position: {x: 0, y: 0}
   radius: 0.3
+  dropBullet: 0
+  table: {fileID: 256812563257164782}
