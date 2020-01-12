@@ -126,9 +126,12 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     PointToParRay(stPos, floorPos + 0.5f * (dir ? new Vector2(-reflectSide, side) : new Vector2(side, -reflectSide)), true));
                 if (IsInRay(parRay, floorPair))
                 {
-                    if (floorCountGrid.ContainsKey(floorPos)) // have floor on player's side
+                    if (floorCountGrid.TryGetValue(floorPos, out int count)) // have floor on player's side
                     {
-                        floorCountGrid[floorPos] = 1;
+                        if (count == 0)
+                        {
+                            floorCountGrid[floorPos] = 1;
+                        }
                     }
                     else if (floorCountGrid.ContainsKey(GetOpposite(floorPos))) // no floor on player's side, but have floor on opposite
                     {
@@ -143,15 +146,15 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 {
                     isJackson = MapManager.inst.currentMap.GetFloorAtPos(floorPos).isPlayerOn;
                 }
-                bool haveObject = objectCountGrid.ContainsKey(floorPos) || isJackson;
+                bool haveObject = (objectCountGrid.TryGetValue(floorPos, out int val) && val == 0) || isJackson;
                 float objRadius = haveObject ? (isJackson ?
                         PlayerController.inst.radius : MapManager.inst.currentMap.objectGrid[floorPos].GetRadius()) : 100;
-                bool oppoObject = objectCountGrid.ContainsKey(GetOpposite(floorPos));
+                bool oppoObject = (objectCountGrid.TryGetValue(GetOpposite(floorPos), out val) && val == 0);
                 float oppoRadius = oppoObject ? (isJackson ?
                     PlayerController.inst.radius : MapManager.inst.currentMap.objectGrid[GetOpposite(floorPos)].GetRadius()) : 100;
                 if (haveObject) // have object on floorPos
                 {
-                    if (CheckObjectVisible(parRay, floorPos, objRadius))
+                    if (CheckObjectVisible(parRay, stPos, floorPos, objRadius))
                     {
                         if (isJackson)
                         {
@@ -162,7 +165,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                             objectCountGrid[floorPos] = 1;
                         }
                     }
-                    else if (oppoObject && CheckObjectVisible(parRay, GetOpposite(floorPos), oppoRadius))
+                    else if (oppoObject && CheckObjectVisible(parRay, stPos, GetOpposite(floorPos), oppoRadius, false))
                     {
                         objectCountGrid[floorPos] = -1;
                     }
@@ -173,7 +176,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 }
                 else if (oppoObject) // no object on floorPos, opposite have object
                 {
-                    if (CheckObjectVisible(parRay, GetOpposite(floorPos), oppoRadius))
+                    if (CheckObjectVisible(parRay, stPos, GetOpposite(floorPos), oppoRadius, false) && !objectCountGrid.ContainsKey(floorPos))
                     {
                         objectCountGrid.Add(floorPos, -1);
                     }
@@ -182,17 +185,17 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
 
                 Vector2 wallPos = dir ? new Vector2(j + 0.5f * reflectSide, i) : new Vector2(i, j + 0.5f * reflectSide);
                 #region check object
-                haveObject = objectCountGrid.ContainsKey(wallPos);
+                haveObject = objectCountGrid.TryGetValue(wallPos, out val) && val == 0;
                 objRadius = haveObject ? MapManager.inst.currentMap.objectGrid[wallPos].GetRadius() : 100;
-                oppoObject = objectCountGrid.ContainsKey(GetOpposite(wallPos));
+                oppoObject = objectCountGrid.TryGetValue(GetOpposite(wallPos), out val) && val == 0;
                 oppoRadius = oppoObject ? MapManager.inst.currentMap.objectGrid[GetOpposite(wallPos)].GetRadius() : 100;
                 if (haveObject) // have object on floorPos
                 {
-                    if (CheckObjectVisible(parRay, wallPos, objRadius))
+                    if (CheckObjectVisible(parRay, stPos, wallPos, objRadius))
                     {
                         objectCountGrid[wallPos] = 1;
                     }
-                    else if (oppoObject && CheckObjectVisible(parRay, GetOpposite(wallPos), oppoRadius))
+                    else if (oppoObject && CheckObjectVisible(parRay, stPos, GetOpposite(wallPos), oppoRadius, false))
                     {
                         objectCountGrid[wallPos] = -1;
                     }
@@ -203,7 +206,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 }
                 else if (oppoObject) // no object on floorPos, opposite have object
                 {
-                    if (CheckObjectVisible(parRay, GetOpposite(wallPos), oppoRadius))
+                    if (CheckObjectVisible(parRay, stPos, GetOpposite(wallPos), oppoRadius, false) && !objectCountGrid.ContainsKey(wallPos))
                     {
                         objectCountGrid.Add(wallPos, -1);
                     }
@@ -216,10 +219,13 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     (new Pair(PointToParRay(stPos, wallPos + new Vector2(-0.5f, 0), true), PointToParRay(stPos, wallPos + new Vector2(0.5f, 0), true)));
                 if (IsInRay(parRay, wallPair))
                 {
-                    if (wallCountGrid.ContainsKey(wallPos)) // have wall
+                    if (wallCountGrid.TryGetValue(wallPos, out int count)) // have wall
                     {
-                        wallCountGrid[wallPos] = 1;
-                        SubtractRay(parRay, wallPair);
+                        if (count == 0)
+                        {
+                            wallCountGrid[wallPos] = 1;
+                            SubtractRay(parRay, wallPair);
+                        }
                     }
                     else if (wallCountGrid.ContainsKey(GetOpposite(wallPos))) // no wall on player's side, but have wall on opposite
                     {
@@ -249,17 +255,17 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             {
                 Vector2 wallPos = dir ? new Vector2(j, iMid) : new Vector2(iMid, j);
                 #region check object
-                bool haveObject = objectCountGrid.ContainsKey(wallPos);
+                bool haveObject = objectCountGrid.TryGetValue(wallPos, out int val) && val == 0;
                 float objRadius = haveObject ? MapManager.inst.currentMap.objectGrid[wallPos].GetRadius() : 100;
-                bool oppoObject = objectCountGrid.ContainsKey(GetOpposite(wallPos));
+                bool oppoObject = objectCountGrid.TryGetValue(GetOpposite(wallPos), out val) && val == 0;
                 float oppoRadius = oppoObject ? MapManager.inst.currentMap.objectGrid[GetOpposite(wallPos)].GetRadius() : 100;
                 if (haveObject) // have object on floorPos
                 {
-                    if (CheckObjectVisible(parRay, wallPos, objRadius))
+                    if (CheckObjectVisible(parRay, stPos, wallPos, objRadius))
                     {
                         objectCountGrid[wallPos] = 1;
                     }
-                    else if (oppoObject && CheckObjectVisible(parRay, GetOpposite(wallPos), oppoRadius))
+                    else if (oppoObject && CheckObjectVisible(parRay, stPos, GetOpposite(wallPos), oppoRadius, false))
                     {
                         objectCountGrid[wallPos] = -1;
                     }
@@ -270,7 +276,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 }
                 else if (oppoObject) // no object on floorPos, opposite have object
                 {
-                    if (CheckObjectVisible(parRay, GetOpposite(wallPos), oppoRadius))
+                    if (CheckObjectVisible(parRay, stPos, GetOpposite(wallPos), oppoRadius, false) && !objectCountGrid.ContainsKey(wallPos))
                     {
                         objectCountGrid.Add(wallPos, -1);
                     }
@@ -283,10 +289,13 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     (new Pair(PointToParRay(stPos, wallPos + new Vector2(-0.5f, 0), true), PointToParRay(stPos, wallPos + new Vector2(0.5f, 0), true)));
                 if (IsInRay(parRay, wallPair))
                 {
-                    if (wallCountGrid.ContainsKey(wallPos)) // have wall
+                    if (wallCountGrid.TryGetValue(wallPos, out int count)) // have wall
                     {
-                        wallCountGrid[wallPos] = 1;
-                        SubtractRay(parRay, wallPair);
+                        if (count == 0)
+                        {
+                            wallCountGrid[wallPos] = 1;
+                            SubtractRay(parRay, wallPair);
+                        }
                     }
                     else if (wallCountGrid.ContainsKey(GetOpposite(wallPos))) // no wall on player's side, but have wall on opposite
                     {
@@ -326,11 +335,14 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     };
                     foreach (var floorPos in floorPoses)
                     {
-                        if (floorCountGrid.ContainsKey(floorPos)) // have floor on player's side
+                        if (floorCountGrid.TryGetValue(floorPos, out int count)) // have floor on player's side
                         {
-                            floorCountGrid[floorPos] = 1;
+                            if (count == 0)
+                            {
+                                floorCountGrid[floorPos] = 1;
+                            }
                         }
-                        else if (floorCountGrid.ContainsKey(GetOpposite(floorPos))) // no floor on player's side, but have floor on opposite
+                        else if (floorCountGrid.ContainsKey(GetOpposite(floorPos)) && !floorCountGrid.ContainsKey(floorPos)) // no floor on player's side, but have floor on opposite
                         {
                             floorCountGrid.Add(floorPos, -1);
                         }
@@ -339,17 +351,17 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 #endregion
 
                 #region check object on crossPoint
-                bool haveObject = objectCountGrid.ContainsKey(crossPoint);
+                bool haveObject = objectCountGrid.TryGetValue(crossPoint, out int val) && val == 0;
                 float objRadius = haveObject ? MapManager.inst.currentMap.objectGrid[crossPoint].GetRadius() : 100;
-                bool oppoObject = objectCountGrid.ContainsKey(GetOpposite(crossPoint));
+                bool oppoObject = objectCountGrid.TryGetValue(GetOpposite(crossPoint), out val) && val == 0;
                 float oppoRadius = oppoObject ? MapManager.inst.currentMap.objectGrid[GetOpposite(crossPoint)].GetRadius() : 100;
                 if (haveObject) // have object on floorPos
                 {
-                    if (CheckObjectVisible(parRay, crossPoint, objRadius))
+                    if (CheckObjectVisible(parRay, stPos, crossPoint, objRadius))
                     {
                         objectCountGrid[crossPoint] = 1;
                     }
-                    else if (oppoObject && CheckObjectVisible(parRay, GetOpposite(crossPoint), oppoRadius))
+                    else if (oppoObject && CheckObjectVisible(parRay, stPos, GetOpposite(crossPoint), oppoRadius, false))
                     {
                         objectCountGrid[crossPoint] = -1;
                     }
@@ -360,7 +372,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 }
                 else if (oppoObject) // no object on floorPos, opposite have object
                 {
-                    if (CheckObjectVisible(parRay, GetOpposite(crossPoint), oppoRadius))
+                    if (CheckObjectVisible(parRay, stPos, GetOpposite(crossPoint), oppoRadius, false) && !objectCountGrid.ContainsKey(crossPoint))
                     {
                         objectCountGrid.Add(crossPoint, -1);
                     }
@@ -384,23 +396,49 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 }
             }
             if (parRay.Count == 0) break;
+            //else
+            //{
+            //    Debug.Log("Rays: ");
+            //    foreach (var ray in parRay)
+            //    {
+            //        Debug.Log("Ray: " + ray.l + "~" + ray.r);
+            //    }
+            //}
         }
 
         while (!doReflect) yield return null;
 
-        #region copy floors
-        foreach (var floor in floorCountGrid)
+        #region copy objects & jacksons
+        foreach (var obj in objectCountGrid)
         {
-            //Debug.Log(floor);
-            Floor mySideFloor = MapManager.inst.currentMap.GetFloorAtPos(floor.Key);
-            Vector2Int oppoPos = GetOpposite(floor.Key);
-            if (floor.Value > 0 && mySideFloor != null) // create at opposite
+            Debug.Log(obj);
+            Vector2 oppoPos = GetOpposite(obj.Key);
+            Vector2Int oppoFloorPos = Vector2Int.RoundToInt(oppoPos);
+            if (obj.Value != 0) // create or remove
             {
-                MapManager.inst.currentMap.CreateFloor(oppoPos, mySideFloor.isGoalFloor);
-            }
-            else if (floor.Value < 0 && MapManager.inst.currentMap.GetFloorAtPos(oppoPos) != null) // remove from opposite
-            {
-                MapManager.inst.currentMap.RemoveFloor(oppoPos);
+                // remove opposite objects
+                if (MapManager.inst.currentMap.objectGrid.ContainsKey(oppoPos))
+                {
+                    MapManager.inst.currentMap.RemoveObject(oppoPos);
+                }
+                if (MapManager.inst.currentMap.GetFloorAtPos(oppoFloorPos) != null &&
+                    MapManager.inst.currentMap.GetFloorAtPos(oppoFloorPos).isPlayerOn &&
+                    oppoPos.ManhattanDistance(oppoFloorPos) < 0.2f)
+                {
+                    PlayerController.inst.RemovePlayer(oppoFloorPos);
+                }
+
+                if (obj.Value > 0)
+                {
+                    if (obj.Value > 1) // create jackson on opposite
+                    {
+                        PlayerController.inst.CreatePlayer(oppoFloorPos, Vector2Int.RoundToInt(mapPos), dir);
+                    }
+                    else
+                    {
+                        Debug.Log("Copy");
+                    }
+                }
             }
         }
         #endregion
@@ -421,37 +459,19 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         }
         #endregion
 
-        #region copy objects & jacksons
-        foreach (var obj in objectCountGrid)
+        #region copy floors
+        foreach (var floor in floorCountGrid)
         {
-            Debug.Log(obj);
-            Vector2 oppoPos = GetOpposite(obj.Key);
-            Vector2Int oppoFloorPos = Vector2Int.RoundToInt(oppoPos);
-            if (obj.Value != 0) // create or remove
+            //Debug.Log(floor);
+            Floor mySideFloor = MapManager.inst.currentMap.GetFloorAtPos(floor.Key);
+            Vector2Int oppoPos = GetOpposite(floor.Key);
+            if (floor.Value > 0 && mySideFloor != null) // create at opposite
             {
-                // remove opposite objects
-                if (MapManager.inst.currentMap.objectGrid.ContainsKey(oppoPos))
-                {
-                    MapManager.inst.currentMap.RemoveObject(oppoPos);
-                }
-                if (MapManager.inst.currentMap.GetFloorAtPos(oppoFloorPos) != null &&
-                    MapManager.inst.currentMap.GetFloorAtPos(oppoFloorPos).isPlayerOn &&
-                    oppoPos.ManhattanDistance(oppoFloorPos) < 0.2f) 
-                {
-                    PlayerController.inst.RemovePlayer(oppoFloorPos);
-                }
-
-                if (obj.Value > 0)
-                {
-                    if (obj.Value > 1) // create jackson on opposite
-                    {
-                        PlayerController.inst.CreatePlayer(oppoFloorPos, Vector2Int.RoundToInt(mapPos), dir);
-                    }
-                    else
-                    {
-                        Debug.Log("Copy");
-                    }
-                }
+                MapManager.inst.currentMap.CreateFloor(oppoPos, mySideFloor.isGoalFloor);
+            }
+            else if (floor.Value < 0 && MapManager.inst.currentMap.GetFloorAtPos(oppoPos) != null) // remove from opposite
+            {
+                MapManager.inst.currentMap.RemoveFloor(oppoPos);
             }
         }
         #endregion
@@ -602,21 +622,38 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         }
     }
 
-    float PointToRayDistanceSquare(Vector2Int point, Vector2 stPos, float ray, bool useOpposite = true)
+    float PointToRayDistanceSquare(Vector2 point, Vector2 stPos, float ray, bool useOpposite = true)
     {
         if (useOpposite) point = GetOpposite(point);
         Vector2 realPos = dir ? mapPos + new Vector2(ray, 0) : mapPos + new Vector2(0, ray);
         // ax + by + c = 0
-        float a = realPos.x - stPos.x;
-        float b = stPos.y - realPos.y;
+        float a = stPos.y - realPos.y;
+        float b = realPos.x - stPos.x;
         float c = (stPos.x - realPos.x) * stPos.y + (realPos.y - stPos.y) * stPos.x;
         float distSq = (a * point.x + b * point.y + c) * (a * point.x + b * point.y + c) / (a * a + b * b);
-        Debug.Log("point: " + point + ", ray: " + ray + ", distSq: " + distSq);
+        Debug.Log("realPos: " + realPos + ", point: " + point + ", ray: " + ray + ", distSq: " + distSq);
         return distSq;
     }
 
-    bool CheckObjectVisible(List<Pair> parRay, Vector2 pos, float radius)
+    bool CheckObjectVisible(List<Pair> parRay, Vector2 stPos, Vector2 pos, float radius, bool useOpposite = true)
     {
-        return true;
+        if (IsInRay(parRay, PointToParRay(stPos, pos, true)))
+        {
+            return true;
+        }
+
+        Debug.Log(stPos);
+        Debug.Log(radius);
+
+        radius *= radius;
+        for (int i = 0; i < parRay.Count; ++i)
+        {
+            if (PointToRayDistanceSquare(pos, stPos, parRay[i].l, useOpposite) < radius ||
+                PointToRayDistanceSquare(pos, stPos, parRay[i].r, useOpposite) < radius)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
