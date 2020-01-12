@@ -46,8 +46,8 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
                 MapManager.inst.currentMap.RemoveObject(position);
             }
         }
-
 	}
+
     #endregion
 
     private void OnDestroy()

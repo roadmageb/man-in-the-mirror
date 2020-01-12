@@ -201,14 +201,9 @@ public class Map : MonoBehaviour
             Debug.LogError("Input size exceeds map's max size.");
             return;
         }
-        if (Mathf.Abs(pos.x * 10) % 5 != 0 || Mathf.Abs(pos.y * 10) % 5 != 0 || (Mathf.Abs(pos.x * 10) % 10 == 5 && Mathf.Abs(pos.y * 10) % 10 == 5) || (Mathf.Abs(pos.x * 10) % 10 != 5 && Mathf.Abs(pos.y * 10) % 10 != 5))
-        {
-            Debug.LogError("Inappropriate position of wall.");
-            return;
-        }
         if (!wallGrid.ContainsKey(pos))
         {
-            wallGrid.Add(pos, Instantiate(MapManager.inst.walls[Random.Range(0, MapManager.inst.walls.Length)], new Vector3(pos.x, 0, pos.y),
+            wallGrid.Add(pos, Instantiate(MapManager.inst.walls[(int)wallType], new Vector3(pos.x, 0, pos.y),
                 Quaternion.Euler(0, (int)pos.x != pos.x ? 90 : 0, 0), walls.transform).GetComponent<Wall>());
             wallGrid[pos].mapPos = pos;
             wallGrid[pos].type = wallType;
@@ -235,8 +230,7 @@ public class Map : MonoBehaviour
     /// <param name="pos">Position of wall.</param>
     public void ChangeWall(Vector2 pos, WallType type, bool isBreak = true)
     {
-        if (((int)pos.x >= 0 ? ((int)pos.x > maxMapSize / 2) : ((int)pos.x < -maxMapSize / 2)) || 
-            ((int)pos.y >= 0 ? ((int)pos.y > maxMapSize / 2) : ((int)pos.y < -maxMapSize / 2)))
+        if (((int)pos.x >= 0 ? ((int)pos.x > maxMapSize / 2) : ((int)pos.x < -maxMapSize / 2)) || ((int)pos.y >= 0 ? ((int)pos.y > maxMapSize / 2) : ((int)pos.y < -maxMapSize / 2)))
         {
             Debug.LogError("Input size exceeds map's max size.");
             return;
@@ -245,13 +239,6 @@ public class Map : MonoBehaviour
         {
             if (isBreak) (wallGrid[pos] as IBreakable).Break();
             RemoveWall(pos);
-
-            /*Wall wallObj;
-            wallObj = Instantiate(MapManager.inst.walls[Random.Range(0, MapManager.inst.walls.Length)], new Vector3(pos.x, 0, pos.y), 
-                Quaternion.Euler(0, (int)pos.x != pos.x ? 90 : 0, 0), walls.transform).GetComponent<Wall>();
-            wallGrid.Add(pos, wallObj);
-            wallGrid[pos].mapPos = pos;
-            wallGrid[pos].type = type;*/
 
             CreateWall(pos, type, isBreak);
             StartCoroutine(MapManager.inst.Rebaker());
