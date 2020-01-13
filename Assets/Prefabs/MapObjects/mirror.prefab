@@ -130,7 +130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 0}
   len: 1
-  type: 2
+  type: 1
   scatteredMirror: {fileID: 5067960725721402673, guid: 05802e44cda3ff549a5ed7f4291ea9b8,
     type: 3}
   doReflect: 0

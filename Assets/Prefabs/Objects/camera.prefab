@@ -99,6 +99,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -274,8 +275,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 477371216391077568}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 0
+  m_Shape: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 50
   m_Range: 1.2
@@ -365,8 +367,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 651077817452597986}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 0
+  m_Shape: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 50
   m_Range: 1.2
@@ -516,6 +519,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -707,6 +711,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -823,7 +828,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00412ad71b8f0e14c9a23118682ee6f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floor: {fileID: 0}
+  radius: 0.5
+  position: {x: 0, y: 0}
   scatteredTurret: {fileID: 5867490533518071498, guid: d6c0cb697ea7bd341a7e3b0968a8a273,
     type: 3}
 --- !u!208 &7514060783340336889
@@ -838,7 +844,7 @@ NavMeshObstacle:
   m_Shape: 0
   m_Extents: {x: 0.25, y: 0.5, z: 0.25}
   m_MoveThreshold: 0.1
-  m_Carve: 0
+  m_Carve: 1
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0.5, z: 0}
   m_TimeToStationary: 0.5
@@ -910,6 +916,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -990,8 +997,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6610984226017906805}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 0
+  m_Shape: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 50
   m_Range: 1.2
@@ -1081,8 +1089,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6856240290620152149}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 1
   m_Range: 0.7
@@ -1232,6 +1241,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1467,6 +1477,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1642,8 +1653,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8684607302744440129}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 0
+  m_Shape: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 50
   m_Range: 1.2

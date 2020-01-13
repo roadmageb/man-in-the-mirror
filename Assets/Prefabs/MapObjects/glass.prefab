@@ -144,6 +144,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapPos: {x: 0, y: 0}
   len: 1
-  type: 3
+  type: 2
   scatteredGlass: {fileID: 4239573989293645313, guid: 07a2ff92843e98c4298e3d95c758f3ef,
     type: 3}

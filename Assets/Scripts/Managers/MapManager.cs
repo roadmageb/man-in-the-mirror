@@ -11,13 +11,10 @@ public class MapManager : SingletonBehaviour<MapManager>
     public Map emptyMap;
     [Header("Instances")]
     public Floor floor;
-    public NormalWall normalWall;
-    public Mirror mirror;
-    public Glass glass;
     public GameObject truthBullet, fakeBullet, mirrorBullet;
-    public GameObject briefCase;
-    public GameObject cameraTurret;
-    public GameObject mannequin;
+    public GameObject[] walls;
+    public GameObject[] IObjects;
+    public GameObject[] mannequins;
     public GameObject player;
     [Header("All players")]
     public List<GameObject> players;
@@ -60,28 +57,37 @@ public class MapManager : SingletonBehaviour<MapManager>
                     currentMap.startFloors.Add(currentMap.GetFloorAtPos(new Vector2Int((int)temp.xPos, (int)temp.yPos)));
                     break;
                 case TileMode.TrueCase:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.True);
+                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.Briefcase, temp.angle, BulletCode.True);
                     break;
                 case TileMode.FalseCase:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.False);
+                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.Briefcase, temp.angle, BulletCode.False);
                     break;
                 case TileMode.MirrorCase:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.Mirror);
+                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.Briefcase, temp.angle, BulletCode.Mirror);
                     break;
                 case TileMode.NullCase:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Briefcase, BulletCode.NULL);
+                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.Briefcase, temp.angle, BulletCode.NULL);
                     break;
                 case TileMode.Camera:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Camera);
+                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.Camera, temp.angle);
                     break;
                 case TileMode.WMannequin:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Mannequin, true);
+                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.Mannequin, temp.angle, true, true);
                     break;
                 case TileMode.BMannequin:
-                    currentMap.CreateObject(new Vector2Int((int)temp.xPos, (int)temp.yPos), ObjType.Mannequin, false);
+                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.Mannequin, temp.angle, false, true);
                     break;
                 case TileMode.GoalFloor:
                     currentMap.CreateFloor(new Vector2Int((int)temp.xPos, (int)temp.yPos), true);
+                    break;
+                case TileMode.Glass:
+                    currentMap.CreateWall(new Vector2(temp.xPos, temp.yPos), WallType.Glass);
+                    break;
+                case TileMode.LightPole:
+                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.LightPole, temp.angle);
+                    break;
+                case TileMode.LightGetter:
+                    currentMap.CreateObject(new Vector2(temp.xPos, temp.yPos), ObjType.LightGetter, temp.angle);
                     break;
                 default:
                     break;

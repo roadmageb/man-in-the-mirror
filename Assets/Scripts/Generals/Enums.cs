@@ -1,7 +1,8 @@
 ﻿public enum TileMode
 {
     None, Floor, NormalWall, Mirror, StartFloor, TrueCase, FalseCase,
-    MirrorCase, NullCase, Camera, WMannequin, BMannequin, GoalFloor
+    MirrorCase, NullCase, Camera, WMannequin, BMannequin, GoalFloor,
+    Glass, LightPole, LightGetter
 }
 
 public enum ClearType
@@ -19,7 +20,6 @@ public enum ClearType
 
 public enum WallType
 {
-    NULL,
     Normal,
     Mirror,
     Glass
@@ -35,8 +35,16 @@ public enum BulletCode
 
 public enum ObjType
 {
-    NULL,
     Briefcase,
     Camera,
-    Mannequin
+    Mannequin,
+    LightPole,
+    LightGetter
+}
+
+public enum FloorChkMode
+{
+    Check,
+    Add,
+    Remove
 }
