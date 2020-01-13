@@ -12,6 +12,7 @@ TagManager:
   - CameraTurret
   - Mannequin
   - Mirror
+  - Glass
   layers:
   - Default
   - TransparentFX

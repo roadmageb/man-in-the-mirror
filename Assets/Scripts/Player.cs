@@ -230,6 +230,13 @@ public class Player : MonoBehaviour
                             laser.GetComponent<LineRenderer>().startColor = Color.green;
                             laser.GetComponent<LineRenderer>().endColor = Color.green;
                         }
+                        else if (beforeRay.tag.Equals("Glass"))
+                        {
+                            beforeRay.GetComponent<Outline>().enabled = true;
+                            canShoot = true;
+                            laser.GetComponent<LineRenderer>().startColor = Color.green;
+                            laser.GetComponent<LineRenderer>().endColor = Color.green;
+                        }
                         else if (beforeRay.tag.Equals("CameraTurret"))
                         {
                             foreach (var comp in beforeRay.GetComponentsInChildren<Outline>())
@@ -254,6 +261,13 @@ public class Player : MonoBehaviour
                     else if (PlayerController.inst.bulletList[0] == BulletCode.False)
                     {
                         if (beforeRay.tag.Equals("Mirror"))
+                        {
+                            beforeRay.GetComponent<Outline>().enabled = true;
+                            canShoot = true;
+                            laser.GetComponent<LineRenderer>().startColor = Color.green;
+                            laser.GetComponent<LineRenderer>().endColor = Color.green;
+                        }
+                        else if (beforeRay.tag.Equals("Glass"))
                         {
                             beforeRay.GetComponent<Outline>().enabled = true;
                             canShoot = true;
