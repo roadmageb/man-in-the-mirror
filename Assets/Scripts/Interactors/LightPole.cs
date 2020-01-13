@@ -7,8 +7,8 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
     public Vector2 position;
     public float radius = 0.5f;
 
-    private Transform shootPoint;
-    private LineRenderer rayRenderer; 
+    public Transform shootPoint;
+    public  LineRenderer rayRenderer; 
 
     private bool isRayActive = false;
     private float rayHeight;
@@ -30,12 +30,12 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
             isRayActive = isActive;
             if (isActive)
             { // turn on ray
-                //rayRenderer.enabled = true;
-                //ShootRay();
+                rayRenderer.enabled = true;
+                ShootRay();
             }
             else
             { // turn off ray
-                //rayRenderer.enabled = false;
+                rayRenderer.enabled = false;
             }
         }
     }
