@@ -175,6 +175,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   position: {x: 0, y: 0}
-  radius: 0.3
+  radius: 0.5
   dropBullet: 0
   table: {fileID: 256812563257164782}
