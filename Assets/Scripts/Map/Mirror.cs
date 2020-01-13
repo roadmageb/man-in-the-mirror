@@ -408,13 +408,13 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
 
         while (!doReflect) yield return null;
 
-        #region copy objects & jacksons
+        #region remove objects & jacksons
         foreach (var obj in objectCountGrid)
         {
-            Debug.Log(obj);
+            //Debug.Log(obj);
             Vector2 oppoPos = GetOpposite(obj.Key);
             Vector2Int oppoFloorPos = Vector2Int.RoundToInt(oppoPos);
-            if (obj.Value != 0) // create or remove
+            if (obj.Value < 0)
             {
                 // remove opposite objects
                 if (MapManager.inst.currentMap.objectGrid.ContainsKey(oppoPos))
@@ -426,18 +426,6 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                     oppoPos.ManhattanDistance(oppoFloorPos) < 0.2f)
                 {
                     PlayerController.inst.RemovePlayer(oppoFloorPos);
-                }
-
-                if (obj.Value > 0)
-                {
-                    if (obj.Value > 1) // create jackson on opposite
-                    {
-                        PlayerController.inst.CreatePlayer(oppoFloorPos, Vector2Int.RoundToInt(mapPos), dir);
-                    }
-                    else
-                    {
-                        Debug.Log("Copy");
-                    }
                 }
             }
         }
@@ -472,6 +460,45 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             else if (floor.Value < 0 && MapManager.inst.currentMap.GetFloorAtPos(oppoPos) != null) // remove from opposite
             {
                 MapManager.inst.currentMap.RemoveFloor(oppoPos);
+            }
+        }
+        #endregion
+
+        #region copy objects & jacksons
+        foreach (var obj in objectCountGrid)
+        {
+            //Debug.Log(obj);
+            Vector2 oppoPos = GetOpposite(obj.Key);
+            Vector2Int oppoFloorPos = Vector2Int.RoundToInt(oppoPos);
+            if (obj.Value > 0) // create or remove
+            {
+                if (obj.Value > 0)
+                {
+                    if (obj.Value > 1) // create jackson on opposite
+                    {
+                        PlayerController.inst.CreatePlayer(oppoFloorPos, Vector2Int.RoundToInt(mapPos), dir);
+                    }
+                    else
+                    {
+                        var iObjectOnPos = MapManager.inst.currentMap.GetObjectAtPos(obj.Key);
+                        var oldObject = iObjectOnPos.GetObject();
+                        IObject newIObject = MapManager.inst.currentMap.CreateObject(oppoPos, iObjectOnPos.GetType(), iObjectOnPos.GetObject().transform.rotation.eulerAngles.y, iObjectOnPos.GetAdditionals());
+                        
+                        if (newIObject != null)
+                        {
+                            var newObject = newIObject.GetObject();
+
+                            // mirror new object
+                            Quaternion mirroredRotation = oldObject.transform.rotation;
+                            Vector3 mirroredScale = oldObject.transform.localScale;
+                            mirroredRotation.w *= -1;
+                            if (dir) { mirroredRotation.z *= -1; mirroredScale.z *= -1; }
+                            else { mirroredRotation.x *= -1; mirroredScale.x *= -1; }
+                            newObject.transform.rotation = mirroredRotation;
+                            newObject.transform.localScale = mirroredScale;
+                        }
+                    }
+                }
             }
         }
         #endregion

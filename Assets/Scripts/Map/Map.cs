@@ -260,29 +260,34 @@ public class Map : MonoBehaviour
         else Debug.LogError("Wall doesn't exists between : " + pos);
     }
 
-    public void CreateObject(Vector2 pos, ObjType objType, float angle, params object[] additional)
+    public IObject CreateObject(Vector2 pos, ObjType objType, float angle, params object[] additional)
     {
         if ((pos.x >= 0 ? (pos.x > maxMapSize / 2) : (pos.x < -maxMapSize / 2)) || (pos.y >= 0 ? (pos.y > maxMapSize / 2) : (pos.y < -maxMapSize / 2)))
         {
             Debug.LogError("Input size exceeds map's max size.");
-            return;
+            return null;
         }
         if(!CheckAdjacentFloor(pos, null, FloorChkMode.Check))
         {
             Debug.LogError("Object's position " + pos + " is not possible for " + objType + ".");
-            return;
+            return null;
         }
         if (!objectGrid.ContainsKey(pos))
         {
             Vector3 objectPos = new Vector3(pos.x, objType == ObjType.Briefcase ? 0.5f : objType == ObjType.Mannequin ? 0.1f : 0, pos.y);
-            objectGrid.Add(pos, Instantiate(objType == ObjType.Mannequin ? MapManager.inst.mannequins[Random.Range(0, MapManager.inst.mannequins.Length)] : 
+            objectGrid.Add(pos, Instantiate(objType == ObjType.Mannequin ? MapManager.inst.mannequins[3] :
                 MapManager.inst.IObjects[(int)objType], objectPos, Quaternion.Euler(0, angle, 0), objects.transform).GetComponent<IObject>());
-            if(additional.Length == 0) objectGrid[pos].Init(pos);
+            if (additional.Length == 0) objectGrid[pos].Init(pos);
             else objectGrid[pos].Init(pos, additional);
             CheckAdjacentFloor(pos, objectGrid[pos], FloorChkMode.Add);
             StartCoroutine(MapManager.inst.Rebaker());
+            return objectGrid[pos];
         }
-        else Debug.LogError("Object already exists at : (" + pos.x + ", " + pos.y + ")");
+        else
+        {
+            Debug.LogError("Object already exists at : (" + pos.x + ", " + pos.y + ")");
+            return objectGrid[pos];
+        }
     }
     /// <summary>
     /// Remove Object at position.

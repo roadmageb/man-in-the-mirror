@@ -105,6 +105,16 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
         SetColor((bool)additional[0]);
         //if (GameManager.white >= 0) MapManager.inst.currentMap.clearConditions[GameManager.white].IsDone(1);
     }
+
+    public object[] GetAdditionals()
+    {
+        return new object[]
+        {
+            isWhite,
+            false
+        };
+    }
+
     public GameObject GetObject()
     {
         return gameObject;

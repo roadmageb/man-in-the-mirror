@@ -100,12 +100,17 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
     }
 
     /// <param name="additonal">
-    /// <br/>0: (float)angle to rotate
+    /// <br/>No additional data
     /// </param>
     public void Init(Vector2 pos, params object[] additonal)
     {
         position = pos;
         SetRayActive(true);
+    }
+
+    public object[] GetAdditionals()
+    {
+        return new object[0];
     }
     #endregion
 

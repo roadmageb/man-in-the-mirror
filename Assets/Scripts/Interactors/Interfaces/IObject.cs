@@ -5,6 +5,7 @@ using UnityEngine;
 public interface IObject
 {
     void Init(Vector2 pos, params object[] additonal);
+    object[] GetAdditionals();
     GameObject GetObject();
     Vector2 GetPos();
     ObjType GetType();

@@ -31,6 +31,11 @@ public class LightGetter : MonoBehaviour, IObject
         position = pos;
     }
 
+    public object[] GetAdditionals()
+    {
+        return new object[0];
+    }
+
     ObjType IObject.GetType()
     {
         return ObjType.LightGetter;

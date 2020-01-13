@@ -71,6 +71,14 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
         PlayerController.inst.OnPlayerMove += Interact;
     }
 
+    public object[] GetAdditionals()
+    {
+        return new object[]
+        {
+            dropBullet
+        };
+    }
+
     public GameObject GetObject()
     {
         return gameObject;

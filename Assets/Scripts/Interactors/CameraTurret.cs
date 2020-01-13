@@ -20,6 +20,12 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
 		PlayerController.inst.OnPlayerMove += Interact;
         if (GameManager.aTurret >= 0) MapManager.inst.currentMap.clearConditions[GameManager.aTurret].IsDone(0, 1);
     }
+
+    public object[] GetAdditionals()
+    {
+        return new object[0];
+    }
+
     public GameObject GetObject()
     {
         return gameObject;
