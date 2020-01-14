@@ -654,8 +654,8 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         if (useOpposite) point = GetOpposite(point);
         Vector2 realPos = dir ? mapPos + new Vector2(ray, 0) : mapPos + new Vector2(0, ray);
         // ax + by + c = 0
-        float a = stPos.y - realPos.y;
-        float b = realPos.x - stPos.x;
+        float a = dir ? realPos.x - stPos.x : stPos.y - realPos.y;
+        float b = dir ? stPos.y - realPos.y : realPos.x - stPos.x;
         float c = (stPos.x - realPos.x) * stPos.y + (realPos.y - stPos.y) * stPos.x;
         float distSq = (a * point.x + b * point.y + c) * (a * point.x + b * point.y + c) / (a * a + b * b);
         Debug.Log("realPos: " + realPos + ", point: " + point + ", ray: " + ray + ", distSq: " + distSq);
@@ -669,8 +669,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             return true;
         }
 
-        Debug.Log(stPos);
-        Debug.Log(radius);
+        Debug.Log(stPos + ", " + radius);
 
         radius *= radius;
         for (int i = 0; i < parRay.Count; ++i)
@@ -678,9 +677,11 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             if (PointToRayDistanceSquare(pos, stPos, parRay[i].l, useOpposite) < radius ||
                 PointToRayDistanceSquare(pos, stPos, parRay[i].r, useOpposite) < radius)
             {
+                Debug.Log(true);
                 return true;
             }
         }
+        Debug.Log(false);
         return false;
     }
 }
