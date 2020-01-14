@@ -52,10 +52,9 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     }
     public void CreatePlayer(Vector2Int floorPos, Vector2Int originPos, bool dir)
     {
-        List<GameObject> copyPlayers = new List<GameObject>(MapManager.inst.players);
         Floor originFloor = MapManager.inst.currentMap.GetFloorAtPos(originPos);
         Quaternion mirroredRotation = Quaternion.identity;
-        foreach (var obj in copyPlayers)
+        foreach (var obj in MapManager.inst.players)
         {
             if (obj.GetComponent<Player>().currentFloor == originFloor)
             {

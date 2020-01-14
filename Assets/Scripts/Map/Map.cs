@@ -274,7 +274,7 @@ public class Map : MonoBehaviour
         }
         if (!objectGrid.ContainsKey(pos))
         {
-            Vector3 objectPos = new Vector3(pos.x, objType == ObjType.Briefcase ? 0.5f : objType == ObjType.Mannequin ? 0.1f : 0, pos.y);
+            Vector3 objectPos = new Vector3(pos.x, objType == ObjType.Briefcase ? 0.4f : 0, pos.y);
             objectGrid.Add(pos, Instantiate(objType == ObjType.Mannequin ? MapManager.inst.mannequins[3] :
                 MapManager.inst.IObjects[(int)objType], objectPos, Quaternion.Euler(0, angle, 0), objects.transform).GetComponent<IObject>());
             if (additional.Length == 0) objectGrid[pos].Init(pos);
