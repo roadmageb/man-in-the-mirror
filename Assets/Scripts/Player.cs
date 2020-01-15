@@ -170,22 +170,11 @@ public class Player : MonoBehaviour
         laser.GetComponent<LineRenderer>().endColor = Color.red;
         if (beforeRay != null)
         {
-            if (beforeRay.tag.Equals("wall"))
+            if (beforeRay.tag.Equals("wall") || beforeRay.tag.Equals("Mirror") || beforeRay.tag.Equals("Glass"))
             {
                 beforeRay.GetComponent<Outline>().enabled = false;
             }
-            else if (beforeRay.tag.Equals("Mirror"))
-            {
-                beforeRay.GetComponent<Outline>().enabled = false;
-            }
-            else if (beforeRay.tag.Equals("CameraTurret"))
-            {
-                foreach (var comp in beforeRay.GetComponentsInChildren<Outline>())
-                {
-                    comp.enabled = false;
-                }
-            }
-            else if (beforeRay.tag.Equals("Mannequin"))
+            else if (beforeRay.tag.Equals("CameraTurret") || beforeRay.tag.Equals("Mannequin"))
             {
                 foreach (var comp in beforeRay.GetComponentsInChildren<Outline>())
                 {
