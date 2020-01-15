@@ -12,7 +12,7 @@ public class CameraController : MonoBehaviour
     public float dragSpeed;
     float cameraMoveDuration = 50;
     Vector3 previousPos;
-    Vector3 previousAngle;
+    Quaternion previousRotation;
     float shootingFov = 60f;
     float mapFov = 0;
     float rotationX = 0;
@@ -92,29 +92,23 @@ public class CameraController : MonoBehaviour
     public IEnumerator ZoomInAtPlayer(Player player)
     {
         GameManager.inst.isZooming = true;
-        float startTime = Time.time;
-        Vector3 posDiff = (player.head.transform.position - transform.position) / cameraMoveDuration;
-        float angleDiff = -30f / cameraMoveDuration;
         helpUI2.SetActive(false);
         previousPos = transform.position;
-        previousAngle = new Vector3(transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x,
-            transform.eulerAngles.y > 180 ? transform.eulerAngles.y - 360 : transform.eulerAngles.y,
-            transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z);
-        int i;
-        for (i = 0; i < cameraMoveDuration; i += 1)
+        previousRotation = transform.rotation;
+        for (int i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
             if (StageInfo.inst.isMapEditor || !StageSelector.inst.gameSettings["zoomAnim"]) break;
-            transform.position += posDiff;
-            transform.eulerAngles += new Vector3(angleDiff, 0, 0);
+            transform.position = Vector3.Lerp(previousPos, player.head.transform.position, i / cameraMoveDuration);
+            transform.rotation = Quaternion.Lerp(previousRotation, player.transform.rotation, i / cameraMoveDuration);
             Camera.main.fieldOfView = Mathf.Lerp(mapFov, shootingFov, i / cameraMoveDuration);
         }
         /*transform.position += posDiff * (cameraMoveDuration - i);
         transform.eulerAngles += new Vector3(angleDiff * (cameraMoveDuration - i), 0, 0);*/
         Camera.main.fieldOfView = shootingFov;
-
-        player.transform.eulerAngles = new Vector3(player.transform.eulerAngles.x, transform.eulerAngles.y, player.transform.eulerAngles.z);
         transform.position = player.head.transform.position;
+        transform.rotation = player.transform.rotation;
+
         rotationX = transform.eulerAngles.y;
         rotationY = transform.eulerAngles.x;
         GameManager.inst.isZooming = false;
@@ -134,35 +128,29 @@ public class CameraController : MonoBehaviour
     public IEnumerator ZoomOutFromPlayer(Player player)
     {
         GameManager.inst.isZooming = true;
-        float startTime = Time.time;
-        Vector3 posDiff = (previousPos - transform.position) / cameraMoveDuration;
         player.laser.SetActive(false);
         helpUI.SetActive(false);
         player.anim.SetBool("isShooting", false);
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Player");
         player.head.SetActive(true);
-        Vector3 tempAngle = new Vector3(transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x,
-            transform.eulerAngles.y > 180 ? transform.eulerAngles.y - 360 : transform.eulerAngles.y,
-            transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z);
-        Vector3 angleDiff = (previousAngle - tempAngle) / cameraMoveDuration;
-        angleDiff = new Vector3(angleDiff.x > 180 ? 360 - angleDiff.x : angleDiff.x,
-            angleDiff.y > 180 ? 360 - angleDiff.y : angleDiff.y,
-            angleDiff.z > 180 ? 360 - angleDiff.z : angleDiff.z);
-        int i;
-        for (i = 0; i < cameraMoveDuration; i += 1)
+
+        Vector3 tempPreviousPos = transform.position;
+        Quaternion tempPreviousRotation = transform.rotation;
+        for (int i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
             if (StageInfo.inst.isMapEditor || !StageSelector.inst.gameSettings["zoomAnim"]) break;
-            transform.position += posDiff;
-            transform.eulerAngles += angleDiff;
+            transform.position = Vector3.Lerp(tempPreviousPos, previousPos, i / cameraMoveDuration);
+            transform.rotation = Quaternion.Lerp(tempPreviousRotation, previousRotation, i / cameraMoveDuration);
             Camera.main.fieldOfView = Mathf.Lerp(shootingFov, mapFov, i / cameraMoveDuration);
         }
         /*transform.position += posDiff * (cameraMoveDuration - i);
         transform.eulerAngles += angleDiff * (cameraMoveDuration - i);*/
         Camera.main.fieldOfView = mapFov;
-
         transform.position = previousPos;
-        transform.LookAt(centerPos);
+        transform.rotation = previousRotation;
+
+        //transform.LookAt(centerPos);
         GameManager.inst.isPlayerShooting = false;
         GameManager.inst.isZooming = false;
 
