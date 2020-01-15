@@ -61,10 +61,13 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
     {
         if(!GameManager.inst.isGameOver && PlayerController.inst.currentPlayer != null)
         {
-            if (position.IsInAdjacentArea(pos, 1) && MapManager.inst.currentMap.GetWallAtPos((Vector2)(position + pos) / 2) == null)
+            if (position.IsInAdjacentArea(pos, 1))
             {
-                GameManager.inst.GameOver();
-                //TODO : Restart Level
+                Wall wall = MapManager.inst.currentMap.GetWallAtPos((Vector2)(position + pos) / 2);
+                if (wall == null || (wall is Glass))
+                {
+                    GameManager.inst.GameOver();
+                }
             }
         }
     }
