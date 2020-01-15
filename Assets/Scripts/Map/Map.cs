@@ -209,18 +209,10 @@ public class Map : MonoBehaviour
             wallGrid[pos].type = wallType;
             StartCoroutine(MapManager.inst.Rebaker());
         }
-        else
+        else if (wallGrid[pos].type != wallType)
         {
-            Debug.LogError("Wall already exists at : " + pos);
-            if (wallGrid[pos].type == WallType.Normal && wallType == WallType.Mirror) // change to Mirror
-            {
-                MapManager.inst.currentMap.ChangeWall(pos, WallType.Mirror, isBreak);
-            }
-            else if (wallGrid[pos].type == WallType.Mirror && wallType == WallType.Normal)
-            {
-                RemoveWall(pos);
-                CreateWall(pos, WallType.Normal);
-            }
+            //Debug.LogError("Wall already exists at : " + pos);
+            MapManager.inst.currentMap.ChangeWall(pos, wallType, isBreak);
         }
     }
 
