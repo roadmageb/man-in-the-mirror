@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -175,7 +175,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         objectCountGrid.Remove(floorPos);
                     }
                 }
-                else if (oppoObject) // no object on floorPos, opposite have object
+                else if (oppoObject && floorCountGrid.TryGetValue(floorPos, out int curVal) && curVal != 0) // no object on floorPos, opposite have object
                 {
                     if (CheckObjectVisible(parRay, stPos, GetOpposite(floorPos), oppoRadius, false) && !objectCountGrid.ContainsKey(floorPos))
                     {
@@ -690,11 +690,9 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             if (PointToRayDistanceSquare(pos, stPos, parRay[i].l, useOpposite) < radius ||
                 PointToRayDistanceSquare(pos, stPos, parRay[i].r, useOpposite) < radius)
             {
-                Debug.Log(true);
                 return true;
             }
         }
-        Debug.Log(false);
         return false;
     }
 }
