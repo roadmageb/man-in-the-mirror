@@ -20,9 +20,8 @@ public class CameraController : MonoBehaviour
     public float minFOV, maxFOV;
     public float minAngleX, maxAngleX;
 
-    [SerializeField]
     public Vector3 centerPos = new Vector3(-0.5f, 0, -0.5f);
-    Vector3 distance = new Vector3(0, 0, 0);
+    [SerializeField] private float distance = 0;
     /// <summary>
     /// Move camera.
     /// </summary>
@@ -63,18 +62,12 @@ public class CameraController : MonoBehaviour
         }
 
         if (!Input.GetMouseButton(1)) return;
-        float deg = Mathf.Atan2(transform.position.z - centerPos.z, transform.position.x - centerPos.x);
-        float dis = Vector3.Distance(centerPos, transform.position - new Vector3(0, transform.position.y - centerPos.y, 0));
 
-        float dif = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin).x * dragSpeed;
         float difX = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin).x * dragSpeed;
         float difY = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin).y * dragSpeed;
-        //transform.position = new Vector3(Mathf.Cos(deg - dif) * dis + centerPos.x, transform.position.y, Mathf.Sin(deg - dif) * dis + centerPos.z);
-
 
         transform.RotateAround(centerPos, Vector3.up, difX);
         transform.RotateAround(centerPos, transform.right, difY);
-        //transform.position = new Vector3(Mathf.Cos(deg - dif) * dis + centerPos.x, Mathf.Sin(deg - temp) * dis + centerPos.y, Mathf.Sin(deg - dif) * dis + centerPos.z);
         if(transform.eulerAngles.x < minAngleX)
         {
             transform.RotateAround(centerPos, transform.right, minAngleX - transform.eulerAngles.x);
@@ -86,7 +79,6 @@ public class CameraController : MonoBehaviour
 
         transform.LookAt(centerPos);
         dragOrigin = Input.mousePosition;
-        //transform.eulerAngles = new Vector3(30, transform.eulerAngles.y, transform.eulerAngles.z);
     }
     /// <summary>
     /// Zoom in / out camera with mouse scroll.
@@ -148,14 +140,17 @@ public class CameraController : MonoBehaviour
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Player");
         player.head.SetActive(true);
 
-        Vector3 tempPreviousPos = transform.position;
-        Quaternion tempPreviousRotation = transform.rotation;
+        Vector3 beforeZoomOutPos = transform.position;
+        Quaternion beforeZoomOutRotation = transform.rotation;
+        previousRotation = Quaternion.Euler(previousRotation.eulerAngles.x, player.transform.rotation.eulerAngles.y, player.transform.rotation.eulerAngles.z);
+        previousPos = centerPos - Mathf.Cos(Mathf.Deg2Rad * previousRotation.eulerAngles.x) * distance * player.transform.forward + new Vector3(0, previousPos.y - centerPos.y, 0);
+
         for (int i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
             if (StageInfo.inst.isMapEditor || !StageSelector.inst.gameSettings["zoomAnim"]) break;
-            transform.position = Vector3.Lerp(tempPreviousPos, previousPos, i / cameraMoveDuration);
-            transform.rotation = Quaternion.Lerp(tempPreviousRotation, previousRotation, i / cameraMoveDuration);
+            transform.position = Vector3.Lerp(beforeZoomOutPos, previousPos, i / cameraMoveDuration);
+            transform.rotation = Quaternion.Lerp(beforeZoomOutRotation, previousRotation, i / cameraMoveDuration);
             Camera.main.fieldOfView = Mathf.Lerp(shootingFov, mapFov, i / cameraMoveDuration);
         }
         /*transform.position += posDiff * (cameraMoveDuration - i);
@@ -163,6 +158,7 @@ public class CameraController : MonoBehaviour
         Camera.main.fieldOfView = mapFov;
         transform.position = previousPos;
         transform.rotation = previousRotation;
+        transform.LookAt(centerPos);
 
         //transform.LookAt(centerPos);
         GameManager.inst.isPlayerShooting = false;
@@ -179,7 +175,7 @@ public class CameraController : MonoBehaviour
     {
         Camera.main.fieldOfView = mapFov;
         transform.eulerAngles = new Vector3(30, transform.eulerAngles.y, transform.eulerAngles.z);
-        distance = transform.position - centerPos;
+        distance = Vector3.Distance(transform.position, centerPos);
     }
 
     // Update is called once per frame
