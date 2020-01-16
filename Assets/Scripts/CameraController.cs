@@ -15,10 +15,10 @@ public class CameraController : MonoBehaviour
     Quaternion previousRotation;
     float shootingFov = 60f;
     float mapFov = 0;
-    float rotationX = 0;
-    float rotationY = 0;
+    float rotationX = 0, rotationY = 0;
     float sensitivity = 5;
     public float minFOV, maxFOV;
+    public float minAngleX, maxAngleX;
 
     [SerializeField]
     public Vector3 centerPos = new Vector3(-0.5f, 0, -0.5f);
@@ -63,16 +63,30 @@ public class CameraController : MonoBehaviour
         }
 
         if (!Input.GetMouseButton(1)) return;
-
         float deg = Mathf.Atan2(transform.position.z - centerPos.z, transform.position.x - centerPos.x);
         float dis = Vector3.Distance(centerPos, transform.position - new Vector3(0, transform.position.y - centerPos.y, 0));
 
         float dif = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin).x * dragSpeed;
+        float difX = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin).x * dragSpeed;
+        float difY = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin).y * dragSpeed;
+        //transform.position = new Vector3(Mathf.Cos(deg - dif) * dis + centerPos.x, transform.position.y, Mathf.Sin(deg - dif) * dis + centerPos.z);
 
-        transform.position = new Vector3(Mathf.Cos(deg - dif) * dis + centerPos.x, transform.position.y, Mathf.Sin(deg - dif) * dis + centerPos.z);
+
+        transform.RotateAround(centerPos, Vector3.up, difX);
+        transform.RotateAround(centerPos, transform.right, difY);
+        //transform.position = new Vector3(Mathf.Cos(deg - dif) * dis + centerPos.x, Mathf.Sin(deg - temp) * dis + centerPos.y, Mathf.Sin(deg - dif) * dis + centerPos.z);
+        if(transform.eulerAngles.x < minAngleX)
+        {
+            transform.RotateAround(centerPos, transform.right, minAngleX - transform.eulerAngles.x);
+        }
+        else if(transform.eulerAngles.x > maxAngleX)
+        {
+            transform.RotateAround(centerPos, transform.right, maxAngleX - transform.eulerAngles.x);
+        }
+
         transform.LookAt(centerPos);
         dragOrigin = Input.mousePosition;
-        transform.eulerAngles = new Vector3(30, transform.eulerAngles.y, transform.eulerAngles.z);
+        //transform.eulerAngles = new Vector3(30, transform.eulerAngles.y, transform.eulerAngles.z);
     }
     /// <summary>
     /// Zoom in / out camera with mouse scroll.
