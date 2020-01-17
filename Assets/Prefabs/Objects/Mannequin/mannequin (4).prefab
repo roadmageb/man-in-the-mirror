@@ -1041,7 +1041,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 36f9d35b500106b42b6a47c516bf7b38, type: 2}
   - {fileID: 2100000, guid: af605edc8af008346a3f42f355847da6, type: 2}
   position: {x: 0, y: 0}
-  radius: 0.5
+  radius: 0.3
   scatteredWhite: {fileID: 945496939717725773, guid: bccc798dc7da0764d8964f801ee4d1bc,
     type: 3}
   scatteredBlack: {fileID: 5456794606668127487, guid: 458570b22c320e64cbcc9fc2697b020c,
