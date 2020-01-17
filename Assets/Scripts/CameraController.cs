@@ -12,17 +12,16 @@ public class CameraController : MonoBehaviour
     public float dragSpeed;
     float cameraMoveDuration = 50;
     Vector3 previousPos;
-    Vector3 previousAngle;
+    Quaternion previousRotation;
     float shootingFov = 60f;
     float mapFov = 0;
-    float rotationX = 0;
-    float rotationY = 0;
+    float rotationX = 0, rotationY = 0;
     float sensitivity = 5;
     public float minFOV, maxFOV;
+    public float minAngleX, maxAngleX;
 
-    [SerializeField]
     public Vector3 centerPos = new Vector3(-0.5f, 0, -0.5f);
-    Vector3 distance = new Vector3(0, 0, 0);
+    [SerializeField] private float distance = 0;
     /// <summary>
     /// Move camera.
     /// </summary>
@@ -64,15 +63,22 @@ public class CameraController : MonoBehaviour
 
         if (!Input.GetMouseButton(1)) return;
 
-        float deg = Mathf.Atan2(transform.position.z - centerPos.z, transform.position.x - centerPos.x);
-        float dis = Vector3.Distance(centerPos, transform.position - new Vector3(0, transform.position.y - centerPos.y, 0));
+        float difX = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin).x * dragSpeed;
+        float difY = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin).y * dragSpeed;
 
-        float dif = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin).x * dragSpeed;
+        transform.RotateAround(centerPos, Vector3.up, difX);
+        transform.RotateAround(centerPos, transform.right, -difY);
+        if(transform.eulerAngles.x < minAngleX)
+        {
+            transform.RotateAround(centerPos, transform.right, minAngleX - transform.eulerAngles.x);
+        }
+        else if(transform.eulerAngles.x > maxAngleX)
+        {
+            transform.RotateAround(centerPos, transform.right, maxAngleX - transform.eulerAngles.x);
+        }
 
-        transform.position = new Vector3(Mathf.Cos(deg - dif) * dis + centerPos.x, transform.position.y, Mathf.Sin(deg - dif) * dis + centerPos.z);
         transform.LookAt(centerPos);
         dragOrigin = Input.mousePosition;
-        transform.eulerAngles = new Vector3(30, transform.eulerAngles.y, transform.eulerAngles.z);
     }
     /// <summary>
     /// Zoom in / out camera with mouse scroll.
@@ -92,29 +98,23 @@ public class CameraController : MonoBehaviour
     public IEnumerator ZoomInAtPlayer(Player player)
     {
         GameManager.inst.isZooming = true;
-        float startTime = Time.time;
-        Vector3 posDiff = (player.head.transform.position - transform.position) / cameraMoveDuration;
-        float angleDiff = -30f / cameraMoveDuration;
         helpUI2.SetActive(false);
         previousPos = transform.position;
-        previousAngle = new Vector3(transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x,
-            transform.eulerAngles.y > 180 ? transform.eulerAngles.y - 360 : transform.eulerAngles.y,
-            transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z);
-        int i;
-        for (i = 0; i < cameraMoveDuration; i += 1)
+        previousRotation = transform.rotation;
+        for (int i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
             if (StageInfo.inst.isMapEditor || !StageSelector.inst.gameSettings["zoomAnim"]) break;
-            transform.position += posDiff;
-            transform.eulerAngles += new Vector3(angleDiff, 0, 0);
+            transform.position = Vector3.Lerp(previousPos, player.head.transform.position, i / cameraMoveDuration);
+            transform.rotation = Quaternion.Lerp(previousRotation, player.transform.rotation, i / cameraMoveDuration);
             Camera.main.fieldOfView = Mathf.Lerp(mapFov, shootingFov, i / cameraMoveDuration);
         }
         /*transform.position += posDiff * (cameraMoveDuration - i);
         transform.eulerAngles += new Vector3(angleDiff * (cameraMoveDuration - i), 0, 0);*/
         Camera.main.fieldOfView = shootingFov;
-
-        player.transform.eulerAngles = new Vector3(player.transform.eulerAngles.x, transform.eulerAngles.y, player.transform.eulerAngles.z);
         transform.position = player.head.transform.position;
+        transform.rotation = player.transform.rotation;
+
         rotationX = transform.eulerAngles.y;
         rotationY = transform.eulerAngles.x;
         GameManager.inst.isZooming = false;
@@ -134,35 +134,33 @@ public class CameraController : MonoBehaviour
     public IEnumerator ZoomOutFromPlayer(Player player)
     {
         GameManager.inst.isZooming = true;
-        float startTime = Time.time;
-        Vector3 posDiff = (previousPos - transform.position) / cameraMoveDuration;
         player.laser.SetActive(false);
         helpUI.SetActive(false);
         player.anim.SetBool("isShooting", false);
         player.head.transform.Find("Head 19").gameObject.layer = LayerMask.NameToLayer("Player");
         player.head.SetActive(true);
-        Vector3 tempAngle = new Vector3(transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x,
-            transform.eulerAngles.y > 180 ? transform.eulerAngles.y - 360 : transform.eulerAngles.y,
-            transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z);
-        Vector3 angleDiff = (previousAngle - tempAngle) / cameraMoveDuration;
-        angleDiff = new Vector3(angleDiff.x > 180 ? 360 - angleDiff.x : angleDiff.x,
-            angleDiff.y > 180 ? 360 - angleDiff.y : angleDiff.y,
-            angleDiff.z > 180 ? 360 - angleDiff.z : angleDiff.z);
-        int i;
-        for (i = 0; i < cameraMoveDuration; i += 1)
+
+        Vector3 beforeZoomOutPos = transform.position;
+        Quaternion beforeZoomOutRotation = transform.rotation;
+        previousRotation = Quaternion.Euler(previousRotation.eulerAngles.x, player.transform.rotation.eulerAngles.y, player.transform.rotation.eulerAngles.z);
+        previousPos = centerPos - Mathf.Cos(Mathf.Deg2Rad * previousRotation.eulerAngles.x) * distance * player.transform.forward + new Vector3(0, previousPos.y - centerPos.y, 0);
+
+        for (int i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
             if (StageInfo.inst.isMapEditor || !StageSelector.inst.gameSettings["zoomAnim"]) break;
-            transform.position += posDiff;
-            transform.eulerAngles += angleDiff;
+            transform.position = Vector3.Lerp(beforeZoomOutPos, previousPos, i / cameraMoveDuration);
+            transform.rotation = Quaternion.Lerp(beforeZoomOutRotation, previousRotation, i / cameraMoveDuration);
             Camera.main.fieldOfView = Mathf.Lerp(shootingFov, mapFov, i / cameraMoveDuration);
         }
         /*transform.position += posDiff * (cameraMoveDuration - i);
         transform.eulerAngles += angleDiff * (cameraMoveDuration - i);*/
         Camera.main.fieldOfView = mapFov;
-
         transform.position = previousPos;
+        transform.rotation = previousRotation;
         transform.LookAt(centerPos);
+
+        //transform.LookAt(centerPos);
         GameManager.inst.isPlayerShooting = false;
         GameManager.inst.isZooming = false;
 
@@ -177,7 +175,7 @@ public class CameraController : MonoBehaviour
     {
         Camera.main.fieldOfView = mapFov;
         transform.eulerAngles = new Vector3(30, transform.eulerAngles.y, transform.eulerAngles.z);
-        distance = transform.position - centerPos;
+        distance = Vector3.Distance(transform.position, centerPos);
     }
 
     // Update is called once per frame
