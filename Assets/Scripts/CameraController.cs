@@ -67,14 +67,17 @@ public class CameraController : MonoBehaviour
         float difY = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin).y * dragSpeed;
 
         transform.RotateAround(centerPos, Vector3.up, difX);
-        transform.RotateAround(centerPos, transform.right, -difY);
-        if(transform.eulerAngles.x < minAngleX)
+        if (transform.eulerAngles.x - difY >= maxAngleX)
         {
-            transform.RotateAround(centerPos, transform.right, minAngleX - transform.eulerAngles.x);
+            transform.RotateAround(centerPos, transform.right, -(maxAngleX - transform.eulerAngles.x));
         }
-        else if(transform.eulerAngles.x > maxAngleX)
+        else if(transform.eulerAngles.x - difY <= minAngleX)
         {
-            transform.RotateAround(centerPos, transform.right, maxAngleX - transform.eulerAngles.x);
+            transform.RotateAround(centerPos, transform.right, -(transform.eulerAngles.x - minAngleX));
+        }
+        else
+        {
+            transform.RotateAround(centerPos, transform.right, -difY);
         }
 
         transform.LookAt(centerPos);
@@ -104,7 +107,7 @@ public class CameraController : MonoBehaviour
         for (int i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
-            if (StageInfo.inst.isMapEditor || !StageSelector.inst.gameSettings["zoomAnim"]) break;
+            if (!StageInfo.inst.isMapEditor && !StageSelector.inst.gameSettings["zoomAnim"]) break;
             transform.position = Vector3.Lerp(previousPos, player.head.transform.position, i / cameraMoveDuration);
             transform.rotation = Quaternion.Lerp(previousRotation, player.transform.rotation, i / cameraMoveDuration);
             Camera.main.fieldOfView = Mathf.Lerp(mapFov, shootingFov, i / cameraMoveDuration);
@@ -148,7 +151,7 @@ public class CameraController : MonoBehaviour
         for (int i = 0; i < cameraMoveDuration; i += 1)
         {
             yield return new WaitForSeconds(0.01f);
-            if (StageInfo.inst.isMapEditor || !StageSelector.inst.gameSettings["zoomAnim"]) break;
+            if (!StageInfo.inst.isMapEditor && !StageSelector.inst.gameSettings["zoomAnim"]) break;
             transform.position = Vector3.Lerp(beforeZoomOutPos, previousPos, i / cameraMoveDuration);
             transform.rotation = Quaternion.Lerp(beforeZoomOutRotation, previousRotation, i / cameraMoveDuration);
             Camera.main.fieldOfView = Mathf.Lerp(shootingFov, mapFov, i / cameraMoveDuration);
