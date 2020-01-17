@@ -470,8 +470,8 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         #region copy objects & jacksons
         foreach (var obj in objectCountGrid)
         {
-            //Debug.Log(obj);
             Vector2 oppoPos = GetOpposite(obj.Key);
+            //Debug.Log(obj + " -> " + oppoPos);
             Vector2Int oppoFloorPos = Vector2Int.RoundToInt(oppoPos);
             if (obj.Value > 0) // create or remove
             {
@@ -658,11 +658,11 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         Vector2 realPos = mapPos;
         if (dir)
         {
-            realPos.x = stPos.x + ray;
+            realPos.x = ray;
         }
         else
         {
-            realPos.y = stPos.y + ray;
+            realPos.y = ray;
         }
 
         // ax + by + c = 0
@@ -681,8 +681,8 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         {
             return true;
         }
-
-        //Debug.Log("checking " +pos + ", " + radius);
+        
+        //Debug.Log("checking " +pos + ", " + radius + ", useOpposite: " + useOpposite);
 
         radius *= radius;
         for (int i = 0; i < parRay.Count; ++i)

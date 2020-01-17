@@ -99,4 +99,10 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
         return radius;
     }
     #endregion
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(transform.position, radius);
+    }   
 }
