@@ -67,7 +67,7 @@ public class CameraController : MonoBehaviour
         float difY = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin).y * dragSpeed;
 
         transform.RotateAround(centerPos, Vector3.up, difX);
-        transform.RotateAround(centerPos, transform.right, difY);
+        transform.RotateAround(centerPos, transform.right, -difY);
         if(transform.eulerAngles.x < minAngleX)
         {
             transform.RotateAround(centerPos, transform.right, minAngleX - transform.eulerAngles.x);
