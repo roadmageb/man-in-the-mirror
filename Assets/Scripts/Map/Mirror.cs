@@ -76,7 +76,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             {
                 Pair pair = new Pair(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
                 //Debug.Log(wall.Key);
-                if (IsInRay(parRay, pair)) SubtractRay(parRay, pair);
+                if (IsInRay(parRay, pair) && wall.Value.type != WallType.Glass) SubtractRay(parRay, pair);
                 yield return null;
             }
         }
