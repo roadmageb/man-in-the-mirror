@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 45c5c570f1cb45841bbdb73e7fa59fec, type: 2}
+  - {fileID: 2100000, guid: 36f9d35b500106b42b6a47c516bf7b38, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -186,6 +186,8 @@ GameObject:
   - component: {fileID: 9122864544399244499}
   - component: {fileID: 2136727351603340827}
   - component: {fileID: 7627652703725291340}
+  - component: {fileID: 505693325}
+  - component: {fileID: 5377284586155304143}
   m_Layer: 0
   m_Name: LightGetter
   m_TagString: Untagged
@@ -223,6 +225,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 0, y: 0}
   radius: 0
+  isTurnedOn: 0
+  rotateAnim: {fileID: 2203862316253428687}
+  turnOnMat: {fileID: 2100000, guid: 45c5c570f1cb45841bbdb73e7fa59fec, type: 2}
+  turnOffMat: {fileID: 2100000, guid: 36f9d35b500106b42b6a47c516bf7b38, type: 2}
 --- !u!208 &7627652703725291340
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -239,3 +245,29 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0.5, z: 0}
   m_TimeToStationary: 0.5
+--- !u!135 &505693325
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5242670655668408000}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.12
+  m_Center: {x: 0, y: 0.87, z: 0}
+--- !u!135 &5377284586155304143
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5242670655668408000}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.12
+  m_Center: {x: 0, y: 0.87, z: 0}

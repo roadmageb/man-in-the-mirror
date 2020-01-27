@@ -12,6 +12,7 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
 
     private bool isRayActive = false;
     private float rayHeight;
+    private LightGetter receivedGetter;
 
     private void Start()
     {
@@ -39,6 +40,8 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
             else
             { // turn off ray
                 rayRenderer.enabled = false;
+                receivedGetter?.SetReceived(false);
+                receivedGetter = null;
             }
         }
     }
@@ -80,6 +83,13 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
                     {
                         isHit = false; // end ray
                     }
+                }
+                else if (hit.transform.GetComponent<LightGetter>() is LightGetter lg)
+                {
+                    lg.SetReceived(true);
+                    receivedGetter = lg;
+
+                    isHit = false; // end ray
                 }
             }
             else
