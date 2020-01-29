@@ -98,6 +98,10 @@ public class Briefcase : MonoBehaviour, IObject, IPlayerInteractor
     {
         return radius;
     }
+    public int GetMirrorAble()
+    {
+        return 1;
+    }
     #endregion
 
     private void OnDrawGizmosSelected()

@@ -40,5 +40,10 @@ public class LightGetter : MonoBehaviour, IObject
     {
         return ObjType.LightGetter;
     }
+
+    public int GetMirrorAble()
+    {
+        return 0;
+    }
     #endregion
 }

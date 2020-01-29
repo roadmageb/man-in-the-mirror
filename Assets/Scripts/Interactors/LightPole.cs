@@ -112,6 +112,11 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
     {
         return new object[0];
     }
+
+    public int GetMirrorAble()
+    {
+        return 2;
+    }
     #endregion
 
     #region IBulletInteractor

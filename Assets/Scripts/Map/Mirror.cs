@@ -492,13 +492,21 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                             var newObject = newIObject.GetObject();
 
                             // mirror new object
-                            Quaternion mirroredRotation = oldObject.transform.rotation;
-                            Vector3 mirroredScale = oldObject.transform.localScale;
-                            mirroredRotation.w *= -1;
-                            if (dir) { mirroredRotation.z *= -1; mirroredScale.z *= -1; }
-                            else { mirroredRotation.x *= -1; mirroredScale.x *= -1; }
-                            newObject.transform.rotation = mirroredRotation;
-                            newObject.transform.localScale = mirroredScale;
+                            if (newIObject.GetMirrorAble() == 1)
+                            { // scale mirror
+                                Quaternion mirroredRotation = oldObject.transform.rotation;
+                                Vector3 mirroredScale = oldObject.transform.localScale;
+                                mirroredRotation.w *= -1;
+                                if (dir) { mirroredRotation.z *= -1; mirroredScale.z *= -1; }
+                                else { mirroredRotation.x *= -1; mirroredScale.x *= -1; }
+                                newObject.transform.rotation = mirroredRotation;
+                                newObject.transform.localScale = mirroredScale;
+                            }
+                            else if (newIObject.GetMirrorAble() == 2)
+                            { // rotation mirror
+                                Vector3 mirrored = Vector3.Reflect(oldObject.transform.forward, dir ? new Vector3(0, 0, 1) : new Vector3(1, 0, 0));
+                                newObject.transform.rotation = Quaternion.LookRotation(mirrored, newObject.transform.up);
+                            }
                         }
                     }
                 }

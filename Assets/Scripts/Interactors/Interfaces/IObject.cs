@@ -10,4 +10,5 @@ public interface IObject
     Vector2 GetPos();
     ObjType GetType();
     float GetRadius();
+    int GetMirrorAble();
 }
