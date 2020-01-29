@@ -11,26 +11,36 @@ public class Floor : MonoBehaviour
     public bool isGoalFloor = false;
     public IObject objOnFloor = null;
     public bool isPlayerOn = false;
+    private bool isOnBefore = false;
 
     public Dictionary<Vector2, IObject> adjacentObject;
 
     [Header("Goal Floor Settings")]
-    public SpriteRenderer spriteRenderer;
-    public Sprite goalSpriteOn;
-    public Sprite goalSpriteOff;
+    public Mesh goalFloorModel;
+    public Mesh normalFloorModel;
+    public Material[] goalFloorMats;
+    public Material[] normalFloorMats;
+    public Material goalActiveMat;
+    public Material goalDisactiveMat;
+    private MeshRenderer meshRenderer;
 
     public void RefreshGoal()
     {
-        spriteRenderer.gameObject.SetActive(isGoalFloor);
+        GetComponent<MeshFilter>().mesh = isGoalFloor ? goalFloorModel : normalFloorModel;
+        meshRenderer = GetComponent<MeshRenderer>();
+        meshRenderer.materials = isGoalFloor ? goalFloorMats : normalFloorMats;
+        isOnBefore = !isPlayerOn;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isGoalFloor)
+        if (isGoalFloor && isPlayerOn != isOnBefore)
         {
-            if (isPlayerOn) spriteRenderer.sprite = goalSpriteOn;
-            else spriteRenderer.sprite = goalSpriteOff;
+            Material[] changed = goalFloorMats.Clone() as Material[];
+            changed[1] = isPlayerOn ? goalActiveMat : goalDisactiveMat;
+            meshRenderer.materials = changed;
+            isOnBefore = isPlayerOn;
         }
     }
 }
