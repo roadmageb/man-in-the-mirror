@@ -87,7 +87,7 @@ public class Player : MonoBehaviour
         {
             yield return null;
             Floor positionFloor = MapManager.inst.currentMap.GetFloorAtPos(
-                new Vector2Int(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y)));
+                new Vector2Int(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z)));
             if (positionFloor != currentFloor)
             {
                 currentFloor.isPlayerOn = false;
