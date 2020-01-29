@@ -24,11 +24,14 @@ public class Floor : MonoBehaviour
     public Material goalDisactiveMat;
     private MeshRenderer meshRenderer;
 
-    public void RefreshGoal()
+    public void RefreshGoal(bool changeModel = true)
     {
-        GetComponent<MeshFilter>().mesh = isGoalFloor ? goalFloorModel : normalFloorModel;
-        meshRenderer = GetComponent<MeshRenderer>();
-        meshRenderer.materials = isGoalFloor ? goalFloorMats : normalFloorMats;
+        if (changeModel)
+        {
+            GetComponent<MeshFilter>().mesh = isGoalFloor ? goalFloorModel : normalFloorModel;
+            meshRenderer = GetComponent<MeshRenderer>();
+            meshRenderer.materials = isGoalFloor ? goalFloorMats : normalFloorMats;
+        }
         isOnBefore = !isPlayerOn;
     }
 
