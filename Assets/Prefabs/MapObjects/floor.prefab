@@ -116,11 +116,7 @@ MonoBehaviour:
   goalFloorMats:
   - {fileID: 2100000, guid: 1806b05944fc7024b82d2b7f32d7456c, type: 2}
   - {fileID: 2100000, guid: 234429de8baadef498c5ebbcea350e4c, type: 2}
-<<<<<<< HEAD
-  - {fileID: 2100000, guid: 9f7f876713b1e7d41a84c2df8c5505be, type: 2}
-=======
   - {fileID: 2100000, guid: 1f7c229a7dc0f7b489d3c2d8fe6b931a, type: 2}
->>>>>>> object
   normalFloorMats:
   - {fileID: 2100000, guid: 1806b05944fc7024b82d2b7f32d7456c, type: 2}
   goalActiveMat: {fileID: 2100000, guid: bccbcd49d94d5f244aaaf8ba2282984a, type: 2}
