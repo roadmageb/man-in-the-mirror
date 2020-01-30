@@ -21,7 +21,7 @@ public class MirrorMaterial : MonoBehaviour
 
     private void Update()
     {
-        if (Vector3.Dot(Camera.main.transform.forward, transform.forward) <= 0)
+        if (Vector3.Dot(transform.forward, transform.position - Camera.main.transform.position) <= 0)
         {
             mirrorCam.SetActive(false);
             mirrorRef.SetActive(false);

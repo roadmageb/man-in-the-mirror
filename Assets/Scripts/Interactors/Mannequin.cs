@@ -134,5 +134,10 @@ public class Mannequin : MonoBehaviour, IObject, IBulletInteractor
     {
         return radius;
     }
+
+    public int GetMirrorAble()
+    {
+        return 1;
+    }
     #endregion
 }

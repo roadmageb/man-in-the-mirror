@@ -10,10 +10,11 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
     [Space(15)]
     public GameObject scatteredTurret;
 
+    #region IObject
+    
     /// <param name="additonal">
     /// <br/>No additional data
     /// </param>
-    #region IObject
     public void Init(Vector2 pos, params object[] additonal)
     {
         position = pos;
@@ -45,6 +46,10 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
     {
         return radius;
     }
+    public int GetMirrorAble()
+    {
+        return 0;
+    }
     #endregion
 
     #region IBreakable
@@ -61,10 +66,13 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
     {
         if(!GameManager.inst.isGameOver && PlayerController.inst.currentPlayer != null)
         {
-            if (position.IsInAdjacentArea(pos, 1) && MapManager.inst.currentMap.GetWallAtPos((Vector2)(position + pos) / 2) == null)
+            if (position.IsInAdjacentArea(pos, 1))
             {
-                GameManager.inst.GameOver();
-                //TODO : Restart Level
+                Wall wall = MapManager.inst.currentMap.GetWallAtPos((Vector2)(position + pos) / 2);
+                if (wall == null || (wall is Glass))
+                {
+                    GameManager.inst.GameOver();
+                }
             }
         }
     }

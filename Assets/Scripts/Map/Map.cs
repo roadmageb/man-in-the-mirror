@@ -209,18 +209,10 @@ public class Map : MonoBehaviour
             wallGrid[pos].type = wallType;
             StartCoroutine(MapManager.inst.Rebaker());
         }
-        else
+        else if (wallGrid[pos].type != wallType)
         {
-            Debug.LogError("Wall already exists at : " + pos);
-            if (wallGrid[pos].type == WallType.Normal && wallType == WallType.Mirror) // change to Mirror
-            {
-                MapManager.inst.currentMap.ChangeWall(pos, WallType.Mirror, isBreak);
-            }
-            else if (wallGrid[pos].type == WallType.Mirror && wallType == WallType.Normal)
-            {
-                RemoveWall(pos);
-                CreateWall(pos, WallType.Normal);
-            }
+            //Debug.LogError("Wall already exists at : " + pos);
+            MapManager.inst.currentMap.ChangeWall(pos, wallType, isBreak);
         }
     }
 
@@ -274,7 +266,7 @@ public class Map : MonoBehaviour
         }
         if (!objectGrid.ContainsKey(pos))
         {
-            Vector3 objectPos = new Vector3(pos.x, objType == ObjType.Briefcase ? 0.5f : objType == ObjType.Mannequin ? 0.1f : 0, pos.y);
+            Vector3 objectPos = new Vector3(pos.x, objType == ObjType.Briefcase ? 0.4f : 0, pos.y);
             objectGrid.Add(pos, Instantiate(objType == ObjType.Mannequin ? MapManager.inst.mannequins[3] :
                 MapManager.inst.IObjects[(int)objType], objectPos, Quaternion.Euler(0, angle, 0), objects.transform).GetComponent<IObject>());
             if (additional.Length == 0) objectGrid[pos].Init(pos);

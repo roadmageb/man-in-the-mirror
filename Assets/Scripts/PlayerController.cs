@@ -49,10 +49,9 @@ public class PlayerController : SingletonBehaviour<PlayerController>
     }
     public void CreatePlayer(Vector2Int floorPos, Vector2Int originPos, bool dir)
     {
-        List<GameObject> copyPlayers = new List<GameObject>(MapManager.inst.players);
         Floor originFloor = MapManager.inst.currentMap.GetFloorAtPos(originPos);
         Quaternion mirroredRotation = Quaternion.identity;
-        foreach (var obj in copyPlayers)
+        foreach (var obj in MapManager.inst.players)
         {
             if (obj.GetComponent<Player>().currentFloor == originFloor)
             {
@@ -116,6 +115,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
         int goalFloorCount = 0;
         foreach (GameObject child in MapManager.inst.players)
         {
+            OnPlayerMove?.Invoke(Vector2Int.RoundToInt(new Vector2(child.transform.position.x, child.transform.position.z)));
             if (child.GetComponent<Player>().currentFloor.isGoalFloor)
                 goalFloorCount++;
         }

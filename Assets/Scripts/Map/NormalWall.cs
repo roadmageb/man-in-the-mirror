@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalWall : Wall, IBulletInteractor
+public class NormalWall : Wall, IBulletInteractor, IBreakable
 {
     [Space(15)]
     public GameObject scatteredWall;

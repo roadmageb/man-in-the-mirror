@@ -12,8 +12,9 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
 
     private bool isRayActive = false;
     private float rayHeight;
+    private LightGetter receivedGetter;
 
-    private void Start()
+    private void Awake()
     {
         shootPoint = transform.Find("RotateObject");
         rayRenderer = GetComponent<LineRenderer>();
@@ -36,6 +37,8 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
             else
             { // turn off ray
                 rayRenderer.enabled = false;
+                receivedGetter?.SetReceived(false);
+                receivedGetter = null;
             }
         }
     }
@@ -60,13 +63,38 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
                 lastPoint.y = rayHeight;
                 points.Add(lastPoint);
 
-                isHit = false; // for test
+                if (hit.transform.GetComponent<Wall>() is Wall w)
+                {
+                    if (w.type == WallType.Mirror)
+                    {
+                        if (w.dir)
+                        {
+                            lastDirection.z *= -1;
+                        }
+                        else
+                        {
+                            lastDirection.x *= -1;
+                        }
+                    }
+                    else if (w.type == WallType.Normal)
+                    {
+                        isHit = false; // end ray
+                    }
+                }
+                else if (hit.transform.GetComponent<LightGetter>() is LightGetter lg)
+                {
+                    lg.SetReceived(true);
+                    receivedGetter = lg;
+
+                    isHit = false; // end ray
+                }
             }
             else
             {
                 points.Add(lastPoint + lastDirection * maxSize);
             }
         } while (isHit && maxSize > Mathf.Max(lastPoint.x, lastPoint.z));
+        rayRenderer.positionCount = points.Count;
         rayRenderer.SetPositions(points.ToArray());
     }
 
@@ -111,6 +139,11 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
     public object[] GetAdditionals()
     {
         return new object[0];
+    }
+
+    public int GetMirrorAble()
+    {
+        return 2;
     }
     #endregion
 

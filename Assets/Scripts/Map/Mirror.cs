@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -42,6 +42,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         {
             new Pair(PointToParRay(stPos, ldPos, false), PointToParRay(stPos, rdPos, false))
         };
+        Debug.Log("init ray: " + parRay[0].l + ", " + parRay[0].r);
 
         int side, i, reflectSide, mapRange;
         bool isSameRSide;
@@ -75,7 +76,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             {
                 Pair pair = new Pair(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
                 //Debug.Log(wall.Key);
-                if (IsInRay(parRay, pair)) SubtractRay(parRay, pair);
+                if (IsInRay(parRay, pair) && wall.Value.type != WallType.Glass) SubtractRay(parRay, pair);
                 yield return null;
             }
         }
@@ -174,7 +175,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         objectCountGrid.Remove(floorPos);
                     }
                 }
-                else if (oppoObject) // no object on floorPos, opposite have object
+                else if (oppoObject && floorCountGrid.TryGetValue(floorPos, out int curVal) && curVal != 0) // no object on floorPos, opposite have object
                 {
                     if (CheckObjectVisible(parRay, stPos, GetOpposite(floorPos), oppoRadius, false) && !objectCountGrid.ContainsKey(floorPos))
                     {
@@ -224,7 +225,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         if (count == 0)
                         {
                             wallCountGrid[wallPos] = 1;
-                            SubtractRay(parRay, wallPair);
+                            if (MapManager.inst.currentMap.GetWallAtPos(wallPos).type != WallType.Glass) SubtractRay(parRay, wallPair);
                         }
                     }
                     else if (wallCountGrid.ContainsKey(GetOpposite(wallPos))) // no wall on player's side, but have wall on opposite
@@ -294,7 +295,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         if (count == 0)
                         {
                             wallCountGrid[wallPos] = 1;
-                            SubtractRay(parRay, wallPair);
+                            if (MapManager.inst.currentMap.GetWallAtPos(wallPos).type != WallType.Glass) SubtractRay(parRay, wallPair);
                         }
                     }
                     else if (wallCountGrid.ContainsKey(GetOpposite(wallPos))) // no wall on player's side, but have wall on opposite
@@ -414,7 +415,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             //Debug.Log(obj);
             Vector2 oppoPos = GetOpposite(obj.Key);
             Vector2Int oppoFloorPos = Vector2Int.RoundToInt(oppoPos);
-            if (obj.Value < 0)
+            if (obj.Value != 0)
             {
                 // remove opposite objects
                 if (MapManager.inst.currentMap.objectGrid.ContainsKey(oppoPos))
@@ -434,6 +435,8 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         #region copy walls
         foreach (var wall in wallCountGrid)
         {
+            //Debug.Log(wall);
+
             Wall mySideWall = MapManager.inst.currentMap.GetWallAtPos(wall.Key);
             Vector2 oppoPos = GetOpposite(wall.Key);
             if (wall.Value > 0) // create at opposite
@@ -467,8 +470,8 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         #region copy objects & jacksons
         foreach (var obj in objectCountGrid)
         {
-            //Debug.Log(obj);
             Vector2 oppoPos = GetOpposite(obj.Key);
+            //Debug.Log(obj + " -> " + oppoPos);
             Vector2Int oppoFloorPos = Vector2Int.RoundToInt(oppoPos);
             if (obj.Value > 0) // create or remove
             {
@@ -476,7 +479,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 {
                     if (obj.Value > 1) // create jackson on opposite
                     {
-                        PlayerController.inst.CreatePlayer(oppoFloorPos, Vector2Int.RoundToInt(mapPos), dir);
+                        PlayerController.inst.CreatePlayer(oppoFloorPos, Vector2Int.RoundToInt(obj.Key), dir);
                     }
                     else
                     {
@@ -489,13 +492,21 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                             var newObject = newIObject.GetObject();
 
                             // mirror new object
-                            Quaternion mirroredRotation = oldObject.transform.rotation;
-                            Vector3 mirroredScale = oldObject.transform.localScale;
-                            mirroredRotation.w *= -1;
-                            if (dir) { mirroredRotation.z *= -1; mirroredScale.z *= -1; }
-                            else { mirroredRotation.x *= -1; mirroredScale.x *= -1; }
-                            newObject.transform.rotation = mirroredRotation;
-                            newObject.transform.localScale = mirroredScale;
+                            if (newIObject.GetMirrorAble() == 1)
+                            { // scale mirror
+                                Quaternion mirroredRotation = oldObject.transform.rotation;
+                                Vector3 mirroredScale = oldObject.transform.localScale;
+                                mirroredRotation.w *= -1;
+                                if (dir) { mirroredRotation.z *= -1; mirroredScale.z *= -1; }
+                                else { mirroredRotation.x *= -1; mirroredScale.x *= -1; }
+                                newObject.transform.rotation = mirroredRotation;
+                                newObject.transform.localScale = mirroredScale;
+                            }
+                            else if (newIObject.GetMirrorAble() == 2)
+                            { // rotation mirror
+                                Vector3 mirrored = Vector3.Reflect(oldObject.transform.forward, dir ? new Vector3(0, 0, 1) : new Vector3(1, 0, 0));
+                                newObject.transform.rotation = Quaternion.LookRotation(mirrored, newObject.transform.up);
+                            }
                         }
                     }
                 }
@@ -652,25 +663,34 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
     float PointToRayDistanceSquare(Vector2 point, Vector2 stPos, float ray, bool useOpposite = true)
     {
         if (useOpposite) point = GetOpposite(point);
-        Vector2 realPos = dir ? mapPos + new Vector2(ray, 0) : mapPos + new Vector2(0, ray);
+        Vector2 realPos = mapPos;
+        if (dir)
+        {
+            realPos.x = ray;
+        }
+        else
+        {
+            realPos.y = ray;
+        }
+
         // ax + by + c = 0
-        float a = stPos.y - realPos.y;
-        float b = realPos.x - stPos.x;
-        float c = (stPos.x - realPos.x) * stPos.y + (realPos.y - stPos.y) * stPos.x;
+        float a = realPos.y - stPos.y;
+        float b = stPos.x - realPos.x;
+        float c = (realPos.x - stPos.x) * stPos.y + (stPos.y - realPos.y) * stPos.x;
         float distSq = (a * point.x + b * point.y + c) * (a * point.x + b * point.y + c) / (a * a + b * b);
-        Debug.Log("realPos: " + realPos + ", point: " + point + ", ray: " + ray + ", distSq: " + distSq);
+        //Debug.Log("a = " + a + ", b = " + b + ", c = " + c);
+        //Debug.Log("stPos: "+ stPos + ", realPos: " + realPos + ", point: " + point + ", distSq: " + distSq);
         return distSq;
     }
 
     bool CheckObjectVisible(List<Pair> parRay, Vector2 stPos, Vector2 pos, float radius, bool useOpposite = true)
     {
-        if (IsInRay(parRay, PointToParRay(stPos, pos, true)))
+        if (IsInRay(parRay, PointToParRay(stPos, pos, useOpposite)))
         {
             return true;
         }
-
-        Debug.Log(stPos);
-        Debug.Log(radius);
+        
+        //Debug.Log("checking " +pos + ", " + radius + ", useOpposite: " + useOpposite);
 
         radius *= radius;
         for (int i = 0; i < parRay.Count; ++i)

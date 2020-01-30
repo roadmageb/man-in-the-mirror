@@ -18,7 +18,7 @@ public class Wall : MonoBehaviour
     }
     public bool dir // false: ver, true: hor
     {
-        get { return (int)(transform.rotation.eulerAngles.y / 90) % 2 != 1; }
+        get { return Mathf.RoundToInt(transform.rotation.eulerAngles.y / 90) % 2 != 1; }
     }
     public int len = 1; // length of wall
     public WallType type;

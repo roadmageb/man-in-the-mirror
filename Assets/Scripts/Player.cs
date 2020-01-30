@@ -85,11 +85,22 @@ public class Player : MonoBehaviour
     {
         anim.SetBool("isWalking", true);
         while (Mathf.Abs(transform.position.x - destination.x) > 0.01f || Mathf.Abs(transform.position.z - destination.z) > 0.01f)
-			yield return null;
-        transform.position = new Vector3(destination.x, transform.position.y, destination.z);
+        {
+            yield return null;
+            Floor positionFloor = MapManager.inst.currentMap.GetFloorAtPos(
+                new Vector2Int(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z)));
+            if (positionFloor != currentFloor)
+            {
+                currentFloor.isPlayerOn = false;
+                currentFloor = positionFloor;
+                currentFloor.isPlayerOn = true;
+            }
+        }
         currentFloor.isPlayerOn = false;
         currentFloor = MapManager.inst.currentMap.GetFloorAtPos(new Vector2Int((int)destination.x, (int)destination.z));
         currentFloor.isPlayerOn = true;
+
+        transform.position = new Vector3(destination.x, transform.position.y, destination.z);
         PlayerController.inst.CheckCurrentFloors();
         anim.SetBool("isWalking", false);
         anim.speed = 1;
@@ -171,22 +182,11 @@ public class Player : MonoBehaviour
         laser.GetComponent<LineRenderer>().endColor = Color.red;
         if (beforeRay != null)
         {
-            if (beforeRay.tag.Equals("wall"))
+            if (beforeRay.tag.Equals("wall") || beforeRay.tag.Equals("Mirror") || beforeRay.tag.Equals("Glass"))
             {
                 beforeRay.GetComponent<Outline>().enabled = false;
             }
-            else if (beforeRay.tag.Equals("Mirror"))
-            {
-                beforeRay.GetComponent<Outline>().enabled = false;
-            }
-            else if (beforeRay.tag.Equals("CameraTurret"))
-            {
-                foreach (var comp in beforeRay.GetComponentsInChildren<Outline>())
-                {
-                    comp.enabled = false;
-                }
-            }
-            else if (beforeRay.tag.Equals("Mannequin"))
+            else if (beforeRay.tag.Equals("CameraTurret") || beforeRay.tag.Equals("Mannequin"))
             {
                 foreach (var comp in beforeRay.GetComponentsInChildren<Outline>())
                 {
@@ -202,6 +202,7 @@ public class Player : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         armRotation = shootingArm.rotation;
+        currentFloor.RefreshGoal(false);
     }
 
     // Update is called once per frame
@@ -225,6 +226,13 @@ public class Player : MonoBehaviour
                     if (PlayerController.inst.bulletList[0] == BulletCode.True)
                     {
                         if (beforeRay.tag.Equals("Mirror"))
+                        {
+                            beforeRay.GetComponent<Outline>().enabled = true;
+                            canShoot = true;
+                            laser.GetComponent<LineRenderer>().startColor = Color.green;
+                            laser.GetComponent<LineRenderer>().endColor = Color.green;
+                        }
+                        else if (beforeRay.tag.Equals("Glass"))
                         {
                             beforeRay.GetComponent<Outline>().enabled = true;
                             canShoot = true;
@@ -255,6 +263,13 @@ public class Player : MonoBehaviour
                     else if (PlayerController.inst.bulletList[0] == BulletCode.False)
                     {
                         if (beforeRay.tag.Equals("Mirror"))
+                        {
+                            beforeRay.GetComponent<Outline>().enabled = true;
+                            canShoot = true;
+                            laser.GetComponent<LineRenderer>().startColor = Color.green;
+                            laser.GetComponent<LineRenderer>().endColor = Color.green;
+                        }
+                        else if (beforeRay.tag.Equals("Glass"))
                         {
                             beforeRay.GetComponent<Outline>().enabled = true;
                             canShoot = true;
