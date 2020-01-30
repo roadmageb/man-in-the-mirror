@@ -84,11 +84,22 @@ public class Player : MonoBehaviour
     {
         anim.SetBool("isWalking", true);
         while (Mathf.Abs(transform.position.x - destination.x) > 0.01f || Mathf.Abs(transform.position.z - destination.z) > 0.01f)
-			yield return null;
-        transform.position = new Vector3(destination.x, transform.position.y, destination.z);
+        {
+            yield return null;
+            Floor positionFloor = MapManager.inst.currentMap.GetFloorAtPos(
+                new Vector2Int(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z)));
+            if (positionFloor != currentFloor)
+            {
+                currentFloor.isPlayerOn = false;
+                currentFloor = positionFloor;
+                currentFloor.isPlayerOn = true;
+            }
+        }
         currentFloor.isPlayerOn = false;
         currentFloor = MapManager.inst.currentMap.GetFloorAtPos(new Vector2Int((int)destination.x, (int)destination.z));
         currentFloor.isPlayerOn = true;
+
+        transform.position = new Vector3(destination.x, transform.position.y, destination.z);
         PlayerController.inst.CheckCurrentFloors();
         anim.SetBool("isWalking", false);
         anim.speed = 1;
@@ -190,6 +201,7 @@ public class Player : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         armRotation = shootingArm.rotation;
+        currentFloor.RefreshGoal(false);
     }
 
     // Update is called once per frame

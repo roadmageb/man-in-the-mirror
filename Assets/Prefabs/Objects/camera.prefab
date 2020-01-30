@@ -828,7 +828,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00412ad71b8f0e14c9a23118682ee6f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 0.5
+  radius: 0.3
   position: {x: 0, y: 0}
   scatteredTurret: {fileID: 5867490533518071498, guid: d6c0cb697ea7bd341a7e3b0968a8a273,
     type: 3}
