@@ -14,7 +14,7 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
     private float rayHeight;
     private LightGetter receivedGetter;
 
-    private void Start()
+    private void Awake()
     {
         shootPoint = transform.Find("RotateObject");
         rayRenderer = GetComponent<LineRenderer>();
@@ -22,9 +22,6 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
         rayRenderer.SetPosition(0, shootPoint.position);
         rayRenderer.SetPosition(1, shootPoint.position);
         rayHeight = shootPoint.localPosition.y;
-
-        // for test
-        SetRayActive(true);
     }
 
     public void SetRayActive(bool isActive)

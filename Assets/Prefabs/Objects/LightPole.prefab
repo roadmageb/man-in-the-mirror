@@ -51,6 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 0, y: 0}
   radius: 0.5
+  shootPoint: {fileID: 2879913344863122550}
   rayRenderer: {fileID: 1155431293}
 --- !u!208 &3418832989913024412
 NavMeshObstacle:
