@@ -185,7 +185,7 @@ public class Player : MonoBehaviour
             {
                 beforeRay.GetComponent<Outline>().enabled = false;
             }
-            else if (beforeRay.tag.Equals("CameraTurret") || beforeRay.tag.Equals("Mannequin"))
+            else if (beforeRay.tag.Equals("CameraTurret") || beforeRay.tag.Equals("Mannequin") || beforeRay.tag.Equals("LightPole"))
             {
                 foreach (var comp in beforeRay.GetComponentsInChildren<Outline>())
                 {
@@ -258,6 +258,13 @@ public class Player : MonoBehaviour
                             laser.GetComponent<LineRenderer>().startColor = Color.green;
                             laser.GetComponent<LineRenderer>().endColor = Color.green;
                         }
+                        else if (beforeRay.tag.Equals("LightPole"))
+                        {
+                            beforeRay.GetComponentInChildren<Outline>().enabled = true;
+                            canShoot = true;
+                            laser.GetComponent<LineRenderer>().startColor = Color.green;
+                            laser.GetComponent<LineRenderer>().endColor = Color.green;
+                        }
                     }
                     else if (PlayerController.inst.bulletList[0] == BulletCode.False)
                     {
@@ -281,6 +288,13 @@ public class Player : MonoBehaviour
                             {
                                 comp.enabled = true;
                             }
+                            canShoot = true;
+                            laser.GetComponent<LineRenderer>().startColor = Color.green;
+                            laser.GetComponent<LineRenderer>().endColor = Color.green;
+                        }
+                        else if (beforeRay.tag.Equals("LightPole"))
+                        {
+                            beforeRay.GetComponentInChildren<Outline>().enabled = true;
                             canShoot = true;
                             laser.GetComponent<LineRenderer>().startColor = Color.green;
                             laser.GetComponent<LineRenderer>().endColor = Color.green;

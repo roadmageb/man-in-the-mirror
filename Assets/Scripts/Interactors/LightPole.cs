@@ -13,6 +13,7 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
     private bool isRayActive = false;
     private float rayHeight;
     private LightGetter receivedGetter;
+    private bool isRotating = false;
 
     private void Awake()
     {
@@ -49,14 +50,13 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
         List<Vector3> points = new List<Vector3>();
         Vector3 lastPoint = shootPoint.position;
         Vector3 lastDirection = transform.forward;
-        int maxSize = 10; // MapManager.inst.currentMap.maxMapSize
-        RaycastHit hit;
+        int maxSize = MapManager.inst.currentMap.maxMapSize;
         bool isHit;
 
         points.Add(lastPoint);
         do
         {
-            isHit = Physics.Raycast(lastPoint, lastDirection, out hit, maxSize);
+            isHit = Physics.Raycast(lastPoint, lastDirection, out RaycastHit hit, maxSize);
             if (isHit)
             {
                 lastPoint = hit.transform.position;
@@ -98,11 +98,37 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
         rayRenderer.SetPositions(points.ToArray());
     }
 
-    public IEnumerator RotatePole()
+    public IEnumerator RotatePole(bool isRightHandRotate)
     {
+        GameManager.inst.isBulletFlying = true;
+        isRotating = true;
         SetRayActive(false);
-        yield return null;
+
+        float time = 0f;
+        Quaternion targetRotation = Quaternion.Euler(new Vector3(0, isRightHandRotate ? 90 : -90, 0) + transform.localRotation.eulerAngles);
+        while (time < 1f)
+        {
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, targetRotation, time);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        transform.localRotation = targetRotation;
+
         SetRayActive(true);
+        isRotating = false;
+        GameManager.inst.isBulletFlying = false;
+    }
+
+    private void Update()
+    {
+        if (GameManager.inst.isPlayerMoving)
+        {
+            SetRayActive(false);
+        }
+        else if (!isRotating)
+        {
+            SetRayActive(true);
+        }
     }
 
     #region IObject
@@ -150,7 +176,14 @@ public class LightPole : MonoBehaviour, IObject, IBulletInteractor
     #region IBulletInteractor
     public void Interact(Bullet bullet)
     {
-        throw new System.NotImplementedException();
+        if (bullet is TruthBullet)
+        {
+            StartCoroutine(RotatePole(true));
+        }
+        else if (bullet is FakeBullet)
+        {
+            StartCoroutine(RotatePole(false));
+        }
     }
     #endregion
 }

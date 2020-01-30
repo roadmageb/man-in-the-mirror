@@ -170,6 +170,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
                 if (Input.GetMouseButtonDown(0) && zoomReady == null)
                 {
                     //Move the current player.
+                    OnPlayerMove?.Invoke(MapPos);
                     if (!GameManager.inst.isPlayerMoving && !GameManager.inst.isPlayerShooting)
                     {
                         Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
