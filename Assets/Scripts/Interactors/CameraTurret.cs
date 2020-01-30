@@ -10,10 +10,11 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
     [Space(15)]
     public GameObject scatteredTurret;
 
+    #region IObject
+    
     /// <param name="additonal">
     /// <br/>No additional data
     /// </param>
-    #region IObject
     public void Init(Vector2 pos, params object[] additonal)
     {
         position = pos;
@@ -44,6 +45,10 @@ public class CameraTurret : MonoBehaviour, IObject, IBreakable, IPlayerInteracto
     public float GetRadius()
     {
         return radius;
+    }
+    public int GetMirrorAble()
+    {
+        return 0;
     }
     #endregion
 

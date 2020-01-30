@@ -76,7 +76,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
             {
                 Pair pair = new Pair(PointToParRay(stPos, wall.Value.ldPos, false), PointToParRay(stPos, wall.Value.rdPos, false));
                 //Debug.Log(wall.Key);
-                if (IsInRay(parRay, pair)) SubtractRay(parRay, pair);
+                if (IsInRay(parRay, pair) && wall.Value.type != WallType.Glass) SubtractRay(parRay, pair);
                 yield return null;
             }
         }
@@ -470,8 +470,8 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         #region copy objects & jacksons
         foreach (var obj in objectCountGrid)
         {
-            //Debug.Log(obj);
             Vector2 oppoPos = GetOpposite(obj.Key);
+            //Debug.Log(obj + " -> " + oppoPos);
             Vector2Int oppoFloorPos = Vector2Int.RoundToInt(oppoPos);
             if (obj.Value > 0) // create or remove
             {
@@ -492,13 +492,21 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                             var newObject = newIObject.GetObject();
 
                             // mirror new object
-                            Quaternion mirroredRotation = oldObject.transform.rotation;
-                            Vector3 mirroredScale = oldObject.transform.localScale;
-                            mirroredRotation.w *= -1;
-                            if (dir) { mirroredRotation.z *= -1; mirroredScale.z *= -1; }
-                            else { mirroredRotation.x *= -1; mirroredScale.x *= -1; }
-                            newObject.transform.rotation = mirroredRotation;
-                            newObject.transform.localScale = mirroredScale;
+                            if (newIObject.GetMirrorAble() == 1)
+                            { // scale mirror
+                                Quaternion mirroredRotation = oldObject.transform.rotation;
+                                Vector3 mirroredScale = oldObject.transform.localScale;
+                                mirroredRotation.w *= -1;
+                                if (dir) { mirroredRotation.z *= -1; mirroredScale.z *= -1; }
+                                else { mirroredRotation.x *= -1; mirroredScale.x *= -1; }
+                                newObject.transform.rotation = mirroredRotation;
+                                newObject.transform.localScale = mirroredScale;
+                            }
+                            else if (newIObject.GetMirrorAble() == 2)
+                            { // rotation mirror
+                                Vector3 mirrored = Vector3.Reflect(oldObject.transform.forward, dir ? new Vector3(0, 0, 1) : new Vector3(1, 0, 0));
+                                newObject.transform.rotation = Quaternion.LookRotation(mirrored, newObject.transform.up);
+                            }
                         }
                     }
                 }
@@ -658,11 +666,11 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         Vector2 realPos = mapPos;
         if (dir)
         {
-            realPos.x = stPos.x + ray;
+            realPos.x = ray;
         }
         else
         {
-            realPos.y = stPos.y + ray;
+            realPos.y = ray;
         }
 
         // ax + by + c = 0
@@ -681,8 +689,8 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         {
             return true;
         }
-
-        //Debug.Log("checking " +pos + ", " + radius);
+        
+        //Debug.Log("checking " +pos + ", " + radius + ", useOpposite: " + useOpposite);
 
         radius *= radius;
         for (int i = 0; i < parRay.Count; ++i)

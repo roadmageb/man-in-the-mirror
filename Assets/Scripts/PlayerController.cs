@@ -118,6 +118,7 @@ public class PlayerController : SingletonBehaviour<PlayerController>
         int goalFloorCount = 0;
         foreach (GameObject child in MapManager.inst.players)
         {
+            OnPlayerMove(Vector2Int.RoundToInt(new Vector2(child.transform.position.x, child.transform.position.z)));
             if (child.GetComponent<Player>().currentFloor.isGoalFloor)
                 goalFloorCount++;
         }
