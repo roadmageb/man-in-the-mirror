@@ -93,9 +93,9 @@ public class MapManager : SingletonBehaviour<MapManager>
                     break;
             }
         }
-        surface.BuildNavMesh();
         for (int i = 0; i < currentMap.startFloors.Count; i++)
             PlayerController.inst.CreatePlayer(currentMap.startFloors[i]);
+        surface.BuildNavMesh();
         for (int i = 0; i < loadedMapData.bullets.Count; i++)
             PlayerController.inst.AddBullet(loadedMapData.bullets[i]);
         if (loadedMapData.comments != null && loadedMapData.comments != "")

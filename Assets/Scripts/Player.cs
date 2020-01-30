@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
     {
         GetComponent<NavMeshObstacle>().enabled = false;
         selectPointer.SetActive(true);
+        MapManager.inst.surface.BuildNavMesh();
         yield return null;
         GetComponent<NavMeshAgent>().enabled = true;
         StartCoroutine(MapManager.inst.Rebaker());
@@ -66,7 +67,7 @@ public class Player : MonoBehaviour
         if(playerArrivalCheck != null)
             StopCoroutine(playerArrivalCheck);
 		agent.CalculatePath(destination, path);
-        if(path.status == NavMeshPathStatus.PathComplete)
+        if(path.status == NavMeshPathStatus.PathComplete && !MapManager.inst.currentMap.GetFloorAtPos((int)destination.x, (int)destination.z).isPlayerOn)
         {
             GameManager.inst.isPlayerMoving = true;
             playerArrivalCheck = StartCoroutine(CheckIfPlayerArrived(destination));

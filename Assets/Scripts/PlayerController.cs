@@ -30,13 +30,10 @@ public class PlayerController : SingletonBehaviour<PlayerController>
 
     public GameObject CreatePlayer(Floor floor)
     {
-        foreach (var obj in MapManager.inst.players)
+        if (floor.isPlayerOn)
         {
-            if (obj.GetComponent<Player>().currentFloor == floor)
-            {
-                Debug.Log("Player already exists on that floor.");
-                return null;
-            }
+            Debug.Log("Player already exists on that floor.");
+            return null;
         }
         GameObject player = Instantiate(MapManager.inst.player, floor.transform.position + new Vector3(0, 0.1f, 0), Quaternion.identity);
         player.GetComponent<Player>().currentFloor = floor;
