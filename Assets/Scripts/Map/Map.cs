@@ -1,7 +1,8 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Linq;
 
 public class Map : MonoBehaviour
 {
@@ -153,6 +154,35 @@ public class Map : MonoBehaviour
         {
             if (GameManager.aFloor >= 0 && floorGrid[pos].isGoalFloor)
                 clearConditions[GameManager.aFloor].IsDone(0, -1);
+
+            // check if object or jackson going to drop
+            if (floorGrid[pos].isPlayerOn)
+            {
+                // jackson -> game over
+                // 애니메이션 좀 넣어야됨
+                GameManager.inst.GameOver();
+            }
+            else
+            {
+                var valList = floorGrid[pos].adjacentObject.Values.ToList();
+                for (int i = 0; i < valList.Count; ++i)
+                {
+                    IObject obj = valList[i];
+                    if (!CheckAdjacentFloor(obj.GetPos(), null, FloorChkMode.Check, pos))
+                    {
+                        // object -> drop, remove
+                        GameObject dropObj = obj.GetObject();
+                        RemoveObject(obj.GetPos(), false);
+                        dropObj.AddComponent<Rigidbody>();
+                        if (dropObj.GetComponent<LightPole>() is LightPole lp) // 이부분은 나중에 MIMObject가 클래스가 되면 옮길예정
+                        {
+                            lp.SetRayActive(false);
+                        } // end이부분
+                        Destroy(dropObj, 1.5f);
+                    }
+                }
+            }
+
             Destroy(floorGrid[pos].gameObject);
             floorGrid.Remove(pos);
             StartCoroutine(MapManager.inst.Rebaker());

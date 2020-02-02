@@ -97,6 +97,10 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
         {
             objectCountGrid.Add(obj.Key, 0);
         }
+        foreach (var jackson in MapManager.inst.players)
+        {
+            objectCountGrid.Add(new Vector2(jackson.transform.position.x, jackson.transform.position.z), 0);
+        }
 
         // start reflection
         // Debug.Log("Start Reflection");
@@ -151,7 +155,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                 float objRadius = haveObject ? (isJackson ?
                         PlayerController.inst.radius : MapManager.inst.currentMap.objectGrid[floorPos].GetRadius()) : 100;
                 bool oppoObject = (objectCountGrid.TryGetValue(GetOpposite(floorPos), out val) && val == 0);
-                float oppoRadius = oppoObject ? (isJackson ?
+                float oppoRadius = oppoObject ? (MapManager.inst.currentMap.GetFloorAtPos(GetOpposite(floorPos)).isPlayerOn ?
                     PlayerController.inst.radius : MapManager.inst.currentMap.objectGrid[GetOpposite(floorPos)].GetRadius()) : 100;
                 if (haveObject) // have object on floorPos
                 {
@@ -175,7 +179,7 @@ public class Mirror : Wall, IBulletInteractor, IBreakable
                         objectCountGrid.Remove(floorPos);
                     }
                 }
-                else if (oppoObject && floorCountGrid.TryGetValue(floorPos, out int curVal) && curVal != 0) // no object on floorPos, opposite have object
+                else if (oppoObject && floorCountGrid.TryGetValue(floorPos, out _)) // no object on floorPos, opposite have object
                 {
                     if (CheckObjectVisible(parRay, stPos, GetOpposite(floorPos), oppoRadius, false) && !objectCountGrid.ContainsKey(floorPos))
                     {

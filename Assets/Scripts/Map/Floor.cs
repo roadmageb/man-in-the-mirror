@@ -9,7 +9,6 @@ public class Floor : MonoBehaviour
     /// </summary>
     public Vector2Int mapPos;
     public bool isGoalFloor = false;
-    public IObject objOnFloor = null;
     public bool isPlayerOn = false;
     private bool isOnBefore = false;
 
