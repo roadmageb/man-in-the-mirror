@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -30,73 +30,44 @@ public class Map : MonoBehaviour
     /// <returns></returns>
     public bool CheckAdjacentFloor(Vector2 pos, IObject iObject, FloorChkMode mode)
     {
-        if((int)pos.x == pos.x && (int)pos.y == pos.y)
+        return CheckAdjacentFloor(pos, iObject, mode, new Vector2Int(int.MaxValue, int.MaxValue));
+    }
+    public bool CheckAdjacentFloor(Vector2 pos, IObject iObject, FloorChkMode mode, Vector2Int exclude)
+    {
+        List<Vector2Int> toCheck = new List<Vector2Int>();
+        if ((int)pos.x == pos.x && (int)pos.y == pos.y)
         {
-            if (GetFloorAtPos(ConvertVector2(pos)))
-            {
-                if (mode == FloorChkMode.Add) GetFloorAtPos(ConvertVector2(pos)).adjacentObject.Add(pos, iObject);
-                else if (mode == FloorChkMode.Remove) GetFloorAtPos(ConvertVector2(pos)).adjacentObject.Remove(pos);
-                else return true;
-            }
+            toCheck.Add(ConvertVector2(pos));
         }
         else if ((int)pos.x != pos.x && (int)pos.y != (int)pos.y)
         {
-            if (GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y + 0.5f))))
-            {
-                if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y + 0.5f))).adjacentObject.Add(pos, iObject);
-                else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y + 0.5f))).adjacentObject.Remove(pos);
-                else return true;
-            }
-            if (GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y - 0.5f))))
-            {
-                if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y - 0.5f))).adjacentObject.Add(pos, iObject);
-                else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y - 0.5f))).adjacentObject.Remove(pos);
-                else return true;
-            }
-            if (GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y + 0.5f))))
-            {
-                if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y + 0.5f))).adjacentObject.Add(pos, iObject);
-                else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y + 0.5f))).adjacentObject.Remove(pos);
-                else return true;
-            }
-            if (GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y - 0.5f))))
-            {
-                if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y - 0.5f))).adjacentObject.Add(pos, iObject);
-                else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y - 0.5f))).adjacentObject.Remove(pos);
-                else return true;
-            }
+            toCheck.Add(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y + 0.5f)));
+            toCheck.Add(new Vector2Int((int)(pos.x + 0.5f), (int)(pos.y - 0.5f)));
+            toCheck.Add(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y + 0.5f)));
+            toCheck.Add(new Vector2Int((int)(pos.x - 0.5f), (int)(pos.y - 0.5f)));
         }
         else
         {
-            if((int)pos.x != pos.x)
+            if ((int)pos.x != pos.x)
             {
-                if (GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)pos.y)))
-                {
-                    if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)pos.y)).adjacentObject.Add(pos, iObject);
-                    else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)(pos.x + 0.5f), (int)pos.y)).adjacentObject.Remove(pos);
-                    else return true;
-                }
-                if (GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)pos.y)))
-                {
-                    if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)pos.y)).adjacentObject.Add(pos, iObject);
-                    else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)(pos.x - 0.5f), (int)pos.y)).adjacentObject.Remove(pos);
-                    else return true;
-                }
+                toCheck.Add(new Vector2Int((int)(pos.x + 0.5f), (int)pos.y));
+                toCheck.Add(new Vector2Int((int)(pos.x - 0.5f), (int)pos.y));
             }
             else
             {
-                if (GetFloorAtPos(new Vector2Int((int)pos.x, (int)(pos.y + 0.5f))))
-                {
-                    if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)pos.x, (int)(pos.y + 0.5f))).adjacentObject.Add(pos, iObject);
-                    else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)pos.x, (int)(pos.y + 0.5f))).adjacentObject.Remove(pos);
-                    else return true;
-                }
-                if (GetFloorAtPos(new Vector2Int((int)pos.x, (int)(pos.y - 0.5f))))
-                {
-                    if (mode == FloorChkMode.Add) GetFloorAtPos(new Vector2Int((int)pos.x, (int)(pos.y - 0.5f))).adjacentObject.Add(pos, iObject);
-                    else if (mode == FloorChkMode.Remove) GetFloorAtPos(new Vector2Int((int)pos.x, (int)(pos.y - 0.5f))).adjacentObject.Remove(pos);
-                    else return true;
-                }
+                toCheck.Add(new Vector2Int((int)pos.x, (int)(pos.y + 0.5f)));
+                toCheck.Add(new Vector2Int((int)pos.x, (int)(pos.y - 0.5f)));
+            }
+        }
+
+        for (int i = 0; i < toCheck.Count; ++i)
+        {
+            if (toCheck[i] == exclude) continue;
+            else if (GetFloorAtPos(toCheck[i]))
+            {
+                if (mode == FloorChkMode.Add) GetFloorAtPos(toCheck[i]).adjacentObject.Add(pos, iObject);
+                else if (mode == FloorChkMode.Remove) GetFloorAtPos(toCheck[i]).adjacentObject.Remove(pos);
+                else return true;
             }
         }
         return false;
@@ -285,7 +256,7 @@ public class Map : MonoBehaviour
     /// Remove Object at position.
     /// </summary>
     /// <param name="pos">Position of object.</param>
-    public void RemoveObject(Vector2 pos)
+    public void RemoveObject(Vector2 pos, bool destroyImmediate = true)
     {
         if (objectGrid.ContainsKey(pos))
         {
@@ -309,13 +280,12 @@ public class Map : MonoBehaviour
                     PlayerController.inst.OnPlayerMove -= objectGrid[pos].GetObject().GetComponent<IPlayerInteractor>().Interact;
                     break;
                 default:
-                    Debug.LogError("[ERR] 병신아");
+                    Debug.LogWarning("[ERR] Undeifned object is destroyed");
                     break;
             }
             CheckAdjacentFloor(pos, null, FloorChkMode.Remove);
-            Destroy(objectGrid[pos].GetObject());
+            if (destroyImmediate) Destroy(objectGrid[pos].GetObject());
             objectGrid.Remove(pos);
-            floorGrid[ConvertVector2(pos)].objOnFloor = null;
             StartCoroutine(MapManager.inst.Rebaker());
         }
         else
