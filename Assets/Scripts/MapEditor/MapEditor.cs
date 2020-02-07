@@ -33,6 +33,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         public List<ClearData> clears;
         public List<BulletCode> bullets;
         public string comments = null;
+        public Vector3 centerPos = Vector2.zero;
         public MapSaveData()
         {
             objects = new List<ObjectData>();
@@ -54,6 +55,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public Image[] bulletTiles;
     Transform walls, floors, objects, jacksons, bullets;
     public Button stageSelectButton;
+    public GameObject centerPosSetter;
     GameObject currentTile = null, controlPanel, stageSelectPanel, saveMapPanel, commentPanel, clearConditionPanel;
     GameObject stageSelectContent, debugText, commentInputField;
     public GameObject[] clearConditionButtons;
@@ -63,6 +65,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     TileMode tileMode = 0;
     Coroutine debugTextCoroutine;
     Vector3 prevMousePoint;
+    private int minX = 0, minY = 0, maxX = 0, maxY = 0;
 
     public void PrintDebugText(string text)
     {
@@ -84,8 +87,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
 
     Vector3 GetMousePoint()
     {
-        Vector3 originPos = Camera.main.ScreenPointToRay(Input.mousePosition).origin;
-        Vector3 mousePoint;
+        Vector3 mousePoint, originPos = Camera.main.ScreenPointToRay(Input.mousePosition).origin;
         if (isFloat)
         {
             if (!isAtPoint)
@@ -145,10 +147,10 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public void ChangeTileMode(int _tileMode)
     {
         tileMode = (TileMode)_tileMode;
-        if (currentTile != null) currentTile.SetActive(false);
-        if (_tileMode != 0)
+        if (currentTile != null && currentTile != centerPosSetter) currentTile.SetActive(false);
+        if (tileMode != TileMode.None)
         {
-            currentTile = tiles[_tileMode - 1];
+            currentTile = tileMode == TileMode.CenterPos ? centerPosSetter : tiles[_tileMode - 1];
             currentTile.SetActive(true);
             if ((TileMode)_tileMode == TileMode.NormalWall || (TileMode)_tileMode == TileMode.Mirror || (TileMode)_tileMode == TileMode.Glass
                 || (TileMode)_tileMode == TileMode.LightPole || (TileMode)_tileMode == TileMode.LightGetter)
@@ -212,15 +214,6 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         }
         else
         {
-            int minX = 0, minY = 0, maxX = 0, maxY = 0;
-            for (int i = 0; i < floors.childCount; i++)
-            {
-                MapEditorTile temp = floors.GetChild(i).GetComponent<MapEditorTile>();
-                if (temp.mapPos.x < minX) minX = (int)temp.mapPos.x;
-                if (temp.mapPos.y < minY) minY = (int)temp.mapPos.y;
-                if (temp.mapPos.x > maxX) maxX = (int)temp.mapPos.x;
-                if (temp.mapPos.y > maxY) maxY = (int)temp.mapPos.y;
-            }
             MapSaveData mapSaveData = new MapSaveData();
             mapSaveData.AddObject(TileMode.None, new Vector2((Mathf.Max(maxX - minX, maxY - minY) + 1) * 5, 0));
 
@@ -255,6 +248,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             }
             for (int i = 0; i < bullets.childCount; i++) mapSaveData.bullets.Add(bullets.GetChild(i).GetComponent<MapEditorTile>().bulletCode);
             mapSaveData.comments = comment;
+            mapSaveData.centerPos = centerPosSetter.transform.position;
             return mapSaveData;
         }
     }
@@ -390,7 +384,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             if (currentTile != null && tileMode != 0)
             {
                 isValid = false;
-                currentTile.transform.position = mousePoint;
+                currentTile.transform.position = mousePoint + new Vector3(0, tileMode == TileMode.CenterPos ? 5 : 0, 0);
                 if (isFloat) currentTile.transform.rotation = Quaternion.Euler(0, (int)mousePoint.x == mousePoint.x ? 0 : 90, 0);
                 if(prevMousePoint != mousePoint)
                 {
@@ -400,7 +394,15 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                             CheckObject(mousePoint.x, mousePoint.z).transform.rotation = Quaternion.Euler(0, CheckObject(mousePoint.x, mousePoint.z).transform.eulerAngles.y + 90, 0);
                         else
                         {
-                            if (tileMode != TileMode.Floor && tileMode != TileMode.GoalFloor)
+                            if(tileMode == TileMode.CenterPos)
+                            {
+                                isValid = mousePoint.x >= minX && mousePoint.x <= maxX && mousePoint.z >= minY && mousePoint.z <= maxY;
+                            }
+                            else if (tileMode == TileMode.Floor || tileMode == TileMode.GoalFloor)
+                            {
+                                isValid = true;
+                            }
+                            else
                             {
                                 if (isFloat)
                                 {
@@ -417,7 +419,6 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                                 }
                                 else if (CheckFloor((int)mousePoint.x, (int)mousePoint.z)) isValid = true;
                             }
-                            else isValid = true;
 
                             if (tileMode == TileMode.Floor || tileMode == TileMode.GoalFloor)
                             {
@@ -435,15 +436,29 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                             }
                             if (isValid)
                             {
-                                GameObject newTile;
-                                if (tileMode == TileMode.Floor || tileMode == TileMode.GoalFloor) newTile = Instantiate(currentTile, mousePoint, currentTile.transform.rotation, floors);
-                                else if (tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror || tileMode == TileMode.Glass)
-                                    newTile = Instantiate(currentTile, mousePoint, currentTile.transform.rotation, walls);
-                                else if (tileMode == TileMode.StartFloor) newTile = Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), Quaternion.identity, jacksons);
-                                else if (tileMode == TileMode.LightPole) newTile = Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), Quaternion.Euler(0, 45, 0), objects);
-                                else newTile = Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), currentTile.transform.rotation, objects);
-                                newTile.GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
-                                newTile.GetComponent<BoxCollider>().enabled = true;
+                                if(tileMode == TileMode.CenterPos)
+                                {
+                                    ChangeTileMode((int)TileMode.None);
+                                }
+                                else
+                                {
+                                    GameObject newTile;
+                                    if (tileMode == TileMode.Floor || tileMode == TileMode.GoalFloor)
+                                    {
+                                        newTile = Instantiate(currentTile, mousePoint, currentTile.transform.rotation, floors);
+                                        if (floors.childCount == 1 || mousePoint.x < minX) minX = (int)mousePoint.x;
+                                        if (floors.childCount == 1 || mousePoint.x > maxX) maxX = (int)mousePoint.x;
+                                        if (floors.childCount == 1 || mousePoint.y < minY) minY = (int)mousePoint.y;
+                                        if (floors.childCount == 1 || mousePoint.y > maxY) maxY = (int)mousePoint.y;
+                                    }
+                                    else if (tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror || tileMode == TileMode.Glass)
+                                        newTile = Instantiate(currentTile, mousePoint, currentTile.transform.rotation, walls);
+                                    else if (tileMode == TileMode.StartFloor) newTile = Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), Quaternion.identity, jacksons);
+                                    else if (tileMode == TileMode.LightPole) newTile = Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), Quaternion.Euler(0, 45, 0), objects);
+                                    else newTile = Instantiate(currentTile, mousePoint + new Vector3(0, 1, 0), currentTile.transform.rotation, objects);
+                                    newTile.GetComponent<MapEditorTile>().mapPos = new Vector2(mousePoint.x, mousePoint.z);
+                                    newTile.GetComponent<BoxCollider>().enabled = true;
+                                }
                             }
                             else PrintDebugText("Invalid position");
                         }
@@ -475,6 +490,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             else if (Input.GetKeyDown(KeyCode.V)) ChangeTileMode((int)TileMode.Glass);
             else if (Input.GetKeyDown(KeyCode.Q)) ChangeTileMode((int)TileMode.StartFloor);
             else if (Input.GetKeyDown(KeyCode.E)) ChangeTileMode((int)TileMode.GoalFloor);
+            else if (Input.GetKeyDown(KeyCode.R)) ChangeTileMode((int)TileMode.CenterPos);
             else if (Input.GetKeyDown(KeyCode.Alpha1)) ChangeTileMode((int)TileMode.TrueCase);
             else if (Input.GetKeyDown(KeyCode.Alpha2)) ChangeTileMode((int)TileMode.FalseCase);
             else if (Input.GetKeyDown(KeyCode.Alpha3)) ChangeTileMode((int)TileMode.MirrorCase);
@@ -484,6 +500,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             else if (Input.GetKeyDown(KeyCode.Alpha7)) ChangeTileMode((int)TileMode.BMannequin);
             else if (Input.GetKeyDown(KeyCode.Alpha8)) ChangeTileMode((int)TileMode.LightPole);
             else if (Input.GetKeyDown(KeyCode.Alpha9)) ChangeTileMode((int)TileMode.LightGetter);
+
         }
         if (Input.GetKeyDown(KeyCode.Space)) Camera.main.transform.position = new Vector3(0, 10, 0);
         if (Input.GetKeyDown(KeyCode.Tab)) isPanelOn = !isPanelOn;
