@@ -192,6 +192,7 @@ public class CameraController : MonoBehaviour
                 CameraMove();
                 CameraDrag();
                 CameraScroll();
+                transform.LookAt(centerPos);
             }
             else if (!GameManager.inst.isGameOver)
             {

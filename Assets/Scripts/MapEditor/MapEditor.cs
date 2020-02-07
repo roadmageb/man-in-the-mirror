@@ -448,8 +448,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                                         newTile = Instantiate(currentTile, mousePoint, currentTile.transform.rotation, floors);
                                         if (floors.childCount == 1 || mousePoint.x < minX) minX = (int)mousePoint.x;
                                         if (floors.childCount == 1 || mousePoint.x > maxX) maxX = (int)mousePoint.x;
-                                        if (floors.childCount == 1 || mousePoint.y < minY) minY = (int)mousePoint.y;
-                                        if (floors.childCount == 1 || mousePoint.y > maxY) maxY = (int)mousePoint.y;
+                                        if (floors.childCount == 1 || mousePoint.z < minY) minY = (int)mousePoint.z;
+                                        if (floors.childCount == 1 || mousePoint.z > maxY) maxY = (int)mousePoint.z;
                                     }
                                     else if (tileMode == TileMode.NormalWall || tileMode == TileMode.Mirror || tileMode == TileMode.Glass)
                                         newTile = Instantiate(currentTile, mousePoint, currentTile.transform.rotation, walls);
