@@ -303,7 +303,14 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             ChangeTileMode((int)temp.tag);
             Vector3 tilePos = new Vector3(temp.xPos, 0, temp.yPos);
             GameObject newTile;
-            if (temp.tag == TileMode.Floor || temp.tag == TileMode.GoalFloor) newTile = Instantiate(currentTile, tilePos, Quaternion.identity, floors);
+            if (temp.tag == TileMode.Floor || temp.tag == TileMode.GoalFloor)
+            {
+                newTile = Instantiate(currentTile, tilePos, Quaternion.identity, floors);
+                if (floors.childCount == 1 || tilePos.x < minX) minX = (int)tilePos.x;
+                if (floors.childCount == 1 || tilePos.x > maxX) maxX = (int)tilePos.x;
+                if (floors.childCount == 1 || tilePos.z < minY) minY = (int)tilePos.z;
+                if (floors.childCount == 1 || tilePos.z > maxY) maxY = (int)tilePos.z;
+            }
             else if (temp.tag == TileMode.NormalWall || temp.tag == TileMode.Mirror || temp.tag == TileMode.Glass) newTile = Instantiate(currentTile, tilePos, Quaternion.Euler(0, temp.angle, 0), walls);
             else if (temp.tag == TileMode.StartFloor) newTile = Instantiate(currentTile, tilePos + new Vector3(0, 1, 0), Quaternion.identity, jacksons);
             else newTile = Instantiate(currentTile, tilePos + new Vector3(0, 1, 0), Quaternion.Euler(0, temp.angle, 0), objects);
