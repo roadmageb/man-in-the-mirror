@@ -479,24 +479,15 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         }
                         prevMousePoint = mousePoint;
                     }
-                    else if (Input.GetMouseButton(1))
-                    {
-                        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-                        RaycastHit hit;
-                        if (Physics.Raycast(mouseRay, out hit) && hit.transform.gameObject != currentTile) Destroy(hit.transform.gameObject);
-                        prevMousePoint = mousePoint;
-                    }
                 }
             }
-            else if(prevMousePoint != mousePoint)
+
+            if (prevMousePoint != mousePoint && Input.GetMouseButton(1))
             {
-                if (Input.GetMouseButton(0))
-                {
-                    Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    RaycastHit hit;
-                    if (Physics.Raycast(mouseRay, out hit)) Destroy(hit.transform.gameObject);
-                    prevMousePoint = mousePoint;
-                }
+                Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(mouseRay, out hit) && hit.transform.gameObject != currentTile) Destroy(hit.transform.gameObject);
+                prevMousePoint = mousePoint;
             }
 
             if (Input.GetKeyDown(KeyCode.Z)) ChangeTileMode((int)TileMode.Floor);
