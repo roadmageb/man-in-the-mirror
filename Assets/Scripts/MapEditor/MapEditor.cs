@@ -32,8 +32,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         public List<ObjectData> objects;
         public List<ClearData> clears;
         public List<BulletCode> bullets;
-        public string comments = null;
-        public Vector3 centerPos = Vector2.zero;
+        public string comments = null, mapName = "";
+        public float centerPosX = 0, centerPosY = 0;
         public MapSaveData()
         {
             objects = new List<ObjectData>();
@@ -61,7 +61,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public GameObject[] clearConditionButtons;
     public bool isPanelOn = false;
     bool isFloat = false, isAtPoint = false;
-    string comment = "";
+    string comment = "", mapName;
     TileMode tileMode = 0;
     Coroutine debugTextCoroutine;
     Vector3 prevMousePoint;
@@ -248,14 +248,16 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             }
             for (int i = 0; i < bullets.childCount; i++) mapSaveData.bullets.Add(bullets.GetChild(i).GetComponent<MapEditorTile>().bulletCode);
             mapSaveData.comments = comment;
-            mapSaveData.centerPos = centerPosSetter.transform.position;
+            mapSaveData.mapName = mapName;
+            mapSaveData.centerPosX = centerPosSetter.transform.position.x;
+            mapSaveData.centerPosY = centerPosSetter.transform.position.z;
             return mapSaveData;
         }
     }
 
     public void SaveMap(InputField input)
     {
-        string mapName = input.text;
+        mapName = input.text;
         string localPath = "Assets/Resources/Stages/stage" + mapName + ".json";
         MapSaveData mapSaveData = SerializeMap();
         if(mapSaveData != null)
@@ -310,6 +312,12 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         }
         for (int i = 0; i < loadedMapData.bullets.Count; i++) AddBullet((int)loadedMapData.bullets[i]);
         if (loadedMapData.comments != null) AddComment(loadedMapData.comments);
+        mapName = loadedMapData.mapName;
+    }
+
+    public void SetNameInputField(InputField input)
+    {
+        input.text = mapName;
     }
 
     public void LoadMap(Text text)
