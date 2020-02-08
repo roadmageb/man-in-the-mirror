@@ -54,7 +54,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     public GameObject[] tiles;
     public Image[] bulletTiles;
     Transform walls, floors, objects, jacksons, bullets;
-    public Button stageSelectButton;
+    public GameObject stageSelectButton;
     public GameObject centerPosSetter;
     GameObject currentTile = null, controlPanel, stageSelectPanel, saveMapPanel, commentPanel, clearConditionPanel;
     GameObject stageSelectContent, debugText, commentInputField;
@@ -205,6 +205,24 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         return null;
     }
 
+    public void DeleteMap(Text text)
+    {
+        string localPath = "Assets/Resources/Stages/" + text.text + ".json";
+        string localPathMeta = "Assets/Resources/Stages/" + text.text + ".json.meta";
+        if (File.Exists(localPath))
+        {
+            File.Delete(localPath);
+            File.Delete(localPathMeta);
+            PrintDebugText("Deleted " + text.text);
+            CancelMapLoad();
+            CheckLoadableStages();
+        }
+        else
+        {
+            PrintDebugText("There is no stage named " + text.text);
+        }
+    }
+
     public MapSaveData SerializeMap()
     {
         if (jacksons.childCount == 0)
@@ -259,6 +277,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     {
         mapName = input.text;
         string localPath = "Assets/Resources/Stages/stage" + mapName + ".json";
+        string localPathMeta = "Assets/Resources/Stages/" + mapName + ".json.meta";
         MapSaveData mapSaveData = SerializeMap();
         if(mapSaveData != null)
         {
@@ -266,6 +285,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             {
                 Debug.Log("File Exists");
                 File.Delete(localPath);
+                File.Delete(localPathMeta);
             }
 
             File.WriteAllText(localPath, JsonConvert.SerializeObject(mapSaveData));
@@ -281,8 +301,8 @@ public class MapEditor : SingletonBehaviour<MapEditor>
         float y = rt.rect.height / 2 - 50;
         for (int i = 0; i < newMaps.Length; i++)
         {
-            Button temp = Instantiate(stageSelectButton, stageSelectContent.transform);
-            temp.transform.Find("Text").GetComponent<Text>().text = newMaps[i].name;
+            GameObject temp = Instantiate(stageSelectButton, stageSelectContent.transform);
+            temp.transform.Find("StageSelect").transform.Find("Text").GetComponent<Text>().text = newMaps[i].name;
             temp.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, y - 90 * i);
         }
     }
