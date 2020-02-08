@@ -88,7 +88,11 @@ public class MapEditor : SingletonBehaviour<MapEditor>
     Vector3 GetMousePoint()
     {
         Vector3 mousePoint, originPos = Camera.main.ScreenPointToRay(Input.mousePosition).origin;
-        if (isFloat)
+        if (tileMode == TileMode.CenterPos)
+        {
+            mousePoint = new Vector3(Mathf.Round(originPos.x * 2) / 2, 0, Mathf.Round(originPos.z * 2) / 2);
+        }
+        else if (isFloat)
         {
             if (!isAtPoint)
             {
@@ -98,7 +102,10 @@ public class MapEditor : SingletonBehaviour<MapEditor>
             }
             else mousePoint = new Vector3(Mathf.Round(originPos.x - 0.5f) + 0.5f, 0, Mathf.Round(originPos.z - 0.5f) + 0.5f);
         }
-        else mousePoint = new Vector3(Mathf.Round(originPos.x), 0, Mathf.Round(originPos.z));
+        else
+        {
+            mousePoint = new Vector3(Mathf.Round(originPos.x), 0, Mathf.Round(originPos.z));
+        }
         return mousePoint;
     }
     
@@ -431,7 +438,7 @@ public class MapEditor : SingletonBehaviour<MapEditor>
                         {
                             if(tileMode == TileMode.CenterPos)
                             {
-                                isValid = mousePoint.x >= minX && mousePoint.x <= maxX && mousePoint.z >= minY && mousePoint.z <= maxY;
+                                isValid = mousePoint.x >= minX - 0.5f && mousePoint.x <= maxX + 0.5f && mousePoint.z >= minY - 0.5f && mousePoint.z <= maxY + 0.5f;
                             }
                             else if (tileMode == TileMode.Floor || tileMode == TileMode.GoalFloor)
                             {
